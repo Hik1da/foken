@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/general.css">
+        <link rel="stylesheet" href="styles/login.css">
+        <link rel="icon" type="image/svg+xml" href="resources/favicon.svg">
+        <title>Registro</title>
+    </head>
+    <body>
+        <header>
+            <img src="assets/logo.png" onclick="toggleDarkMode()">
+            <p>Nada rapido, nada bien...</p>
+        </header>
+        <main>
+            <section>
+                <h1>Registrar...</h1>
+                <form id="myForm" action="/submit-data" method="POST">
+                    <input type="email" placeholder="Correo electrónico">
+                    <input type="password" placeholder="Contraseña">
+                    <input type="password" placeholder="Confirmar contraseña">
+                    <input id="openBox" type="submit" value="Confirmar" class="button" onclick="return showConfirm(event)">
+                </form>
+                <a>¿Olvidaste tu contraseña?</a>
+                <hr>
+                <a class="button" href="login.html">Ya tengo una cuenta</a>
+            </section>
+            <dialog id="confirmBox">
+                <section>
+                    <h1>Para registrarte, lee y acepta nuestros términos.</h1>
+                    <p>Aspectos clave que debes saber...</p>
+                    <ul>
+                        <li>Puedes acceder a tu información, modificarla o eliminarla en cualquier momento.</li>
+                        <li>Utilizamos tu información para crear una cuenta, mostrar anuncios y contenido que puedan interesarte.</li>
+                        <li>Recibirás notificaciones de nuestra parte. Puedes cancelar este servicio en cualquier momento.</li>
+                    </ul>
+                    <p>Al registrarte, aceptas las <a>condiciones</a>, la <a>política de datos</a> y la <a>política de cookies</a> de <strong>annoying</strong>.</p>
+                    <button id="confirmBtn" class="button">Estoy de acuerdo</button>
+                    <button id="cancelBtn" class="button">Cancelar</button>
+                </section>
+            </dialog>
+        </main>
+        
+        <script src="scripts/darkmode.js"></script>
+        <script>
+            let shouldSubmit = false;
+            const confirmBox = document.getElementById('confirmBox');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const confirmBtn = document.getElementById('confirmBtn');
+
+            function showConfirm(e) {
+                e.preventDefault(); // Stop form submission
+                confirmBox.showModal();
+                return false; // Prevents form from submitting
+            }
+
+            // Action if they cancel
+            cancelBtn.addEventListener('click', () => {
+                confirmBox.close();
+                shouldSubmit = false;
+            });
+
+            // Action if they confirm
+            confirmBtn.addEventListener('click', () => {
+                confirmBox.close();
+                shouldSubmit = true;
+                window.location.href = 'home.html';
+                // Submit the form
+                //document.getElementById('myForm').submit();
+                // Put your form submission or execution code here
+            });
+        </script>
+    </body>
+</html>
