@@ -13,4 +13,12 @@ function loadDarkModePreference() {
         document.body.classList.add("dark-mode");
 }
 
-window.onload = loadDarkModePreference;
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.add("no-transition");
+    loadDarkModePreference();
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            document.body.classList.remove("no-transition");
+        })
+    });
+});
