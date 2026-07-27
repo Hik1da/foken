@@ -25,7 +25,7 @@ main, section {
     flex-direction: column;
     gap: 12px;
 }
-main, header { width: 100%; max-width: 450px; }
+main, header, footer { width: 100%; max-width: 450px; }
 
 h1 { font-size: 16px; color: var(--primary); font-weight: normal; }
 h2 { font-size: 32px; font-weight: lighter; font-family: monospace }
@@ -78,7 +78,7 @@ nav a {
 
     width: min-content;
     padding: 0 6px;
-    padding-bottom: 12px;
+    padding-bottom: 24px;
 
     font-size: 14px;
     border-radius: 24px;
@@ -124,3 +124,42 @@ a.movimiento span:not(:last-child)::after {
     content: "•";
     margin: 0 10px;
 }
+
+footer {
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+}
+footer a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    width: min-content;
+
+    font-size: 14px;
+
+    padding-bottom: 16px;
+    padding-top: 12px;
+    border-radius: 24px 24px 0 0;
+    background-color: var(--secondary-background);
+    border: 2px solid var(--primary-background);
+    border-bottom: none;
+    box-shadow: 0 0 0 2px var(--secondary-background);
+
+    transition: border 0.25s ease;
+}
+footer a.selected { background-color: var(--primary); }
+footer a:hover { border: 2px solid var(--primary); border-bottom: none; }
+footer a img {
+    margin: 0 12px;
+    padding: 12px;
+    width: 20px;
+    filter: invert(0);
+}
+footer a.selected img { filter: invert(1); }
+.dark-mode footer a img { filter: invert(1); }
+.dark-mode footer a.selected img { filter: invert(0); }
