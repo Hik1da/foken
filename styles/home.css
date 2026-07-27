@@ -124,3 +124,25 @@ a.movimiento span:not(:last-child)::after {
     content: "•";
     margin: 0 10px;
 }
+
+/* Saldo */
+.saldo-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#toggleSaldo{
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: transform .2s ease;
+}
+
+#toggleSaldo:hover{
+    transform: scale(1.1);
+}
+
+.dark-mode #toggleSaldo{
+    filter: invert(100%);
+}
