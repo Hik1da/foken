@@ -19,7 +19,7 @@ header {
 header img { height: 24px; margin: 0 32px; }
 .dark-mode header img { filter: invert(100%); }
 
-main { margin-top: 64px; }
+main { margin-top: 64px; margin-bottom: 80px; }
 main, section {
     display: flex;
     flex-direction: column;
@@ -64,10 +64,10 @@ section#movimientos {
 
 nav {
     display: flex;
-    justify-content: space-between;
-    gap: 6px;
+    justify-content: center;
+    gap: 24px;
 }
-nav a {
+nav > a {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -86,8 +86,8 @@ nav a {
 
     transition: border 0.25s ease;
 }
-nav a:hover { border: 2px solid var(--primary); }
-nav a img {
+nav > a:hover { border: 2px solid var(--primary); }
+nav > a img {
     margin: 0 12px;
     padding: 12px;
     width: 20px;

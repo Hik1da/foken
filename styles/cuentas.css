@@ -1,0 +1,550 @@
+/* Contenedor principal */
+
+.app-container {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 25px 22px;
+    box-sizing: border-box;
+}
+
+/* Encabezado */
+
+.app-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+
+.main-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.help-btn,
+.info-icon,
+.icon-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.help-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Mensaje de ayuda */
+
+.help-container {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    z-index: 1000;
+    width: 260px;
+    padding: 12px 15px;
+    border-radius: 10px;
+    background-color: var(--primary);
+    color: #000;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+.tooltip::after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    right: 14px;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid var(--primary);
+    border-left: 8px solid transparent;
+}
+
+.help-container:hover .tooltip,
+.help-container:focus-within .tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Enlace de soporte */
+
+.soporte-link {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.soporte-link:hover {
+    text-decoration: underline;
+}
+
+/* Estado de la tarjeta */
+
+.tabs-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.tab-label {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    color: var(--secondary-background);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.status-badge.activa {
+    background-color: #2e7d32;
+}
+
+.status-badge.bloqueada {
+    background-color: #d32f2f;
+}
+
+/* Imagen de la tarjeta */
+
+.card-image-wrapper {
+    width: 100%;
+    max-width: 390px;
+    margin: 10px auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 24px;
+}
+
+.card-image {
+    display: block;
+    width: 108%;
+    height: auto;
+    margin: -14px;
+    object-fit: cover;
+}
+
+/* Indicadores del carrusel */
+
+.carousel-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin: 16px 0 30px;
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.dot.active {
+    width: 20px;
+    border-radius: 10px;
+}
+
+/* Acciones */
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    width: 100%;
+}
+
+.action-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--primary-text);
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.icon-circle {
+    width: 58px;
+    height: 58px;
+    margin-bottom: 9px;
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+    background-color: var(--primary);
+    box-shadow: inset 0 0 0 2px #c8b7b7;
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.action-item:hover .icon-circle,
+.action-item:focus-visible .icon-circle {
+    border-color: var(--primary);
+    box-shadow: none;
+}
+
+.action-icon {
+    display: block;
+    width: 27px;
+    height: 27px;
+    object-fit: contain;
+}
+
+.action-label {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+}
+
+/* Banner de soporte */
+
+.info-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 35px;
+    padding: 18px 20px;
+    border: 2px solid var(--primary-background);
+    border-radius: 24px;
+    background-color: var(--secondary-background);
+    box-shadow: 0 0 0 2px var(--secondary-background);
+}
+
+.info-icon {
+    flex-shrink: 0;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: var(--secondary-background);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.info-text {
+    margin: 0;
+    color: var(--secondary-text);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.info-text strong {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Ventanas modales */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 340px;
+    padding: 30px 25px;
+    border-radius: 22px;
+    background-color: var(--secondary-background);
+    text-align: center;
+    animation: aparecer 0.25s ease;
+}
+
+/* Solicitud de nueva tarjeta */
+
+.solicitud-card {
+    max-width: 420px;
+}
+
+.solicitud-card h2 {
+    margin: 0 0 10px;
+    color: var(--primary);
+    font-size: 24px;
+}
+
+.solicitud-card .modal-text {
+    margin-bottom: 22px;
+    color: var(--secondary-text);
+}
+
+.solicitud-opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.solicitud-opcion {
+    width: 100%;
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 18px;
+    border: 2px solid transparent;
+    border-radius: 18px;
+    background-color: var(--secondary-background);
+    box-shadow: 0 0 0 2px var(--primary), 0 3px 8px rgba(0, 0, 0, 0.12);
+    font-family: inherit;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.solicitud-opcion:hover {
+    background-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.radio-opcion {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    border: 3px solid var(--primary);
+    border-radius: 50%;
+    background-color: transparent;
+}
+
+.texto-opcion {
+    color: var(--primary-text);
+    font-size: 16px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.solicitud-opcion.seleccionada {
+    border-color: var(--primary);
+    background-color: var(--secondary-background);
+}
+
+.solicitud-opcion.seleccionada .radio-opcion {
+    background-color: var(--primary);
+    box-shadow: inset 0 0 0 5px var(--secondary-background);
+}
+
+.solicitud-continuar {
+    margin-top: 22px;
+}
+
+.solicitud-continuar:disabled {
+    background-color: var(--primary-background);
+    cursor: not-allowed;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+
+    border: none;
+    background: transparent;
+    outline: none;
+
+    color: var(--secondary-text);
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition: color .2s ease, transform .2s ease;
+}
+
+.close:hover {
+    color: var(--primary);
+    transform: scale(1.1);
+}
+
+.modal-text {
+    margin-bottom: 18px;
+    font-size: 16px;
+}
+
+.modal-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 24px;
+    background-color: var(--primary);
+    color: var(--secondary-background);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+}
+
+.modal-btn:hover:not(:disabled) {
+    background-color: #05695a;
+}
+
+/* Gestión del NIP */
+
+.nip-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.nip-box {
+    width: 170px;
+    padding: 16px;
+    border: 2px solid var(--primary);
+    border-radius: 15px;
+    background-color: var(--secondary-background);
+    color: var(--primary);
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: 10px;
+    text-align: center;
+}
+
+.eye-icon {
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.eye-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Confirmación de bloqueo */
+
+.bloqueo-card {
+    max-width: 420px;
+}
+
+.bloqueo-card h2 {
+    margin-bottom: 18px;
+    color: #111;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.bloqueo-card .modal-text {
+    margin-bottom: 35px;
+    color: #555;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.bloqueo-card .modal-btn {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 24px;
+    background: #111;
+    color: var(--secondary-background);
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color .25s ease;
+}
+
+.bloqueo-card .modal-btn:hover {
+    background: #000;
+}
+
+.cancelar-btn {
+    width: 100%;
+    margin-top: 18px;
+    padding: 14px;
+    border: none;
+    background: transparent;
+    color: var(--primary-text);
+    border: 2px solid var(--primary-background);
+    border-radius: 24px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color .25s ease;
+}
+
+.cancelar-btn:hover {
+    color: var(--primary);
+}
+
+/* Diseño responsivo */
+
+@media (max-width: 360px) {
+    .app-container {
+        padding: 20px 16px;
+    }
+
+    .main-title {
+        font-size: 25px;
+    }
+
+    .tooltip {
+        width: 220px;
+    }
+
+    .icon-circle {
+        width: 52px;
+        height: 52px;
+    }
+
+    .action-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .action-label {
+        font-size: 12px;
+    }
+
+    .card-image {
+        margin: -12px;
+    }
+}
