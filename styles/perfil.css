@@ -7,29 +7,30 @@ body {
     justify-content: center;
 }
 
+body.sin-scroll {
+    overflow: hidden;
+}
+
+
 /* Contenedor principal */
 
 .perfil-container {
     width: 100%;
     max-width: 450px;
     min-height: 100vh;
-    margin: 0;
     padding: 18px 0 40px;
     display: flex;
     flex-direction: column;
-    gap: 0;
 }
 
-.perfil-header {
-    position: static;
-    width: 100%;
-    max-width: none;
 
+/* Encabezado */
+
+.perfil-header {
+    width: 100%;
     display: flex;
     justify-content: flex-end;
-
     padding: 0 24px;
-    background: transparent;
 }
 
 
@@ -39,48 +40,41 @@ body {
     width: 42px;
     height: 42px;
     flex-shrink: 0;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 0;
-
     border: none;
     border-radius: 12px;
-
     background-color: #ffffff;
-
     cursor: pointer;
-
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
-
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition:
-        background-color .2s ease,
-        transform .2s ease,
-        box-shadow .2s ease;
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .qr-button:hover {
     background-color: #f5f5f5;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .qr-button:active {
-    transform: scale(.95);
+    transform: scale(0.95);
 }
 
 .qr-icon {
     width: 28px;
     height: 28px;
     object-fit: contain;
-
     filter: contrast(0%) brightness(70%);
 }
 
 .dark-mode .qr-icon {
     filter: none;
 }
+
 
 /* Usuario */
 
@@ -89,8 +83,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0;
-    border-radius: 0;
 }
 
 .usuario-avatar {
@@ -114,6 +106,7 @@ body {
     text-align: center;
 }
 
+
 /* Ayuda */
 
 .ayuda-card {
@@ -129,7 +122,7 @@ body {
     color: var(--primary);
     text-decoration: none;
     transition:
-        border 0.25s ease,
+        border-color 0.25s ease,
         transform 0.2s ease;
 }
 
@@ -168,13 +161,13 @@ body {
     line-height: 1.4;
 }
 
+
 /* CLABE */
 
 .clabe-card {
     margin: 0 32px 20px;
     padding: 20px;
     display: flex;
-    flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
@@ -212,45 +205,40 @@ body {
     overflow-wrap: anywhere;
 }
 
-/* Copiar */
+
+/* Botón copiar */
 
 .copiar-button {
     width: 42px;
     height: 42px;
     flex-shrink: 0;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     border: none;
     border-radius: 10px;
     background: transparent;
-
     cursor: pointer;
-
     transition:
-        background-color .2s ease,
-        transform .2s ease;
+        background-color 0.2s ease,
+        transform 0.2s ease;
 }
 
 .copiar-button:hover {
-    background-color: #a9d6b5
-    ;
+    background-color: #a9d6b5;
 }
 
 .copiar-button:active {
-    transform: scale(.95);
+    transform: scale(0.95);
 }
 
-.copiar-icono{
+.copiar-icono {
     width: 28px;
     height: 28px;
     object-fit: contain;
-
-    opacity: 10;
     filter: contrast(0%) brightness(70%);
 }
+
 .dark-mode .copiar-icono {
     filter: none;
 }
@@ -258,17 +246,16 @@ body {
 .mensaje-copiado {
     min-height: 18px;
     margin: -12px 36px 10px;
-
     color: #2f7543;
     font-size: 12px;
     text-align: right;
 }
 
-/* Contenedor de opciones */
+
+/* Opciones */
 
 .perfil-opciones {
     margin: 0 32px;
-    padding: 0;
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -279,8 +266,6 @@ body {
     box-shadow: 0 0 0 2px var(--secondary-background);
 }
 
-/* Cada opción tiene su propio fondo */
-
 .perfil-opcion {
     width: 100%;
     min-height: 82px;
@@ -289,9 +274,13 @@ body {
     grid-template-columns: 42px 1fr;
     align-items: center;
     gap: 10px;
+    border: none;
     background-color: var(--secondary-background);
     color: var(--primary);
+    font-family: inherit;
+    text-align: left;
     text-decoration: none;
+    cursor: pointer;
     transition:
         background-color 0.2s ease,
         padding-left 0.2s ease;
@@ -306,8 +295,6 @@ body {
     );
 }
 
-/* Iconos con sus colores originales */
-
 .opcion-icono {
     width: 36px;
     height: 36px;
@@ -319,25 +306,10 @@ body {
 }
 
 .opcion-icono img {
-    display: block;
     width: 24px;
     height: 24px;
-    margin: 0;
-    padding: 0;
     object-fit: contain;
-
-    /* No usar invert para conservar los colores */
-
-    filter: none;
 }
-
-/* También conserva los colores en modo oscuro */
-
-.dark-mode .opcion-icono img {
-    filter: none;
-}
-
-/* Información */
 
 .opcion-contenido {
     min-width: 0;
@@ -348,12 +320,10 @@ body {
 .opcion-titulo {
     margin: 0 0 4px;
     color: var(--primary);
-    font-family: inherit;
     font-size: 20px;
-    font-weight: 770;
+    font-weight: 700;
     line-height: 1.25;
 }
-
 
 .opcion-descripcion {
     margin: 0;
@@ -362,7 +332,169 @@ body {
     line-height: 1.4;
 }
 
-/* Responsivo */
+
+/* Modal reutilizable */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+.modal.modal-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.modal-contenido {
+    width: 100%;
+    max-width: 430px;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 24px;
+    background-color: var(--secondary-background);
+    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.25);
+    transform: translateY(24px) scale(0.97);
+    transition: transform 0.25s ease;
+}
+
+.modal-visible .modal-contenido {
+    transform: translateY(0) scale(1);
+}
+
+.modal-header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 22px;
+    border-bottom: 1px solid var(--primary-background);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--primary);
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.modal-cerrar {
+    width: 48px;
+    height: 38px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 30%;
+    background-color: var(--primary-background);
+    color: var(--primary);
+    font-family: inherit;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.modal-cerrar:hover {
+    background-color: color-mix(
+        in srgb,
+        var(--primary-background) 85%,
+        var(--primary) 15%
+    );
+}
+
+.modal-cerrar:active {
+    transform: scale(0.94);
+}
+
+.modal-body {
+    flex: 1;
+    min-height: 0;
+    padding: 22px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.modal-texto {
+    margin: 0;
+    color: var(--secondary-text);
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+.modal-footer {
+    flex-shrink: 0;
+    padding: 16px 22px 20px;
+    border-top: 1px solid var(--primary-background);
+}
+
+.modal-aceptar {
+    width: 100%;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 14px;
+    background-color: var(--primary);
+    color: var(--secondary-background);
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.modal-aceptar:hover {
+    opacity: 0.9;
+}
+
+.modal-aceptar:active {
+    transform: scale(0.98);
+}
+
+
+/* Pantallas pequeñas */
+
+@media (max-width: 480px) {
+
+    .modal {
+        align-items: flex-end;
+        padding: 10px;
+    }
+
+    .modal-contenido {
+        max-height: 92vh;
+        border-radius: 24px 24px 18px 18px;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding-right: 18px;
+        padding-left: 18px;
+    }
+
+}
 
 @media (max-width: 380px) {
 
@@ -395,8 +527,8 @@ body {
     }
 
     .perfil-opcion {
-        grid-template-columns: 38px 1fr;
         min-height: 78px;
+        grid-template-columns: 38px 1fr;
         padding-right: 12px;
         padding-left: 12px;
     }

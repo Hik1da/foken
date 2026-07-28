@@ -18,11 +18,11 @@
 
     <main class="perfil-container">
 
-        <!-- Parte superior -->
+        <!-- Encabezado -->
 
         <header class="perfil-header">
 
-            <button class="qr-button" type="button" aria-label="Mostrar código QR">
+            <button class="qr-button" id="qrButton" type="button" aria-label="Mostrar código QR">
 
                 <img src="assets/QR.png" alt="Código QR" class="qr-icon">
 
@@ -30,11 +30,12 @@
 
         </header>
 
-        <!-- Usuario -->
+
+        <!-- Información del usuario -->
 
         <section class="usuario-section">
 
-            <div class="usuario-avatar">
+            <div class="usuario-avatar" aria-hidden="true">
                 SE
             </div>
 
@@ -44,11 +45,12 @@
 
         </section>
 
+
         <!-- Ayuda -->
 
         <a href="soporte.html" class="ayuda-card">
 
-            <div class="ayuda-icon">
+            <div class="ayuda-icon" aria-hidden="true">
                 ?
             </div>
 
@@ -66,7 +68,8 @@
 
         </a>
 
-        <!-- CLABE -->
+
+        <!-- Información de la CLABE -->
 
         <section class="clabe-card">
 
@@ -79,7 +82,7 @@
                     </span>
 
                     <strong class="clabe-numero" id="clabeNumero">
-                        00000000000000000
+                        000000000000000000
                     </strong>
 
                 </div>
@@ -91,16 +94,16 @@
                     </span>
 
                     <strong class="banco-nombre">
-                        foken
+                        Foken
                     </strong>
 
                 </div>
 
             </div>
 
-            <button class="copiar-button" type="button" aria-label="Copiar CLABE" onclick="copiarClabe()">
+            <button class="copiar-button" id="copiarClabeButton" type="button" aria-label="Copiar CLABE">
 
-                <img src="assets/copiar.png" alt="Copiar" class="copiar-icono">
+                <img src="assets/copiar.png" alt="" class="copiar-icono">
 
             </button>
 
@@ -108,9 +111,11 @@
 
         <p class="mensaje-copiado" id="mensajeCopiado" aria-live="polite"></p>
 
+
         <!-- Opciones del perfil -->
 
-        <section class="perfil-opciones">
+        <section class="perfil-opciones" aria-label="Opciones del perfil">
+
 
             <!-- Datos personales -->
 
@@ -136,6 +141,7 @@
 
             </a>
 
+
             <!-- Seguridad -->
 
             <a href="seguridad.html" class="perfil-opcion">
@@ -159,6 +165,7 @@
                 </div>
 
             </a>
+
 
             <!-- Seguros -->
 
@@ -184,7 +191,8 @@
 
             </a>
 
-            <!-- Autentificación -->
+
+            <!-- Autentificación de compras -->
 
             <a href="autentificacion.html" class="perfil-opcion">
 
@@ -208,14 +216,17 @@
 
             </a>
 
+            
+
+
             <!-- Información fiscal -->
 
-            <a href="informacion-fiscal.html" class="perfil-opcion">
+            <button class="perfil-opcion perfil-opcion-button abrir-modal" type="button"
+                data-modal-title="Información fiscal"
+                data-modal-text="Aquí podrás consultar tu historial de retenciones y descargar tu constancia de situación fiscal cuando esté disponible.">
 
                 <div class="opcion-icono">
-
                     <img src="assets/Hoja.png" alt="">
-
                 </div>
 
                 <div class="opcion-contenido">
@@ -230,16 +241,17 @@
 
                 </div>
 
-            </a>
+            </button>
+
 
             <!-- Privacidad y términos -->
 
-            <a href="privacidad.html" class="perfil-opcion">
+            <button class="perfil-opcion perfil-opcion-button abrir-modal" type="button"
+                data-modal-title="Privacidad y términos"
+                data-modal-text="Consulta la información legal, las políticas de privacidad y los términos y condiciones de Foken.">
 
                 <div class="opcion-icono">
-
                     <img src="assets/terminos.png" alt="">
-
                 </div>
 
                 <div class="opcion-contenido">
@@ -254,46 +266,38 @@
 
                 </div>
 
-            </a>
+            </button>
 
         </section>
 
     </main>
 
-    <script>
+    <div id="modalInformacion" class="modal" aria-hidden="true">
 
-        function copiarClabe() {
+        <div class="modal-contenido">
 
-            const numeroClabe = document
-                .getElementById("clabeNumero")
-                .textContent
-                .trim();
+            <button id="cerrarModalButton" class="modal-cerrar" type="button">
+                x
+            </button>
 
-            const mensaje = document.getElementById("mensajeCopiado");
+            <h2 id="modalTitulo">
+                Información
+            </h2>
 
-            navigator.clipboard.writeText(numeroClabe)
-                .then(function () {
+            <p id="modalTexto" class="modal-texto">
+                Texto
+            </p>
 
-                    mensaje.textContent = "CLABE copiada correctamente";
+            <button id="aceptarModalButton" class="modal-aceptar" type="button">
+                Aceptar
+            </button>
 
-                    setTimeout(function () {
-                        mensaje.textContent = "";
-                    }, 2000);
+        </div>
 
-                })
-                .catch(function () {
+    </div>
 
-                    mensaje.textContent = "No se pudo copiar la CLABE";
 
-                    setTimeout(function () {
-                        mensaje.textContent = "";
-                    }, 2000);
-
-                });
-
-        }
-
-    </script>
+    <script src="scripts/perfil.js"></script>
 
 </body>
 
