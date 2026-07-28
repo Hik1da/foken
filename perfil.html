@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Perfil | Foken</title>
+
+    <link rel="stylesheet" href="styles/general.css">
+    <link rel="stylesheet" href="styles/perfil.css">
+
+</head>
+
+<body>
+
+    <main class="perfil-container">
+
+        <!-- Parte superior -->
+
+        <header class="perfil-header">
+
+            <button class="qr-button" type="button" aria-label="Mostrar código QR">
+
+                <img src="assets/QR.png" alt="Código QR" class="qr-icon">
+
+            </button>
+
+        </header>
+
+        <!-- Usuario -->
+
+        <section class="usuario-section">
+
+            <div class="usuario-avatar">
+                SE
+            </div>
+
+            <h1 class="usuario-nombre">
+                Samuel Espino
+            </h1>
+
+        </section>
+
+        <!-- Ayuda -->
+
+        <a href="soporte.html" class="ayuda-card">
+
+            <div class="ayuda-icon">
+                ?
+            </div>
+
+            <div class="ayuda-texto">
+
+                <span class="ayuda-titulo">
+                    Ayuda
+                </span>
+
+                <span class="ayuda-descripcion">
+                    Habla con un agente o envíanos tu opinión
+                </span>
+
+            </div>
+
+        </a>
+
+        <!-- CLABE -->
+
+        <section class="clabe-card">
+
+            <div class="clabe-informacion">
+
+                <div class="clabe-grupo">
+
+                    <span class="clabe-etiqueta">
+                        CLABE interbancaria
+                    </span>
+
+                    <strong class="clabe-numero" id="clabeNumero">
+                        00000000000000000
+                    </strong>
+
+                </div>
+
+                <div class="clabe-grupo banco-grupo">
+
+                    <span class="clabe-etiqueta">
+                        Banco receptor
+                    </span>
+
+                    <strong class="banco-nombre">
+                        foken
+                    </strong>
+
+                </div>
+
+            </div>
+
+            <button class="copiar-button" type="button" aria-label="Copiar CLABE" onclick="copiarClabe()">
+
+                <img src="assets/copiar.png" alt="Copiar" class="copiar-icono">
+
+            </button>
+
+        </section>
+
+        <p class="mensaje-copiado" id="mensajeCopiado" aria-live="polite"></p>
+
+        <!-- Opciones del perfil -->
+
+        <section class="perfil-opciones">
+
+            <!-- Datos personales -->
+
+            <a href="datos-personales.html" class="perfil-opcion">
+
+                <div class="opcion-icono">
+
+                    <img src="assets/persona.png" alt="">
+
+                </div>
+
+                <div class="opcion-contenido">
+
+                    <h2 class="opcion-titulo">
+                        Datos personales
+                    </h2>
+
+                    <p class="opcion-descripcion">
+                        Edita tu información personal
+                    </p>
+
+                </div>
+
+            </a>
+
+            <!-- Seguridad -->
+
+            <a href="seguridad.html" class="perfil-opcion">
+
+                <div class="opcion-icono">
+
+                    <img src="assets/bloquear.png" alt="">
+
+                </div>
+
+                <div class="opcion-contenido">
+
+                    <h2 class="opcion-titulo">
+                        Seguridad
+                    </h2>
+
+                    <p class="opcion-descripcion">
+                        Establece tus medidas de seguridad
+                    </p>
+
+                </div>
+
+            </a>
+
+            <!-- Seguros -->
+
+            <a href="seguros.html" class="perfil-opcion">
+
+                <div class="opcion-icono">
+
+                    <img src="assets/escudo.png" alt="">
+
+                </div>
+
+                <div class="opcion-contenido">
+
+                    <h2 class="opcion-titulo">
+                        Seguros
+                    </h2>
+
+                    <p class="opcion-descripcion">
+                        Consulta detalles sobre los seguros en alianza con Chubb
+                    </p>
+
+                </div>
+
+            </a>
+
+            <!-- Autentificación -->
+
+            <a href="autentificacion.html" class="perfil-opcion">
+
+                <div class="opcion-icono">
+
+                    <img src="assets/verificado.png" alt="">
+
+                </div>
+
+                <div class="opcion-contenido">
+
+                    <h2 class="opcion-titulo">
+                        Autentificación de compras
+                    </h2>
+
+                    <p class="opcion-descripcion">
+                        Desactiva las notificaciones push
+                    </p>
+
+                </div>
+
+            </a>
+
+            <!-- Información fiscal -->
+
+            <a href="informacion-fiscal.html" class="perfil-opcion">
+
+                <div class="opcion-icono">
+
+                    <img src="assets/Hoja.png" alt="">
+
+                </div>
+
+                <div class="opcion-contenido">
+
+                    <h2 class="opcion-titulo">
+                        Información fiscal
+                    </h2>
+
+                    <p class="opcion-descripcion">
+                        Historial de retención y constancia de situación fiscal
+                    </p>
+
+                </div>
+
+            </a>
+
+            <!-- Privacidad y términos -->
+
+            <a href="privacidad.html" class="perfil-opcion">
+
+                <div class="opcion-icono">
+
+                    <img src="assets/terminos.png" alt="">
+
+                </div>
+
+                <div class="opcion-contenido">
+
+                    <h2 class="opcion-titulo">
+                        Privacidad y términos
+                    </h2>
+
+                    <p class="opcion-descripcion">
+                        Información legal acerca de Foken
+                    </p>
+
+                </div>
+
+            </a>
+
+        </section>
+
+    </main>
+
+    <script>
+
+        function copiarClabe() {
+
+            const numeroClabe = document
+                .getElementById("clabeNumero")
+                .textContent
+                .trim();
+
+            const mensaje = document.getElementById("mensajeCopiado");
+
+            navigator.clipboard.writeText(numeroClabe)
+                .then(function () {
+
+                    mensaje.textContent = "CLABE copiada correctamente";
+
+                    setTimeout(function () {
+                        mensaje.textContent = "";
+                    }, 2000);
+
+                })
+                .catch(function () {
+
+                    mensaje.textContent = "No se pudo copiar la CLABE";
+
+                    setTimeout(function () {
+                        mensaje.textContent = "";
+                    }, 2000);
+
+                });
+
+        }
+
+    </script>
+
+</body>
+
+</html>
