@@ -133,8 +133,8 @@ a.movimiento span:not(:last-child)::after {
 }
 
 #toggleSaldo{
-    width: 24px;
-    height: 24px;
+    width: 33px;
+    height: 33px;
     cursor: pointer;
     transition: transform .2s ease;
 }
