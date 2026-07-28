@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/general.css">
+        <link rel="stylesheet" href="styles/home.css">
+        <link rel="stylesheet" href="styles/interactions.css">
+        <title>foken</title>
+    </head>
+    <body>
+        <header>
+            <a href="login.html" id="user"><img src="assets/user.png"></a>
+            <img src="assets/logo.png" onclick="toggleDarkMode()">
+            <a href="#" id="user"><img src="assets/notification.png"></a>
+        </header>
+        <main>
+            <section id="contactos-container">
+                <h1>Contactos</h1>
+                <p>Selecciona un contacto al que transferir</p>
+                <section id="contactos-list">
+                    <a href="#" class="contacto">
+                        <img src="assets/user.png">
+                        <div>
+                            <h3>Contacto</h3>
+                            <p>(nota)</p>
+                        </div>
+                    </a>
+                    <a href="#" class="contacto">
+                        <img src="assets/user.png">
+                        <div>
+                            <h3>Contacto</h3>
+                            <p>(nota)</p>
+                        </div>
+                    </a>
+                    <a href="#" class="contacto">
+                        <img src="assets/user.png">
+                        <div>
+                            <h3>Contacto</h3>
+                            <p>(nota)</p>
+                        </div>
+                    </a>
+                    <a href="#" class="contacto">
+                        <img src="assets/user.png">
+                        <div>
+                            <h3>Contacto</h3>
+                            <p>(nota)</p>
+                        </div>
+                    </a>
+                    <a href="#" class="contacto">
+                        <img src="assets/user.png">
+                        <div>
+                            <h3>Contacto</h3>
+                            <p>(nota)</p>
+                        </div>
+                    </a>
+                    <a href="#" class="contacto">
+                        <img src="assets/user.png">
+                        <div>
+                            <h3>Contacto</h3>
+                            <p>(nota)</p>
+                        </div>
+                    </a>
+                    <a href="#" class="contacto">
+                        <img src="assets/user.png">
+                        <div>
+                            <h3>Contacto</h3>
+                            <p>(nota)</p>
+                        </div>
+                    </a>
+                    <a href="#" class="contacto">
+                        <img src="assets/user.png">
+                        <div>
+                            <h3>Contacto</h3>
+                            <p>(nota)</p>
+                        </div>
+                    </a>
+                    <a href="#" class="contacto">
+                        <img src="assets/user.png">
+                        <div>
+                            <h3>Contacto</h3>
+                            <p>(nota)</p>
+                        </div>
+                    </a>
+                    <a href="#" class="contacto">
+                        <img src="assets/user.png">
+                        <div>
+                            <h3>Contacto</h3>
+                            <p>(nota)</p>
+                        </div>
+                    </a>
+                </section>
+            </section>
+            <section id="transferencia-container" style="display: none;">
+                <h1>Realizar la transferencia</h1>
+                <a href="#" class="contacto selected">
+                    <img src="assets/user.png">
+                    <div>
+                        <h3>Contacto</h3>
+                        <p>(nota)</p>
+                    </div>
+                </a>
+                <form id="transferencia-form">
+                    <h1>Ingresa cantidad a transferir</h1>
+                    <span>$<input id="cantidad" type="number" min="0" placeholder="0">MXN</span>
+                    <p>$<span id="saldo">231.23</span> disponibles en tu cuenta</p>
+                    <input type="submit" class="button" value="Transferir con cuenta" disabled>
+                </form>
+            </section>
+        </main>
+        <footer>
+            <a href="home.html"><img src="assets/home.png"></a>
+            <a href=""><img src="assets/card.png"></a>
+            <a href=""><img src="assets/user.png"></a>
+        </footer>
+        <script src="scripts/darkmode.js"></script>
+    </body>
+</html>
