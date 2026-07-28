@@ -1,265 +1,97 @@
-/* Header */
-
-header{
-
-    position: fixed;
-
-    top: 0;
-
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    width: 100%;
-    max-width: 450px;
-
-    height: 75px;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    padding: 0 22px;
-
-    background: linear-gradient(
-        var(--primary-background) 0%,
-        transparent 100%
-    );
-
-    box-sizing: border-box;
-
-    z-index: 100;
-
-}
-
-/* Espacio para centrar el logo */
-
-.header-space{
-
-    width: 32px;
-
-    height: 32px;
-
-}
-
-/* Botón para regresar */
-
-.back{
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    width: 32px;
-
-    height: 32px;
-
-    text-decoration: none;
-
-    color: var(--primary-text);
-
-    font-size: 30px;
-
-    font-weight: bold;
-
-}
-
 /* Contenido principal */
-
 main{
-
     width: 100%;
     max-width: 450px;
-
     margin: auto;
-
     margin-top: 90px;
-
 }
-
 /* Título */
-
 main h1{
-
     margin:18px 32px 20px;
-
     color: var(--primary-text);
-
     font-family: monospace;
-
     font-size: 22px;
-
     font-weight: lighter;
-
 }
-
-
 /* Lista de notificaciones */
-
 #notifications{
-
     margin: 0 20px;
-
     display: flex;
-
     flex-direction: column;
-
     gap: 20px;
-
 }
-
-
 /* Tarjeta */
-
 .notification{
-
     display: grid;
-
     grid-template-columns: 60px 1fr;
-
     align-items: center;
-
     gap: 18px;
-
     padding: 18px;
-
     background: var(--secondary-background);
-
     border-radius: 24px;
-
-    border: 1px solid rgba(0,0,0,.08);
-
+    border: 2px solid #0000; 
     box-shadow: 0 4px 12px rgba(0,0,0,.06);
-
     transition: .2s;
-
 }
-
 /* Efecto al pasar el mouse */
-
 .notification:hover{
-
-    transform: translateY(-2px);
-
     box-shadow: 0 6px 15px rgba(0,0,0,.08);
-
 }
-
 article.notification:hover {
     border: 2px solid var(--primary); 
     cursor: pointer;
 }
-
 /* Icono */
-
 .notification-icon{
-
     width: 50px;
-
     height: 50px;
-
     border-radius: 50%;
-
     display: flex;
-
     justify-content: center;
-
     align-items: center;
-
     flex-shrink: 0;
-
 }
-
 /* Imagen del icono */
-
 .notification-icon img{
-
     width: 20px;
-
 }
-
-
 /* Colores */
-
 .success{
-
     background: #0b8d7a;
-
 }
-
 .deposit{
-
     background: #26a69a;
-
 }
-
 .document{
-
     background: #f4a261;
-
 }
-
 .card{
-
     background: #5b8def;
-
 }
-
-
 /* Información */
-
 .notification-info{
-
     display: flex;
-
     flex-direction: column;
-
 }
-
 strong{
-
     color:#0b8d7a;
-
 }
-
 /* Título */
-
 .notification-info h2{
-
     margin-bottom: 8px;
-
     font-family: monospace;
-
     font-size: 22px;
-
     font-weight: lighter;
-
 }
-
 /* Descripción */
-
 .notification-info p{
-
     font-size: 16px;
-
     color: var(--secondary-text);
-
     line-height: 1.5;
-
 }
-
 /* Fecha */
-
 .notification-info span{
-
     margin-top: 7px;
-
     font-size: 12px;
-
     color: var(--secondary-text);
-
 }

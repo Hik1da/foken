@@ -1,243 +1,89 @@
-/* Header */
-
-header{
-
-    position: fixed;
-
-    top: 0;
-
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    width: 100%;
-    max-width: 450px;
-
-    height: 75px;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    padding: 18px 0;
-
-    background: linear-gradient(
-        var(--primary-background) 0%,
-        transparent 100%
-    );
-
-    box-sizing: border-box;
-
-    z-index: 100;
-
-}
-
-.header-space{
-
-    width: 32px;
-
-    height: 32px;
-
-}
-
-/* Botón para regresar */
-
-.back{
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    width: 32px;
-
-    height: 32px;
-
-    text-decoration: none;
-
-    color: var(--primary-text);
-
-    font-size: 30px;
-
-    font-weight: bold;
-
-}
-
 /* Main */
-
 main{
-
     width: 100%;
     max-width: 450px;
-
     margin: auto;
-
     margin-top: 64px;
-
 }
-
 main h1{
-
     margin: 8px 32px 20px;
-
     font-family: monospace;
-
     font-size: 22px;
-
     font-weight: lighter;
-
 }
-
-
 /* Buscador */
-
 .search{
-
     display:flex;
-
     align-items:center;
-
     gap:14px;
-
     margin:0 32px 24px;
-
     padding:16px 20px;
-
     background:var(--secondary-background);
-
     border-radius:22px;
-
 }
-
 .search-icon{
-
     width: 20px;
     height: 20px;
-
     opacity: .7;
-
     flex-shrink: 0;
-
 }
-
 /* Cambia el color del icono en modo oscuro */
-
 body.dark-mode .search-icon{
-
     filter: brightness(0) invert(1);
-
 }
-
 .search input{
-
     flex: 1;
-
     border: none;
-
     outline: none;
-
     background: transparent;
-
     color: var(--primary-text);
-
     font-size: 16px;
-
 }
-
 /* Movimientos */
-
 #movements{
-
     display: flex;
-
     flex-direction: column;
-
     gap: 18px;
-
     margin: 0 32px;
-
 }
-
 .movement{
-
     display: grid;
-
     grid-template-columns: 50px 1fr auto;
-
     gap: 18px;
-
     align-items: center;
-
     padding: 18px;
-
     background: var(--secondary-background);
-
+    border: 2px solid #0000; 
     border-radius: 22px;
-
     transition: .2s;
-
 }
-
 .movement:hover{
-
-    transform: translateY(-2px);
     border: 2px solid var(--primary); 
     cursor: pointer;
-
 }
-
 .movement img{
-
     width: 46px;
-
 }
-
 .movement-info{
-
     display: flex;
-
     flex-direction: column;
-
 }
-
 .movement-info h2{
-
     margin-bottom: 6px;
-
     font-size: 20px;
-
     font-family: monospace;
-
     font-weight: lighter;
-
 }
-
 .movement-info span{
-
     color: var(--secondary-text);
-
     font-size: 14px;
-
 }
-
 .movement strong{
-
     font-size: 18px;
-
 }
-
 .income{
-
     color: #22a06b;
-
 }
-
 .expense{
-
     color: #d14b4b;
-
 }
-

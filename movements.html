@@ -1,222 +1,114 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-
-    <!-- Configuración -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Estilos -->
-    <link rel="stylesheet" href="styles/general.css">
-    <link rel="stylesheet" href="styles/home.css">
-    <link rel="stylesheet" href="styles/movements.css">
-
-    <title>Movimientos | Foken</title>
-
-</head>
-
-<body>
-
-    <!-- Header -->
-
-    <header>
-
-        <a href="home.html" class="back">&#8592;</a>
-
-        <img src="assets/logo.png" class="logo" onclick="toggleDarkMode()">
-        
-        <div class="header-space"></div>
-
-    </header>
-
-    <!-- Contenido -->
-
-    <main>
-
-        <h1>Todos tus movimientos</h1>
-
-        <!-- Buscador -->
-
-        <div class="search">
-
-            <img src="assets/search.png" class="search-icon" alt="Buscar">
-
-            <input
-                type="text"
-                placeholder="Buscar un movimiento">
-
-        </div>
-        
-        <!-- Lista -->
-
-        <section id="movements">
-
-            <article class="movement">
-
-                <img src="assets/exchange.png">
-
-                <div class="movement-info">
-
-                    <h2>Transferencia enviada</h2>
-
-                    <span>14 Jul</span>
-
-                </div>
-
-                <strong class="expense">-$520.00</strong>
-
-            </article>
-
-            <article class="movement">
-
-                <img src="assets/deposit.png">
-
-                <div class="movement-info">
-
-                    <h2>Depósito recibido</h2>
-
-                    <span>13 Jul</span>
-
-                </div>
-
-                <strong class="income">$1,250.00</strong>
-
-            </article>
-
-            <article class="movement">
-
-                <img src="assets/card.png">
-
-                <div class="movement-info">
-
-                    <h2>Pago Netflix</h2>
-
-                    <span>12 Jul</span>
-
-                </div>
-
-                <strong class="expense">-$219.00</strong>
-
-            </article>
-
-            <article class="movement">
-
-                <img src="assets/document.png">
-
-                <div class="movement-info">
-
-                    <h2>Estado de cuenta</h2>
-
-                    <span>10 Jul</span>
-
-                </div>
-
-                <strong>$0.00</strong>
-
-            </article>
-
-            <article class="movement">
-
-                <img src="assets/document.png">
-
-                <div class="movement-info">
-
-                    <h2>Estado de cuenta</h2>
-
-                    <span>10 Jul</span>
-
-                </div>
-
-                <strong>$0.00</strong>
-
-            </article>
-
-            <article class="movement">
-
-                <img src="assets/document.png">
-
-                <div class="movement-info">
-
-                    <h2>Estado de cuenta</h2>
-
-                    <span>10 Jul</span>
-
-                </div>
-
-                <strong>$0.00</strong>
-
-            </article>
-
-            <article class="movement">
-
-                <img src="assets/document.png">
-
-                <div class="movement-info">
-
-                    <h2>Estado de cuenta</h2>
-
-                    <span>10 Jul</span>
-
-                </div>
-
-                <strong>$0.00</strong>
-
-            </article>
-
-            <article class="movement">
-
-                <img src="assets/document.png">
-
-                <div class="movement-info">
-
-                    <h2>Estado de cuenta</h2>
-
-                    <span>10 Jul</span>
-
-                </div>
-
-                <strong>$0.00</strong>
-
-            </article>
-
-            <article class="movement">
-
-                <img src="assets/document.png">
-
-                <div class="movement-info">
-
-                    <h2>Estado de cuenta</h2>
-
-                    <span>10 Jul</span>
-
-                </div>
-
-                <strong>$0.00</strong>
-
-            </article>
-
-            <article class="movement">
-
-                <img src="assets/document.png">
-
-                <div class="movement-info">
-
-                    <h2>Estado de cuenta</h2>
-
-                    <span>10 Jul</span>
-
-                </div>
-
-                <strong>$0.00</strong>
-
-            </article>
-
-        </section>
-
-    </main>
-
-<script src="scripts/darkmode.js"></script>
-
-</body>
+    <head>
+        <!-- Configuración -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Estilos -->
+        <link rel="stylesheet" href="styles/general.css">
+        <link rel="stylesheet" href="styles/home.css">
+        <link rel="stylesheet" href="styles/movements.css">
+        <title>movimientos | foken</title>
+    </head>
+    <body>
+        <!-- Header -->
+        <header>
+            <a href="home.html" class="back">&#8592;</a>
+            <img src="assets/logo.png" class="logo" onclick="toggleDarkMode()">
+            <div class="header-space"></div>
+        </header>
+        <!-- Contenido -->
+        <main>
+            <h1>Todos tus movimientos</h1>
+            <!-- Buscador -->
+            <div class="search">
+                <img src="assets/search.png" class="search-icon" alt="Buscar">
+                <input type="text" placeholder="Buscar un movimiento">
+            </div>
+            <!-- Lista -->
+            <section id="movements">
+                <article class="movement">
+                    <img src="assets/flat-icons/exchange.png">
+                    <div class="movement-info">
+                        <h2>Transferencia enviada</h2>
+                        <span>14 Jul</span>
+                    </div>
+                    <strong class="expense">-$520.00</strong>
+                </article>
+                <article class="movement">
+                    <img src="assets/flat-icons/deposit.png">
+                    <div class="movement-info">
+                        <h2>Depósito recibido</h2>
+                        <span>13 Jul</span>
+                    </div>
+                    <strong class="income">$1,250.00</strong>
+                </article>
+                <article class="movement">
+                    <img src="assets/flat-icons/card.png">
+                    <div class="movement-info">
+                        <h2>Pago Netflix</h2>
+                        <span>12 Jul</span>
+                    </div>
+                    <strong class="expense">-$219.00</strong>
+                </article>
+                <article class="movement">
+                    <img src="assets/flat-icons/document.png">
+                    <div class="movement-info">
+                        <h2>Estado de cuenta</h2>
+                        <span>10 Jul</span>
+                    </div>
+                    <strong>$0.00</strong>
+                </article>
+                <article class="movement">
+                    <img src="assets/flat-icons/document.png">
+                    <div class="movement-info">
+                        <h2>Estado de cuenta</h2>
+                        <span>10 Jul</span>
+                    </div>
+                    <strong>$0.00</strong>
+                </article>
+                <article class="movement">
+                    <img src="assets/flat-icons/document.png">
+                    <div class="movement-info">
+                        <h2>Estado de cuenta</h2>
+                        <span>10 Jul</span>
+                    </div>
+                    <strong>$0.00</strong>
+                </article>
+                <article class="movement">
+                    <img src="assets/flat-icons/document.png">
+                    <div class="movement-info">
+                        <h2>Estado de cuenta</h2>
+                        <span>10 Jul</span>
+                    </div>
+                    <strong>$0.00</strong>
+                </article>
+                <article class="movement">
+                    <img src="assets/flat-icons/document.png">
+                    <div class="movement-info">
+                        <h2>Estado de cuenta</h2>
+                        <span>10 Jul</span>
+                    </div>
+                    <strong>$0.00</strong>
+                </article>
+                <article class="movement">
+                    <img src="assets/flat-icons/document.png">
+                    <div class="movement-info">
+                        <h2>Estado de cuenta</h2>
+                        <span>10 Jul</span>
+                    </div>
+                    <strong>$0.00</strong>
+                </article>
+                <article class="movement">
+                    <img src="assets/flat-icons/document.png">
+                    <div class="movement-info">
+                        <h2>Estado de cuenta</h2>
+                        <span>10 Jul</span>
+                    </div>
+                    <strong>$0.00</strong>
+                </article>
+            </section>
+        </main>
+        <script src="scripts/darkmode.js"></script>
+    </body>
 </html>

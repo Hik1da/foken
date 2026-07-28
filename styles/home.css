@@ -18,6 +18,24 @@ header {
 }
 header img { height: 24px; margin: 0 32px; }
 .dark-mode header img { filter: invert(100%); }
+/* Botón para regresar */
+.back{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: var(--primary-text);
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0 32px;
+}
+/* Espacio para centrar el logo */
+.header-space{
+    width: 24px;
+    height: 24px;
+    margin: 0 32px;
+}
 
 main { margin-top: 64px; margin-bottom: 80px; }
 main, section {
