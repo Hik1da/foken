@@ -2,86 +2,227 @@
 <html lang="es">
 
 <head>
+
+    <!-- Metadatos -->
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Foken</title>
+
+    <!-- Hojas de estilo -->
+
     <link rel="stylesheet" href="styles/general.css">
     <link rel="stylesheet" href="styles/cuentas.css">
-    <title>foken</title>
+
 </head>
 
 <body>
 
+    <!-- Contenedor principal -->
 
     <div class="app-container">
-        <!-- Encabezado superior -->
+
+        <!-- Encabezado -->
+
         <header class="app-header">
-            <h1 class="main-title">Mis tarjetas</h1>
-            <button class="help-btn" aria-label="Ayuda">?</button>
+
+            <h1 class="main-title">
+                Mis tarjetas
+            </h1>
+
+            <div class="help-container">
+
+                <button class="help-btn" aria-label="Ayuda">
+                    ?
+                </button>
+
+                <div class="tooltip">
+                    En este apartado tienes la <strong>gestión de tu tarjeta física</strong>, donde podrás
+                    <strong>bloquear la tarjeta</strong>, <strong>consultar el NIP</strong> y <strong>solicitar una
+                        nueva</strong>.
+                </div>
+
+            </div>
+
         </header>
 
-        <!-- Pestañas de estado -->
-        <div class="tabs-container">
-            <span class="tab-label">Física</span>
-            <span class="status-badge">Activa</span>
-        </div>
+        <!-- Estado de la tarjeta -->
 
-        <!-- Contenedor para la imagen de la tarjeta -->
-        <div class="card-image-wrapper">
-            <img src="tu-imagen-de-la-tarjeta.png" alt="Tarjeta foken" class="card-image">
-        </div>
+        <section class="tabs-container">
 
-        <!-- Indicador de carrusel (Paginación) -->
+            <span class="tab-label">
+                Física:
+            </span>
+
+            <span class="status-badge activa" id="estadoTarjeta">
+                Activa
+            </span>
+
+        </section>
+
+        <!-- Tarjeta -->
+
+        <section class="card-image-wrapper">
+
+            <img src="assets/img-tarjeta_x16.png" alt="Tarjeta Foken" class="card-image">
+
+        </section>
+
+        <!-- Indicadores del carrusel -->
+
         <div class="carousel-dots">
+
             <span class="dot active"></span>
             <span class="dot"></span>
             <span class="dot"></span>
+
         </div>
 
-        <!-- Acciones principales -->
+        <!-- Acciones -->
+
         <main class="actions-grid">
-            <button class="action-item button">
+
+            <!-- Bloquear -->
+
+            <button class="action-item" id="btnBloquear" type="button" onclick="abrirBloqueo()">
+
                 <div class="icon-circle">
-                    <!-- Candado -->
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg>
+
+                    <img src="assets/bloquear.png" alt="Bloquear" class="action-icon">
+
                 </div>
-                <span class="action-label">Bloquear</span>
+
+                <span class="action-label" id="textoBloquear">
+                    Bloquear
+                </span>
+
             </button>
 
-            <button class="action-item button">
+            <!-- Gestionar NIP -->
+
+            <button class="action-item" type="button" onclick="abrirModal()">
+
                 <div class="icon-circle">
-                    <!-- Escudo -->
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                    </svg>
+
+                    <img src="assets/pin.png" alt="Gestionar NIP" class="action-icon">
+
                 </div>
-                <span class="action-label">Gestionar NIP</span>
+
+                <span class="action-label">
+                    Gestionar NIP
+                </span>
+
             </button>
 
-            <button class="action-item button">
+            <!-- Solicitar tarjeta -->
+
+            <button class="action-item" type="button">
+
                 <div class="icon-circle">
-                    <!-- Tarjeta con signo más -->
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                        <line x1="1" y1="10" x2="23" y2="10"></line>
-                        <line x1="12" y1="14" x2="12" y2="18"></line>
-                        <line x1="10" y1="16" x2="14" y2="16"></line>
-                    </svg>
+
+                    <img src="assets/add-tarjeta.png" alt="Solicitar nueva" class="action-icon">
+
                 </div>
-                <span class="action-label">Solicitar nueva</span>
+
+                <span class="action-label">
+                    Solicitar nueva
+                </span>
+
             </button>
+
         </main>
 
-        <!-- Banner informativo inferior -->
+        <!-- Banner de soporte -->
+
         <footer class="info-banner">
+
             <div class="info-icon">i</div>
-            <p class="info-text">Dudas o claraciones llamar a <strong>Soporte tecnico</strong></p>
+
+            <p class="info-text">
+                Dudas o aclaraciones llamar a
+                <a href="soporte.html" class="soporte-link">
+                    Soporte técnico
+                </a>
+            </p>
+
         </footer>
+
     </div>
 
+    <!-- Modal para gestionar NIP -->
 
+    <div id="nipModal" class="modal">
+
+        <div class="modal-content">
+
+            <span class="close" onclick="cerrarModal()">
+                &times;
+            </span>
+
+            <h2>Gestionar NIP</h2>
+
+            <p class="modal-text">
+                Tu NIP actual es
+            </p>
+
+            <div class="nip-container">
+
+                <div id="nipTexto" class="nip-box">••••</div>
+
+                <img id="ojoNip" src="assets/ojo-cerrado.png" alt="Mostrar NIP" class="eye-icon" onclick="toggleNip()">
+
+            </div>
+
+            <button class="modal-btn" onclick="cerrarModal()">
+                Cerrar
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Modal para bloquear la tarjeta -->
+
+    <div id="bloqueoModal" class="modal">
+
+        <div class="modal-content">
+
+            <span class="close" onclick="cerrarBloqueo()">
+                &times;
+            </span>
+
+            <h2>
+                Bloquear tarjeta
+            </h2>
+
+            <p class="modal-text">
+                ¿Por qué quieres bloquear la tarjeta?
+            </p>
+
+            <div class="bloqueo-opciones">
+
+                <button class="modal-btn bloqueo-btn" type="button" onclick="bloquearTarjeta()">
+                    Robo
+                </button>
+
+                <button class="modal-btn bloqueo-btn" type="button" onclick="bloquearTarjeta()">
+                    Extravío
+                </button>
+
+                <button class="modal-btn bloqueo-btn" type="button" onclick="bloquearTarjeta()">
+                    Congelar saldo hasta nuevo aviso
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+
+    <script src="scripts/cuentas-flotante.js"></script>
 
 </body>
 
