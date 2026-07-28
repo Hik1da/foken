@@ -149,6 +149,10 @@ main h1{
 
 }
 
+article.notification:hover {
+    border: 2px solid var(--primary); 
+    cursor: pointer;
+}
 
 /* Icono */
 
