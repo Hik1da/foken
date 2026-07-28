@@ -16,7 +16,7 @@
         <main>
             <section id="saldo">
                 <h1>Saldo disponible</h1>
-                <h2>$231.23</h2>
+                <h2 id="saldoMonto">$0.00</h2>
             </section>
             <section>
                 <nav>
@@ -28,50 +28,13 @@
             </section>
             <h1>Movimientos</h1>
             <section id="movimientos">
-                <a href="#" class="movimiento">
-                    <img src="assets/exchange.png">
-                    <div>
-                        <h2>YouTube</h2>
-                        <span>7 jul</span>
-                        <span style="color: black; background-color: orange; padding: 3px 9px; border-radius: 12px;">En proceso</span>
-                    </div>
-                </a>
-                <a href="#" class="movimiento">
-                    <img src="assets/exchange.png">
-                    <div>
-                        <h2>YouTube</h2>
-                        <span>7 jul</span>
-                        <span style="color: black; background-color: orange; padding: 3px 9px; border-radius: 12px;">En proceso</span>
-                    </div>
-                </a>
-                <a href="#" class="movimiento">
-                    <img src="assets/exchange.png">
-                    <div>
-                        <h2>YouTube</h2>
-                        <span>7 jul</span>
-                        <span style="color: black; background-color: orange; padding: 3px 9px; border-radius: 12px;">En proceso</span>
-                    </div>
-                </a>
-                <a href="#" class="movimiento">
-                    <img src="assets/exchange.png">
-                    <div>
-                        <h2>YouTube</h2>
-                        <span>7 jul</span>
-                        <span style="color: black; background-color: orange; padding: 3px 9px; border-radius: 12px;">En proceso</span>
-                    </div>
-                </a>
-                <a href="#" class="movimiento">
-                    <img src="assets/exchange.png">
-                    <div>
-                        <h2>YouTube</h2>
-                        <span>7 jul</span>
-                        <span style="color: black; background-color: orange; padding: 3px 9px; border-radius: 12px;">En proceso</span>
-                    </div>
-                </a>
+                <div id="movimientosList"></div>
             </section>
-            <a href="#" class="button">Ver todos tus movimientos</a>
+            <a href="#" class="button" id="verTodosBtn">Ver todos tus movimientos</a>
         </main>
         <footer></footer>
         <script src="scripts/darkmode.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+        <script type="module" src="scripts/home.js"></script>
     </body>
 </html>

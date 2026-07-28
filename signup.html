@@ -16,11 +16,11 @@
         <main>
             <section>
                 <h1>Registrar</h1>
-                <form id="myForm" action="/submit-data" method="POST">
-                    <input type="email" placeholder="Correo electrónico">
-                    <input type="password" placeholder="Contraseña">
-                    <input type="password" placeholder="Confirmar contraseña">
-                    <input id="openBox" type="submit" value="Confirmar" class="button" onclick="return showConfirm(event)">
+                <form id="myForm">
+                    <input type="email" id="email" placeholder="Correo electrónico" required>
+                    <input type="password" id="password" placeholder="Contraseña" required>
+                    <input type="password" id="confirmPassword" placeholder="Confirmar contraseña" required>
+                    <input id="openBox" type="submit" value="Confirmar" class="button">
                 </form>
                 <a>¿Olvidaste tu contraseña?</a>
                 <hr>
@@ -42,33 +42,7 @@
             </dialog>
         </main>
         <script src="scripts/darkmode.js"></script>
-        <script>
-            let shouldSubmit = false;
-            const confirmBox = document.getElementById('confirmBox');
-            const cancelBtn = document.getElementById('cancelBtn');
-            const confirmBtn = document.getElementById('confirmBtn');
-
-            function showConfirm(e) {
-                e.preventDefault(); // Stop form submission
-                confirmBox.showModal();
-                return false; // Prevents form from submitting
-            }
-
-            // Action if they cancel
-            cancelBtn.addEventListener('click', () => {
-                confirmBox.close();
-                shouldSubmit = false;
-            });
-
-            // Action if they confirm
-            confirmBtn.addEventListener('click', () => {
-                confirmBox.close();
-                shouldSubmit = true;
-                window.location.href = 'home.html';
-                // Submit the form
-                //document.getElementById('myForm').submit();
-                // Put your form submission or execution code here
-            });
-        </script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+        <script type="module" src="scripts/signup.js"></script>
     </body>
 </html>
