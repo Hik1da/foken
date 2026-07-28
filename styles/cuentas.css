@@ -284,6 +284,88 @@
     animation: aparecer 0.25s ease;
 }
 
+/* Solicitud de nueva tarjeta */
+
+.solicitud-card {
+    max-width: 420px;
+}
+
+.solicitud-card h2 {
+    margin: 0 0 10px;
+    color: #078570;
+    font-size: 24px;
+}
+
+.solicitud-card .modal-text {
+    margin-bottom: 22px;
+    color: #666;
+}
+
+.solicitud-opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.solicitud-opcion {
+    width: 100%;
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 18px;
+    border: 2px solid transparent;
+    border-radius: 18px;
+    background-color: #f7f7f7;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+    font-family: inherit;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.solicitud-opcion:hover {
+    background-color: #edf8f6;
+    transform: translateY(-2px);
+}
+
+.radio-opcion {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    border: 3px solid #078570;
+    border-radius: 50%;
+    background-color: transparent;
+}
+
+.texto-opcion {
+    color: #111;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.solicitud-opcion.seleccionada {
+    border-color: #078570;
+    background-color: #e8f5f2;
+}
+
+.solicitud-opcion.seleccionada .radio-opcion {
+    background-color: #078570;
+    box-shadow: inset 0 0 0 5px #fff;
+}
+
+.solicitud-continuar {
+    margin-top: 22px;
+}
+
+.solicitud-continuar:disabled {
+    background-color: #a7c9c3;
+    cursor: not-allowed;
+}
+
 @keyframes aparecer {
     from {
         opacity: 0;
@@ -298,16 +380,26 @@
 
 .close {
     position: absolute;
-    top: 12px;
-    right: 18px;
+    top: 15px;
+    right: 15px;
+
+    border: none;
+    background: transparent;
+    outline: none;
+
     color: #666;
-    font-size: 30px;
+    font-size: 34px;
     font-weight: 700;
+    line-height: 1;
+
     cursor: pointer;
+
+    transition: color .2s ease, transform .2s ease;
 }
 
 .close:hover {
-    color: #000;
+    color: #078570;
+    transform: scale(1.1);
 }
 
 .modal-text {
@@ -366,24 +458,58 @@
     transform: scale(1.1);
 }
 
-/* Opciones de bloqueo */
+/* Confirmación de bloqueo */
 
-.bloqueo-opciones {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 20px;
+.bloqueo-card {
+    max-width: 420px;
 }
 
-.bloqueo-btn {
-    padding: 14px 18px;
-    border-radius: 14px;
-    background-color: #d32f2f;
-    font-size: 15px;
+.bloqueo-card h2 {
+    margin-bottom: 18px;
+    color: #111;
+    font-size: 30px;
+    font-weight: 700;
 }
 
-.bloqueo-btn:hover {
-    background-color: #b71c1c;
+.bloqueo-card .modal-text {
+    margin-bottom: 35px;
+    color: #555;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.bloqueo-card .modal-btn {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 16px;
+    background: #111;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color .25s ease;
+}
+
+.bloqueo-card .modal-btn:hover {
+    background: #000;
+}
+
+.cancelar-btn {
+    width: 100%;
+    margin-top: 18px;
+    padding: 14px;
+    border: none;
+    background: transparent;
+    color: #111;
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color .25s ease;
+}
+
+.cancelar-btn:hover {
+    color: #078570;
 }
 
 /* Diseño responsivo */

@@ -33,14 +33,18 @@
 
             <div class="help-container">
 
-                <button class="help-btn" aria-label="Ayuda">
+                <button class="help-btn" type="button" aria-label="Ayuda">
                     ?
                 </button>
 
                 <div class="tooltip">
-                    En este apartado tienes la <strong>gestión de tu tarjeta física</strong>, donde podrás
-                    <strong>bloquear la tarjeta</strong>, <strong>consultar el NIP</strong> y <strong>solicitar una
-                        nueva</strong>.
+
+                    En este apartado tienes la
+                    <strong>gestión de tu tarjeta física</strong>, donde podrás
+                    <strong>bloquear la tarjeta</strong>,
+                    <strong>consultar el NIP</strong> y
+                    <strong>solicitar una nueva</strong>.
+
                 </div>
 
             </div>
@@ -61,17 +65,17 @@
 
         </section>
 
-        <!-- Tarjeta -->
+        <!-- Imagen de la tarjeta -->
 
         <section class="card-image-wrapper">
 
-            <img src="assets/img-tarjeta_x16.png" alt="Tarjeta Foken" class="card-image">
+            <img src="assets/img-tarjeta_x16.png" alt="Tarjeta física Foken" class="card-image">
 
         </section>
 
         <!-- Indicadores del carrusel -->
 
-        <div class="carousel-dots">
+        <div class="carousel-dots" aria-label="Indicadores de tarjetas">
 
             <span class="dot active"></span>
             <span class="dot"></span>
@@ -79,17 +83,17 @@
 
         </div>
 
-        <!-- Acciones -->
+        <!-- Acciones de la tarjeta -->
 
         <main class="actions-grid">
 
-            <!-- Bloquear -->
+            <!-- Bloquear tarjeta -->
 
             <button class="action-item" id="btnBloquear" type="button" onclick="abrirBloqueo()">
 
                 <div class="icon-circle">
 
-                    <img src="assets/bloquear.png" alt="Bloquear" class="action-icon">
+                    <img src="assets/bloquear.png" alt="" class="action-icon">
 
                 </div>
 
@@ -105,7 +109,7 @@
 
                 <div class="icon-circle">
 
-                    <img src="assets/pin.png" alt="Gestionar NIP" class="action-icon">
+                    <img src="assets/pin.png" alt="" class="action-icon">
 
                 </div>
 
@@ -115,13 +119,13 @@
 
             </button>
 
-            <!-- Solicitar tarjeta -->
+            <!-- Solicitar nueva tarjeta -->
 
-            <button class="action-item" type="button">
+            <button class="action-item" type="button" onclick="abrirSolicitud()">
 
                 <div class="icon-circle">
 
-                    <img src="assets/add-tarjeta.png" alt="Solicitar nueva" class="action-icon">
+                    <img src="assets/add-tarjeta.png" alt="" class="action-icon">
 
                 </div>
 
@@ -137,13 +141,18 @@
 
         <footer class="info-banner">
 
-            <div class="info-icon">i</div>
+            <div class="info-icon">
+                i
+            </div>
 
             <p class="info-text">
+
                 Dudas o aclaraciones llamar a
+
                 <a href="soporte.html" class="soporte-link">
                     Soporte técnico
                 </a>
+
             </p>
 
         </footer>
@@ -156,11 +165,13 @@
 
         <div class="modal-content">
 
-            <span class="close" onclick="cerrarModal()">
+            <button class="close" type="button" aria-label="Cerrar" onclick="cerrarModal()">
                 &times;
-            </span>
+            </button>
 
-            <h2>Gestionar NIP</h2>
+            <h2>
+                Gestionar NIP
+            </h2>
 
             <p class="modal-text">
                 Tu NIP actual es
@@ -168,13 +179,15 @@
 
             <div class="nip-container">
 
-                <div id="nipTexto" class="nip-box">••••</div>
+                <div id="nipTexto" class="nip-box">
+                    ••••
+                </div>
 
                 <img id="ojoNip" src="assets/ojo-cerrado.png" alt="Mostrar NIP" class="eye-icon" onclick="toggleNip()">
 
             </div>
 
-            <button class="modal-btn" onclick="cerrarModal()">
+            <button class="modal-btn" type="button" onclick="cerrarModal()">
                 Cerrar
             </button>
 
@@ -188,39 +201,106 @@
 
         <div class="modal-content">
 
-            <span class="close" onclick="cerrarBloqueo()">
+            <button class="close" type="button" aria-label="Cerrar" onclick="cerrarBloqueo()">
                 &times;
-            </span>
+            </button>
 
             <h2>
-                Bloquear tarjeta
+                Confirmación de seguridad
             </h2>
 
             <p class="modal-text">
-                ¿Por qué quieres bloquear la tarjeta?
+
+                Bloquear tu tarjeta impedirá todas las compras.<br><br>
+
+                Pero no te preocupes, las transferencias
+                entrantes y salientes seguirán funcionando
+                sin problema.
+
             </p>
 
-            <div class="bloqueo-opciones">
+            <button class="modal-btn" type="button" onclick="bloquearTarjeta()">
 
-                <button class="modal-btn bloqueo-btn" type="button" onclick="bloquearTarjeta()">
-                    Robo
-                </button>
+                Bloquear tarjeta
 
-                <button class="modal-btn bloqueo-btn" type="button" onclick="bloquearTarjeta()">
-                    Extravío
-                </button>
+            </button>
 
-                <button class="modal-btn bloqueo-btn" type="button" onclick="bloquearTarjeta()">
-                    Congelar saldo hasta nuevo aviso
-                </button>
+            <button class="cancelar-btn" type="button" onclick="cerrarBloqueo()">
 
-            </div>
+                Cancelar
+
+            </button>
 
         </div>
 
     </div>
 
-    <!-- Scripts -->
+    <!-- Modal para solicitar una nueva tarjeta -->
+
+    <div id="solicitudModal" class="modal">
+
+        <div class="modal-content solicitud-card">
+
+            <button class="close" type="button" aria-label="Cerrar" onclick="cerrarSolicitud()">
+                &times;
+            </button>
+
+            <h2>
+                ¿Qué le pasó a tu tarjeta?
+            </h2>
+
+            <p class="modal-text">
+                Selecciona una de las siguientes opciones para continuar.
+            </p>
+
+            <div class="solicitud-opciones">
+
+                <button class="solicitud-opcion" type="button" onclick="seleccionarMotivo(this, 'Perdí mi tarjeta')">
+
+                    <span class="radio-opcion"></span>
+
+                    <span class="texto-opcion">
+                        Perdí mi tarjeta
+                    </span>
+
+                </button>
+
+                <button class="solicitud-opcion" type="button"
+                    onclick="seleccionarMotivo(this, 'Mi tarjeta fue robada')">
+
+                    <span class="radio-opcion"></span>
+
+                    <span class="texto-opcion">
+                        Mi tarjeta fue robada
+                    </span>
+
+                </button>
+
+                <button class="solicitud-opcion" type="button"
+                    onclick="seleccionarMotivo(this, 'Mi tarjeta se rompió')">
+
+                    <span class="radio-opcion"></span>
+
+                    <span class="texto-opcion">
+                        Mi tarjeta se rompió
+                    </span>
+
+                </button>
+
+            </div>
+
+            <button id="btnContinuarSolicitud" class="modal-btn solicitud-continuar" type="button"
+                onclick="confirmarSolicitud()" disabled>
+
+                Continuar
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- JavaScript -->
 
     <script src="scripts/cuentas-flotante.js"></script>
 

@@ -1,124 +1,175 @@
-// MODAL GESTIONAR NIP
+/* Elementos del NIP */
 
-const modal = document.getElementById("nipModal");
+const nipModal = document.getElementById("nipModal");
 const nipTexto = document.getElementById("nipTexto");
-const ojo = document.getElementById("ojoNip");
+const ojoNip = document.getElementById("ojoNip");
 
-const nipReal = "1234";
+/* Elementos del bloqueo */
 
-let visible = false;
+const bloqueoModal = document.getElementById("bloqueoModal");
+const estadoTarjeta = document.getElementById("estadoTarjeta");
+const textoBloquear = document.getElementById("textoBloquear");
+
+/* Elementos de solicitud */
+
+const solicitudModal = document.getElementById("solicitudModal");
+const btnContinuarSolicitud = document.getElementById("btnContinuarSolicitud");
+const opcionesSolicitud = document.querySelectorAll(".solicitud-opcion");
+
+/* Estados */
+
+let nipVisible = false;
+let tarjetaBloqueada = false;
+let motivoSolicitud = "";
+
+/* Funciones generales para modales */
+
+function mostrarModal(modal) {
+    modal.style.display = "flex";
+}
+
+function ocultarModal(modal) {
+    modal.style.display = "none";
+}
+
+/* Gestión del NIP */
+
+function reiniciarNip() {
+    nipVisible = false;
+    nipTexto.textContent = "••••";
+    ojoNip.src = "assets/ojo-cerrado.png";
+    ojoNip.alt = "Mostrar NIP";
+}
 
 function abrirModal() {
-
-    modal.style.display = "flex";
-    // Inicia de forma oculta
-    visible = false;
-    nipTexto.textContent = "••••";
-    ojo.src = "assets/ojo-cerrado.png";
-
+    reiniciarNip();
+    mostrarModal(nipModal);
 }
 
 function cerrarModal() {
-
-    modal.style.display = "none";
-
+    ocultarModal(nipModal);
+    reiniciarNip();
 }
 
 function toggleNip() {
+    nipVisible = !nipVisible;
 
-    if (visible) {
+    nipTexto.textContent = nipVisible ? "1234" : "••••";
+    ojoNip.src = nipVisible
+        ? "assets/ojo-abierto.png"
+        : "assets/ojo-cerrado.png";
 
-        visible = false;
-        nipTexto.textContent = "••••";
-        ojo.src = "assets/ojo-cerrado.png";
-
-    } else {
-
-        visible = true;
-        nipTexto.textContent = nipReal;
-        ojo.src = "assets/ojo-abierto.png";
-
-    }
-
+    ojoNip.alt = nipVisible ? "Ocultar NIP" : "Mostrar NIP";
 }
 
-// MODAL BLOQUEAR TARJETA
-const bloqueoModal = document.getElementById("bloqueoModal");
+/* Gestión del bloqueo */
 
 function abrirBloqueo() {
+    if (tarjetaBloqueada) {
+        desbloquearTarjeta();
+        return;
+    }
 
-    bloqueoModal.style.display = "flex";
-
+    mostrarModal(bloqueoModal);
 }
 
 function cerrarBloqueo() {
-
-    bloqueoModal.style.display = "none";
-
+    ocultarModal(bloqueoModal);
 }
 
-// OPCIONES DE BLOQUEO
+function actualizarEstadoTarjeta(bloqueada) {
+    tarjetaBloqueada = bloqueada;
 
-const estadoTarjeta = document.getElementById("estadoTarjeta");
-const textoBloquear = document.getElementById("textoBloquear");
-const btnBloquear = document.getElementById("btnBloquear");
+    estadoTarjeta.textContent = bloqueada ? "Bloqueada" : "Activa";
+    textoBloquear.textContent = bloqueada ? "Desbloquear" : "Bloquear";
 
-document.querySelectorAll(".bloqueo-btn").forEach(function (boton) {
+    estadoTarjeta.classList.toggle("bloqueada", bloqueada);
+    estadoTarjeta.classList.toggle("activa", !bloqueada);
+}
 
-    boton.addEventListener("click", function () {
+function bloquearTarjeta() {
+    cerrarBloqueo();
+    actualizarEstadoTarjeta(true);
 
-        cerrarBloqueo();
+    alert("Tu tarjeta fue bloqueada hasta nuevo aviso.");
+}
 
-        alert("Tu tarjeta fue bloqueada hasta nuevo aviso.");
+function desbloquearTarjeta() {
+    actualizarEstadoTarjeta(false);
 
-        estadoTarjeta.textContent = "Bloqueada";
-        estadoTarjeta.classList.remove("activa");
-        estadoTarjeta.classList.add("bloqueada");
+    alert("Tu tarjeta fue desbloqueada.");
+}
 
-        textoBloquear.textContent = "Desbloquear";
+/* Solicitud de nueva tarjeta */
 
-        btnBloquear.onclick = function () {
+function abrirSolicitud() {
+    mostrarModal(solicitudModal);
+}
 
-            alert("Tu tarjeta fue desbloqueada.");
+function reiniciarSolicitud() {
+    motivoSolicitud = "";
+    btnContinuarSolicitud.disabled = true;
 
-            estadoTarjeta.textContent = "Activa";
-            estadoTarjeta.classList.remove("bloqueada");
-            estadoTarjeta.classList.add("activa");
+    opcionesSolicitud.forEach(function (opcion) {
+        opcion.classList.remove("seleccionada");
+    });
+}
 
-            textoBloquear.textContent = "Bloquear";
+function cerrarSolicitud() {
+    ocultarModal(solicitudModal);
+    reiniciarSolicitud();
+}
 
-            btnBloquear.onclick = abrirBloqueo;
-        };
-
+function seleccionarMotivo(boton, motivo) {
+    opcionesSolicitud.forEach(function (opcion) {
+        opcion.classList.remove("seleccionada");
     });
 
+    boton.classList.add("seleccionada");
+    motivoSolicitud = motivo;
+    btnContinuarSolicitud.disabled = false;
+}
+
+function confirmarSolicitud() {
+    if (!motivoSolicitud) {
+        return;
+    }
+
+    const motivoSeleccionado = motivoSolicitud;
+
+    cerrarSolicitud();
+
+    alert(
+        "Tu solicitud para una nueva tarjeta fue registrada.\n\n" +
+        "Motivo: " +
+        motivoSeleccionado
+    );
+}
+
+/* Cerrar modales al hacer clic fuera */
+
+window.addEventListener("click", function (evento) {
+    if (evento.target === nipModal) {
+        cerrarModal();
+    }
+
+    if (evento.target === bloqueoModal) {
+        cerrarBloqueo();
+    }
+
+    if (evento.target === solicitudModal) {
+        cerrarSolicitud();
+    }
 });
 
-// CERRAR AL HACER CLIC FUERA
-window.addEventListener("click", function (event) {
+/* Cerrar modales con la tecla Escape */
 
-    if (event.target === modal) {
-
-        cerrarModal();
-
+document.addEventListener("keydown", function (evento) {
+    if (evento.key !== "Escape") {
+        return;
     }
 
-    if (event.target === bloqueoModal) {
-
-        cerrarBloqueo();
-
-    }
-
-});
-
-// CERRAR CON ESC
-document.addEventListener("keydown", function (event) {
-
-    if (event.key === "Escape") {
-
-        cerrarModal();
-        cerrarBloqueo();
-
-    }
-
+    cerrarModal();
+    cerrarBloqueo();
+    cerrarSolicitud();
 });
