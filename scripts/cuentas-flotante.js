@@ -1,175 +1,318 @@
-/* Elementos del NIP */
+import { getSupabase, getTarjetasByUsuario, getUsuarioById, actualizarUltimoAcceso } from './supabase.js'
 
 const nipModal = document.getElementById("nipModal");
 const nipTexto = document.getElementById("nipTexto");
 const ojoNip = document.getElementById("ojoNip");
-
-/* Elementos del bloqueo */
-
 const bloqueoModal = document.getElementById("bloqueoModal");
 const estadoTarjeta = document.getElementById("estadoTarjeta");
 const textoBloquear = document.getElementById("textoBloquear");
-
-/* Elementos de solicitud */
-
 const solicitudModal = document.getElementById("solicitudModal");
 const btnContinuarSolicitud = document.getElementById("btnContinuarSolicitud");
 const opcionesSolicitud = document.querySelectorAll(".solicitud-opcion");
-
-/* Estados */
+const carouselTrack = document.getElementById('carouselTrack');
+const carouselDots = document.getElementById('carouselDots');
 
 let nipVisible = false;
-let tarjetaBloqueada = false;
+let tarjetas = [];
+let tarjetaActual = 0;
+let supabase = null;
 let motivoSolicitud = "";
+let nipActual = "1234";
 
-/* Funciones generales para modales */
+function renderizarCarrusel() {
+    if (!carouselTrack || tarjetas.length === 0) {
+        carouselTrack.innerHTML = `
+            <div class="card-slide">
+                <div class="card-image-wrapper">
+                    <img src="assets/img-tarjeta_x16.png" alt="Tarjeta foken" class="card-image" style="opacity:0.3;">
+                </div>
+                <div class="card-overlay" style="display:flex; align-items:center; justify-content:center; text-align:center;">
+                    <p>No tienes tarjetas registradas</p>
+                </div>
+            </div>
+        `;
+        carouselDots.innerHTML = '';
+        return;
+    }
 
-function mostrarModal(modal) {
-    modal.style.display = "flex";
+    carouselTrack.innerHTML = tarjetas.map((tarjeta) => {
+        const tipoDisplay = tarjeta.tipo_tarjeta === 'debito' ? 'Débito' : 'Crédito';
+        const estadoClass = tarjeta.estado === 'activa' ? 'activa' : 'bloqueada';
+        const estadoDisplay = tarjeta.estado === 'activa' ? 'Activa' : 'Bloqueada';
+        const numeroMostrar = tarjeta.numero_tarjeta ? '**** ' + tarjeta.numero_tarjeta.slice(-4) : '**** **** **** 0000';
+        const expiracion = tarjeta.fecha_expiracion ? tarjeta.fecha_expiracion.slice(0, 7).replace('-', '/') : '12/29';
+        const limiteCredito = tarjeta.tipo_tarjeta === 'credito' ? '$100,000' : '';
+
+        return `
+            <div class="card-slide">
+                <div class="card-image-wrapper">
+                    <img src="assets/img-tarjeta_x16.png" alt="Tarjeta foken" class="card-image">
+                </div>
+                <div class="card-overlay">
+                    <div class="card-status ${estadoClass}">${estadoDisplay}</div>
+                    <div>
+                        <div class="card-tipo">${tipoDisplay}</div>
+                    </div>
+                    <div>
+                        <div class="card-marca">${tarjeta.marca || 'Visa'}</div>
+                        <div class="card-number">${numeroMostrar}</div>
+                        ${limiteCredito ? `<div style="font-size:11px;opacity:0.8;margin-top:4px;">${limiteCredito}</div>` : ''}
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-titular">
+                            <span>Tarjeta</span>
+                            <strong>${tarjeta.titular || 'Usuario'}</strong>
+                        </div>
+                        <div class="card-expira">
+                            <span>Expira</span>
+                            <strong>${expiracion}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    renderizarDots();
+    actualizarInfoTarjeta(0);
 }
 
-function ocultarModal(modal) {
-    modal.style.display = "none";
+function renderizarDots() {
+    if (!carouselDots) return;
+    carouselDots.innerHTML = tarjetas.map((_, index) => `
+        <span class="dot ${index === tarjetaActual ? 'active' : ''}" onclick="irATarjeta(${index})"></span>
+    `).join('');
 }
 
-/* Gestión del NIP */
+function actualizarInfoTarjeta(index) {
+    if (!tarjetas || tarjetas.length === 0 || index >= tarjetas.length) return;
+    
+    const tarjeta = tarjetas[index];
+    tarjetaActual = index;
+    
+    const estadoClass = tarjeta.estado === 'activa' ? 'activa' : 'bloqueada';
+    const estadoDisplay = tarjeta.estado === 'activa' ? 'Activa' : 'Bloqueada';
+    
+    nipActual = tarjeta.nip || "1234";
+    
+    if (estadoTarjeta) {
+        estadoTarjeta.textContent = estadoDisplay;
+        estadoTarjeta.className = `status-badge ${estadoClass}`;
+    }
+    
+    if (textoBloquear) {
+        textoBloquear.textContent = tarjeta.estado === 'activa' ? 'Bloquear' : 'Desbloquear';
+    }
+    
+    document.querySelectorAll('.dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+    });
+    
+    moverCarruselA(index);
+}
+
+function moverCarruselA(index) {
+    if (!carouselTrack || tarjetas.length === 0) return;
+    const width = carouselTrack.parentElement.offsetWidth;
+    carouselTrack.style.transform = `translateX(-${index * width}px)`;
+}
+
+window.moverCarrusel = function(direccion) {
+    if (!tarjetas || tarjetas.length === 0) return;
+    let nuevoIndex = tarjetaActual + direccion;
+    if (nuevoIndex < 0) nuevoIndex = tarjetas.length - 1;
+    if (nuevoIndex >= tarjetas.length) nuevoIndex = 0;
+    actualizarInfoTarjeta(nuevoIndex);
+}
+
+window.irATarjeta = function(index) {
+    if (index < 0 || index >= tarjetas.length) return;
+    actualizarInfoTarjeta(index);
+}
+
+async function cargarDatosUsuario() {
+    supabase = getSupabase();
+    if (!supabase) {
+        setTimeout(cargarDatosUsuario, 2000);
+        return;
+    }
+    
+    try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error || !user) {
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        await actualizarUltimoAcceso(user.id);
+        
+        const tarjetasData = await getTarjetasByUsuario(user.id);
+        if (tarjetasData && tarjetasData.length > 0) {
+            tarjetas = tarjetasData;
+            renderizarCarrusel();
+            actualizarInfoTarjeta(0);
+        } else {
+            renderizarCarrusel();
+        }
+        
+        const logoutFooter = document.getElementById('logoutFooter');
+        if (logoutFooter) {
+            logoutFooter.addEventListener('click', async (e) => {
+                e.preventDefault();
+                if (confirm('¿Deseas cerrar sesión?')) {
+                    const { logout } = await import('./supabase.js');
+                    await logout();
+                    window.location.href = 'login.html';
+                }
+            });
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
 
 function reiniciarNip() {
     nipVisible = false;
     nipTexto.textContent = "••••";
-    ojoNip.src = "assets/ojo-cerrado.png";
+    ojoNip.src = "assets/flat-icons/ojo-cerrado.png";
     ojoNip.alt = "Mostrar NIP";
 }
 
-function abrirModal() {
+window.abrirModal = function() {
     reiniciarNip();
-    mostrarModal(nipModal);
+    nipModal.style.display = "flex";
 }
 
-function cerrarModal() {
-    ocultarModal(nipModal);
+window.cerrarModal = function() {
+    nipModal.style.display = "none";
     reiniciarNip();
 }
 
-function toggleNip() {
+window.toggleNip = function() {
     nipVisible = !nipVisible;
-
-    nipTexto.textContent = nipVisible ? "1234" : "••••";
-    ojoNip.src = nipVisible
-        ? "assets/ojo-abierto.png"
-        : "assets/ojo-cerrado.png";
-
+    nipTexto.textContent = nipVisible ? nipActual : "••••";
+    ojoNip.src = nipVisible ? "assets/flat-icons/ojo-abierto.png" : "assets/flat-icons/ojo-cerrado.png";
     ojoNip.alt = nipVisible ? "Ocultar NIP" : "Mostrar NIP";
 }
 
-/* Gestión del bloqueo */
-
-function abrirBloqueo() {
-    if (tarjetaBloqueada) {
-        desbloquearTarjeta();
+window.abrirBloqueo = function() {
+    if (!tarjetas || tarjetas.length === 0 || tarjetaActual >= tarjetas.length) {
+        alert('No se encontró tarjeta');
         return;
     }
-
-    mostrarModal(bloqueoModal);
+    const tarjeta = tarjetas[tarjetaActual];
+    if (tarjeta.estado === 'bloqueada') {
+        if (confirm('¿Deseas desbloquear tu tarjeta?')) {
+            desbloquearTarjeta();
+        }
+        return;
+    }
+    bloqueoModal.style.display = "flex";
 }
 
-function cerrarBloqueo() {
-    ocultarModal(bloqueoModal);
+window.cerrarBloqueo = function() {
+    bloqueoModal.style.display = "none";
 }
 
-function actualizarEstadoTarjeta(bloqueada) {
-    tarjetaBloqueada = bloqueada;
-
-    estadoTarjeta.textContent = bloqueada ? "Bloqueada" : "Activa";
-    textoBloquear.textContent = bloqueada ? "Desbloquear" : "Bloquear";
-
-    estadoTarjeta.classList.toggle("bloqueada", bloqueada);
-    estadoTarjeta.classList.toggle("activa", !bloqueada);
+window.bloquearTarjeta = async function() {
+    if (!tarjetas || tarjetas.length === 0) return;
+    const tarjeta = tarjetas[tarjetaActual];
+    if (!supabase) {
+        alert('Error de conexión');
+        return;
+    }
+    try {
+        const { error } = await supabase
+            .from('tarjetas')
+            .update({ estado: 'bloqueada' })
+            .eq('id_tarjeta', tarjeta.id_tarjeta);
+        if (error) {
+            alert('Error al bloquear la tarjeta');
+            return;
+        }
+        tarjeta.estado = 'bloqueada';
+        actualizarInfoTarjeta(tarjetaActual);
+        cerrarBloqueo();
+        alert('Tu tarjeta fue bloqueada.');
+    } catch (error) {
+        alert('Error al procesar la solicitud');
+    }
 }
 
-function bloquearTarjeta() {
-    cerrarBloqueo();
-    actualizarEstadoTarjeta(true);
-
-    alert("Tu tarjeta fue bloqueada hasta nuevo aviso.");
+async function desbloquearTarjeta() {
+    if (!tarjetas || tarjetas.length === 0) return;
+    const tarjeta = tarjetas[tarjetaActual];
+    if (!supabase) {
+        alert('Error de conexión');
+        return;
+    }
+    try {
+        const { error } = await supabase
+            .from('tarjetas')
+            .update({ estado: 'activa' })
+            .eq('id_tarjeta', tarjeta.id_tarjeta);
+        if (error) {
+            alert('Error al desbloquear la tarjeta');
+            return;
+        }
+        tarjeta.estado = 'activa';
+        actualizarInfoTarjeta(tarjetaActual);
+        alert('Tu tarjeta fue desbloqueada.');
+    } catch (error) {
+        alert('Error al procesar la solicitud');
+    }
 }
 
-function desbloquearTarjeta() {
-    actualizarEstadoTarjeta(false);
-
-    alert("Tu tarjeta fue desbloqueada.");
-}
-
-/* Solicitud de nueva tarjeta */
-
-function abrirSolicitud() {
-    mostrarModal(solicitudModal);
+window.abrirSolicitud = function() {
+    reiniciarSolicitud();
+    solicitudModal.style.display = "flex";
 }
 
 function reiniciarSolicitud() {
     motivoSolicitud = "";
     btnContinuarSolicitud.disabled = true;
-
-    opcionesSolicitud.forEach(function (opcion) {
-        opcion.classList.remove("seleccionada");
-    });
+    opcionesSolicitud.forEach(el => el.classList.remove("seleccionada"));
 }
 
-function cerrarSolicitud() {
-    ocultarModal(solicitudModal);
+window.cerrarSolicitud = function() {
+    solicitudModal.style.display = "none";
     reiniciarSolicitud();
 }
 
-function seleccionarMotivo(boton, motivo) {
-    opcionesSolicitud.forEach(function (opcion) {
-        opcion.classList.remove("seleccionada");
-    });
-
+window.seleccionarMotivo = function(boton, motivo) {
+    opcionesSolicitud.forEach(el => el.classList.remove("seleccionada"));
     boton.classList.add("seleccionada");
     motivoSolicitud = motivo;
     btnContinuarSolicitud.disabled = false;
 }
 
-function confirmarSolicitud() {
-    if (!motivoSolicitud) {
-        return;
-    }
-
-    const motivoSeleccionado = motivoSolicitud;
-
+window.confirmarSolicitud = function() {
+    if (!motivoSolicitud) return;
+    const motivo = motivoSolicitud;
     cerrarSolicitud();
-
-    alert(
-        "Tu solicitud para una nueva tarjeta fue registrada.\n\n" +
-        "Motivo: " +
-        motivoSeleccionado
-    );
+    alert(`Tu solicitud para una nueva tarjeta fue registrada.\n\nMotivo: ${motivo}\n\nPróximamente recibirás tu nueva tarjeta.`);
 }
 
-/* Cerrar modales al hacer clic fuera */
-
-window.addEventListener("click", function (evento) {
-    if (evento.target === nipModal) {
-        cerrarModal();
-    }
-
-    if (evento.target === bloqueoModal) {
-        cerrarBloqueo();
-    }
-
-    if (evento.target === solicitudModal) {
-        cerrarSolicitud();
-    }
+window.addEventListener("click", function(evento) {
+    if (evento.target === nipModal) cerrarModal();
+    if (evento.target === bloqueoModal) cerrarBloqueo();
+    if (evento.target === solicitudModal) cerrarSolicitud();
 });
 
-/* Cerrar modales con la tecla Escape */
-
-document.addEventListener("keydown", function (evento) {
-    if (evento.key !== "Escape") {
-        return;
-    }
-
+document.addEventListener("keydown", function(evento) {
+    if (evento.key !== "Escape") return;
     cerrarModal();
     cerrarBloqueo();
     cerrarSolicitud();
+});
+
+window.addEventListener('resize', () => {
+    if (carouselTrack && tarjetas.length > 0) {
+        moverCarruselA(tarjetaActual);
+    }
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await cargarDatosUsuario();
 });

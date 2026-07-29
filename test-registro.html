@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Registro Directo</title>
+    <style>
+        body { font-family: Arial; padding: 20px; max-width: 500px; margin: 0 auto; }
+        input, button { width: 100%; padding: 10px; margin: 5px 0; }
+        button { background: #4A90D9; color: white; border: none; cursor: pointer; }
+        .error { color: red; }
+        .success { color: green; }
+        .log { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 5px; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Registro Directo</h1>
+    <form id="testForm">
+        <input type="email" id="email" placeholder="Correo electrónico" required>
+        <input type="password" id="password" placeholder="Contraseña (mín 6)" required>
+        <button type="submit">Registrar y Crear Datos</button>
+    </form>
+    <div id="resultado"></div>
+    <div id="logs" class="log">📋 Logs aparecerán aquí...</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        // Configuración directa
+        const SUPABASE_URL = 'https://ibrrrbqundkgokhlvuou.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_qmpThkeEu1eckP1_fPv7rQ_HG9qxVD_';
+
+        // Crear cliente
+        const { createClient } = window.supabase;
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Función para agregar logs
+        function addLog(mensaje, tipo = 'info') {
+            const logs = document.getElementById('logs');
+            const colors = {
+                info: '#333',
+                success: 'green',
+                error: 'red',
+                warning: 'orange'
+            };
+            logs.innerHTML += `<div style="color: ${colors[tipo] || '#333'}">${mensaje}</div>`;
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        // Función para crear usuario en tabla
+        async function crearUsuario(userId, email) {
+            const nombreCompleto = email.split('@')[0];
+            addLog(`📝 Creando usuario: ${nombreCompleto} (${email})`, 'info');
+            
+            const { data, error } = await supabase
+                .from('usuarios')
+                .insert([{
+                    id_usuario: userId,
+                    nombre_completo: nombreCompleto,
+                    email: email,
+                    fecha_registro: new Date().toISOString(),
+                    ultimo_acceso: new Date().toISOString(),
+                    estado: 'activo'
+                }])
+                .select();
+            
+            if (error) {
+                addLog(`❌ Error al crear usuario: ${error.message}`, 'error');
+                return null;
+            }
+            addLog(`✅ Usuario creado: ${data[0].nombre_completo}`, 'success');
+            return data[0];
+        }
+
+        // Función para crear tarjetas
+        async function crearTarjetas(userId, nombreCompleto) {
+            addLog(`📝 Creando tarjetas para: ${nombreCompleto}`, 'info');
+            
+            // Primero crear cuenta
+            const { data: cuenta, error: errorCuenta } = await supabase
+                .from('cuentas')
+                .insert([{
+                    id_usuario: userId,
+                    saldo: 0,
+                    tipo_cuenta: 'corriente',
+                    estado: 'activa'
+                }])
+                .select();
+            
+            if (errorCuenta) {
+                addLog(`❌ Error al crear cuenta: ${errorCuenta.message}`, 'error');
+                return null;
+            }
+            
+            const idCuenta = cuenta[0].id_cuenta;
+            addLog(`✅ Cuenta creada: ${idCuenta}`, 'success');
+            
+            // Generar número de tarjeta
+            function generarNumero() {
+                let num = '4';
+                for (let i = 0; i < 15; i++) num += Math.floor(Math.random() * 10);
+                return num;
+            }
+            
+            // Tarjeta Débito
+            const debito = {
+                id_usuario: userId,
+                id_cuenta: idCuenta,
+                tipo_tarjeta: 'debito',
+                marca: 'Visa',
+                numero_tarjeta: generarNumero(),
+                numero_encripado: '****',
+                titular: nombreCompleto,
+                fecha_expiracion: '2029-12-31',
+                cvv_encripado: '***',
+                estado: 'activa'
+            };
+            
+            // Tarjeta Crédito
+            const credito = {
+                id_usuario: userId,
+                id_cuenta: idCuenta,
+                tipo_tarjeta: 'credito',
+                marca: 'Mastercard',
+                numero_tarjeta: generarNumero(),
+                numero_encripado: '****',
+                titular: nombreCompleto,
+                fecha_expiracion: '2029-12-31',
+                cvv_encripado: '***',
+                estado: 'activa'
+            };
+            
+            const { data: tarjetas, error: errorTarjetas } = await supabase
+                .from('tarjetas')
+                .insert([debito, credito])
+                .select();
+            
+            if (errorTarjetas) {
+                addLog(`❌ Error al crear tarjetas: ${errorTarjetas.message}`, 'error');
+                return null;
+            }
+            
+            addLog(`✅ Tarjetas creadas: ${tarjetas.length} (Débito + Crédito)`, 'success');
+            return tarjetas;
+        }
+
+        // Evento del formulario
+        document.getElementById('testForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const resultado = document.getElementById('resultado');
+            
+            // Limpiar logs
+            document.getElementById('logs').innerHTML = '📋 Iniciando proceso...\n';
+            
+            addLog(`🚀 Iniciando registro para: ${email}`, 'info');
+            addLog(`🔑 Contraseña: ${password.length} caracteres`, 'info');
+            
+            if (!email || !password) {
+                resultado.innerHTML = '<p class="error">❌ Completa todos los campos</p>';
+                return;
+            }
+            
+            if (password.length < 6) {
+                resultado.innerHTML = '<p class="error">❌ La contraseña debe tener al menos 6 caracteres</p>';
+                return;
+            }
+            
+            resultado.innerHTML = '<p>⏳ Procesando...</p>';
+            
+            try {
+                // PASO 1: Registrar en Auth
+                addLog('📝 PASO 1: Registrando en Supabase Auth...', 'info');
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email: email,
+                    password: password
+                });
+                
+                if (authError) {
+                    addLog(`❌ Error en Auth: ${authError.message}`, 'error');
+                    resultado.innerHTML = `<p class="error">❌ Error: ${authError.message}</p>`;
+                    return;
+                }
+                
+                addLog(`✅ Auth registrado: ${authData.user.id}`, 'success');
+                
+                // PASO 2: Crear usuario
+                const usuario = await crearUsuario(authData.user.id, email);
+                if (!usuario) {
+                    resultado.innerHTML = '<p class="error">❌ Error al crear usuario en tabla</p>';
+                    return;
+                }
+                
+                // PASO 3: Crear tarjetas
+                const tarjetas = await crearTarjetas(authData.user.id, usuario.nombre_completo);
+                if (!tarjetas) {
+                    resultado.innerHTML = '<p class="warning">⚠️ Usuario creado pero sin tarjetas</p>';
+                } else {
+                    resultado.innerHTML = `
+                        <p class="success">✅ ¡Registro completo!</p>
+                        <p>👤 Usuario: ${usuario.nombre_completo}</p>
+                        <p>📧 Email: ${email}</p>
+                        <p>💳 Tarjetas: ${tarjetas.length} creadas</p>
+                        <p style="font-size: 12px; color: #666;">Revisa tu correo para confirmar la cuenta</p>
+                    `;
+                }
+                
+                addLog('✅ Proceso completado exitosamente', 'success');
+                
+            } catch (error) {
+                addLog(`❌ Error: ${error.message}`, 'error');
+                resultado.innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
