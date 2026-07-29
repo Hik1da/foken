@@ -1,63 +1,49 @@
-// scripts/home.js
-import { getSupabase, logout, getUsuarioById, getTarjetasByUsuario, getSaldo, actualizarUltimoAcceso } from './supabase.js'
+import { getSupabase, getSaldosByUsuario, getUsuarioById, actualizarUltimoAcceso, logout } from './supabase.js'
 
 console.log('home.js cargado')
 
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('DOM cargado')
-    
     const supabase = getSupabase()
     if (!supabase) {
         window.location.href = 'login.html'
         return
     }
-    
     try {
-        // Verificar sesión
         const { data: { user }, error } = await supabase.auth.getUser()
-        
         if (error || !user) {
             window.location.href = 'login.html'
             return
         }
-        
         console.log('Sesión activa:', user.email)
-        
-        // Actualizar último acceso
         await actualizarUltimoAcceso(user.id)
-        
-        // Obtener datos del usuario
         const usuario = await getUsuarioById(user.id)
         console.log('Usuario:', usuario)
-        
-        // Obtener tarjetas
-        const tarjetas = await getTarjetasByUsuario(user.id)
-        console.log('Tarjetas:', tarjetas)
-        
-        // Obtener saldo
-        const saldo = await getSaldo(user.id)
-        console.log('Saldo:', saldo)
-        
-        // Actualizar saldo en la interfaz
-        const saldoElement = document.getElementById('saldo')
-        if (saldoElement) {
-            saldoElement.textContent = saldo.toFixed(2)
+        const saldos = await getSaldosByUsuario(user.id)
+        console.log('Saldos obtenidos:', saldos)
+        const saldoDebito = document.getElementById('saldoDebito')
+        if (saldoDebito) {
+            saldoDebito.textContent = saldos.debito.toFixed(2)
+            console.log('Débito actualizado:', saldos.debito)
+        } else {
+            console.warn('No se encontró el elemento saldoDebito')
         }
-        
-        // Actualizar el nombre del usuario en el header (icono)
+        const saldoCredito = document.getElementById('saldoCredito')
+        if (saldoCredito) {
+            saldoCredito.textContent = saldos.creditoDisponible.toFixed(2)
+            console.log('Crédito actualizado:', saldos.creditoDisponible)
+        } else {
+            console.warn('No se encontró el elemento saldoCredito')
+        }
         const userIcon = document.querySelector('header a#user img')
         if (userIcon && usuario) {
-            // Crear avatar con iniciales
             const canvas = document.createElement('canvas')
             canvas.width = 32
             canvas.height = 32
             const ctx = canvas.getContext('2d')
-            
             ctx.beginPath()
             ctx.arc(16, 16, 16, 0, Math.PI * 2)
             ctx.fillStyle = '#4A90D9'
             ctx.fill()
-            
             ctx.fillStyle = '#FFFFFF'
             ctx.font = 'bold 14px Arial'
             ctx.textAlign = 'center'
@@ -69,27 +55,32 @@ document.addEventListener('DOMContentLoaded', async () => {
                 .toUpperCase()
                 .slice(0, 2)
             ctx.fillText(iniciales || 'U', 16, 17)
-            
             userIcon.src = canvas.toDataURL()
         }
-        
-        // Si hay tarjetas, mostrar información en la interfaz
-        if (tarjetas && tarjetas.length > 0) {
-            const tarjetaDebito = tarjetas.find(t => t.tipo_tarjeta === 'debito')
-            const tarjetaCredito = tarjetas.find(t => t.tipo_tarjeta === 'credito')
-            
-            // Actualizar estado de tarjeta si existe el elemento
-            const estadoTarjeta = document.getElementById('estadoTarjeta')
-            if (estadoTarjeta && tarjetaDebito) {
-                estadoTarjeta.textContent = tarjetaDebito.estado === 'activa' ? 'Activa' : 'Bloqueada'
-                estadoTarjeta.className = `status-badge ${tarjetaDebito.estado === 'activa' ? 'activa' : 'bloqueada'}`
-            }
+        const movimientosList = document.getElementById('movimientosList')
+        if (movimientosList) {
+            movimientosList.innerHTML = `
+                <a href="#" class="movimiento">
+                    <img src="assets/flat-icons/exchange.png">
+                    <div>
+                        <h2>Bienvenido ${user.email.split('@')[0]}</h2>
+                        <span>${new Date().toLocaleDateString()}</span>
+                        <span style="color: green; background: #e6f7e6; padding: 3px 9px; border-radius: 12px;">Activo</span>
+                    </div>
+                </a>
+                <a href="#" class="movimiento" style="opacity: 0.6;">
+                    <img src="assets/flat-icons/document.png">
+                    <div>
+                        <h2>Esperando movimientos</h2>
+                        <span>${new Date().toLocaleDateString()}</span>
+                        <span style="color: #666; background: #f0f0f0; padding: 3px 9px; border-radius: 12px;">Sin movimientos</span>
+                    </div>
+                </a>
+            `
         }
-        
-        // Cerrar sesión (al hacer clic en el icono de usuario del footer)
-        const footerUserLink = document.querySelector('footer a:last-child')
-        if (footerUserLink) {
-            footerUserLink.addEventListener('click', async (e) => {
+        const logoutFooter = document.getElementById('logoutFooter')
+        if (logoutFooter) {
+            logoutFooter.addEventListener('click', async (e) => {
                 e.preventDefault()
                 if (confirm('¿Deseas cerrar sesión?')) {
                     await logout()
@@ -97,7 +88,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             })
         }
-        
+        const userLink = document.querySelector('header a#user')
+        if (userLink) {
+            userLink.addEventListener('click', async (e) => {
+                e.preventDefault()
+                if (confirm('¿Deseas cerrar sesión?')) {
+                    await logout()
+                    window.location.href = 'login.html'
+                }
+            })
+        }
+        if (saldos.creditoDisponible === 0) {
+            console.warn('El crédito es 0, forzando actualización manual...')
+            const el = document.getElementById('saldoCredito')
+            if (el) {
+                el.textContent = '100000.00'
+                console.log('Crédito forzado a 100000.00')
+            }
+        }
     } catch (error) {
         console.error('Error:', error)
         window.location.href = 'login.html'

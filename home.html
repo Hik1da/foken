@@ -11,13 +11,19 @@
         <header>
             <a href="login.html" id="user"><img src="assets/flat-icons/user.png"></a>
             <img src="assets/logo.png" onclick="toggleDarkMode()">
-            <a href="notifications.html" id="user"><img src="assets/flat-icons/notification.png"></a>
+            <a href="#" id="user"><img src="assets/flat-icons/notification.png"></a>
         </header>
         <main>
             <section id="saldo-disponible">
                 <h1>Saldo disponible</h1>
-                <h2 id="saldoMonto">$0.00</h2>
+                <h2>$<span id="saldoDebito">0.00</span></h2>
             </section>
+
+            <section id="credito-disponible">
+                <h1>Crédito disponible</h1>
+                <h2>$<span id="saldoCredito">0.00</span></h2>
+            </section>
+
             <section>
                 <nav>
                     <a href="transaction.html"><img src="assets/flat-icons/exchange.png">Transferir</a>
@@ -25,16 +31,17 @@
                     <a href="#"><img src="assets/flat-icons/document.png">Credito</a>
                 </nav>
             </section>
+
             <h1>Movimientos</h1>
             <section id="movimientos">
                 <div id="movimientosList"></div>
             </section>
-            <a href="#" class="button" id="verTodosBtn">Ver todos tus movimientos</a>
+            <a href="movements.html" class="button">Ver todos tus movimientos</a>
         </main>
         <footer>
             <a href="home.html" class="selected"><img src="assets/flat-icons/home.png"></a>
             <a href="cards.html"><img src="assets/flat-icons/card.png"></a>
-            <a href=""><img src="assets/flat-icons/user.png"></a>
+            <a href="#" id="logoutFooter"><img src="assets/flat-icons/user.png"></a>
         </footer>
         <script src="scripts/darkmode.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>

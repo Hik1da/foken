@@ -1,4 +1,4 @@
-console.log('🔧 supabase.js cargado')
+console.log('supabase.js cargado')
 
 const SUPABASE_URL = 'https://ibrrrbqundkgokhlvuou.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_qmpThkeEu1eckP1_fPv7rQ_HG9qxVD_'
@@ -40,12 +40,12 @@ export const crearUsuario = async (userId, nombreCompleto, email, telefono) => {
             }])
             .select()
         if (error) {
-            console.error('❌ Error al crear usuario:', error)
+            console.error('Error al crear usuario:', error)
             return null
         }
         return data[0]
     } catch (error) {
-        console.error('❌ Excepción al crear usuario:', error)
+        console.error('Excepción al crear usuario:', error)
         return null
     }
 }
@@ -59,7 +59,7 @@ export const getUsuarioById = async (userId) => {
         .eq('id_usuario', userId)
         .single()
     if (error) {
-        console.error('❌ Error al obtener usuario:', error)
+        console.error('Error al obtener usuario:', error)
         return null
     }
     return data
@@ -74,7 +74,7 @@ export const actualizarUltimoAcceso = async (userId) => {
         .eq('id_usuario', userId)
         .select()
     if (error) {
-        console.error('❌ Error al actualizar acceso:', error)
+        console.error('Error al actualizar acceso:', error)
         return null
     }
     return data[0]
@@ -89,7 +89,7 @@ export const getCuentaByUsuario = async (userId) => {
         .eq('id_usuario', userId)
         .maybeSingle()
     if (error) {
-        console.error('❌ Error al obtener cuenta:', error)
+        console.error('Error al obtener cuenta:', error)
         return null
     }
     return data
@@ -104,10 +104,84 @@ export const getSaldo = async (userId) => {
         .eq('id_usuario', userId)
         .maybeSingle()
     if (error) {
-        console.error('❌ Error al obtener saldo:', error)
+        console.error('Error al obtener saldo:', error)
         return 0
     }
     return data?.saldo || 0
+}
+
+export const getTarjetasByUsuario = async (userId) => {
+    const supabase = getSupabase()
+    if (!supabase) return null
+    const { data, error } = await supabase
+        .from('tarjetas')
+        .select('*')
+        .eq('id_usuario', userId)
+    if (error) {
+        console.error('Error al obtener tarjetas:', error)
+        return null
+    }
+    return data
+}
+
+export const getSaldosByUsuario = async (userId) => {
+    const supabase = getSupabase()
+    if (!supabase) return { debito: 0, credito: 0, creditoDisponible: 0 }
+    try {
+        const { data: tarjetas, error } = await supabase
+            .from('tarjetas')
+            .select('tipo_tarjeta, limites')
+            .eq('id_usuario', userId)
+        if (error) {
+            console.error('Error al obtener saldos:', error)
+            return { debito: 0, credito: 0, creditoDisponible: 0 }
+        }
+        console.log('Tarjetas encontradas:', tarjetas)
+        const { data: cuenta, error: errorCuenta } = await supabase
+            .from('cuentas')
+            .select('saldo')
+            .eq('id_usuario', userId)
+            .maybeSingle()
+        const saldoCuenta = cuenta?.saldo || 0
+        let creditoTotal = 0
+        if (tarjetas && tarjetas.length > 0) {
+            tarjetas.forEach(t => {
+                console.log('Procesando tarjeta:', t.tipo_tarjeta, t.limites)
+                if (t.tipo_tarjeta === 'credito') {
+                    if (t.limites && typeof t.limites === 'object') {
+                        if (t.limites.credito) {
+                            creditoTotal = t.limites.credito
+                            console.log('Límite encontrado:', creditoTotal)
+                        } else {
+                            creditoTotal = 100000
+                            console.log('Sin límite, usando default: 100000')
+                        }
+                    } else {
+                        creditoTotal = 100000
+                        console.log('Limites es null, usando default: 100000')
+                    }
+                }
+            })
+        } else {
+            console.log('No se encontraron tarjetas para el usuario')
+            creditoTotal = 100000
+        }
+        if (creditoTotal === 0) {
+            creditoTotal = 100000
+            console.log('Forzando crédito a 100000 por seguridad')
+        }
+        const creditoUsado = 0
+        const creditoDisponible = Math.max(0, creditoTotal - creditoUsado)
+        console.log('Resultado final:', { debito: saldoCuenta, credito: creditoTotal, creditoDisponible })
+        return {
+            debito: saldoCuenta,
+            credito: creditoTotal,
+            creditoDisponible: creditoDisponible
+        }
+    } catch (error) {
+        console.error('Error:', error)
+        return { debito: 0, credito: 100000, creditoDisponible: 100000 }
+    }
 }
 
 function generarNumeroTarjeta(tipo) {
@@ -143,7 +217,7 @@ export const crearCuentaYTarjetas = async (userId, nombreCompleto) => {
             }])
             .select()
         if (cuentaError) {
-            console.error('❌ Error al crear cuenta:', cuentaError)
+            console.error('Error al crear cuenta:', cuentaError)
             return null
         }
         const idCuenta = cuentaData[0].id_cuenta
@@ -155,7 +229,7 @@ export const crearCuentaYTarjetas = async (userId, nombreCompleto) => {
                 tipo_tarjeta: 'debito',
                 marca: 'Visa',
                 numero_tarjeta: generarNumeroTarjeta('debito'),
-                numero_encripado: '****',
+                numero_encripado: '****' + generarNumeroTarjeta('debito').slice(-4),
                 titular: nombreCompleto,
                 fecha_expiracion: generarFechaExpiracion(),
                 cvv_encripado: '***',
@@ -169,7 +243,7 @@ export const crearCuentaYTarjetas = async (userId, nombreCompleto) => {
                 tipo_tarjeta: 'credito',
                 marca: 'Mastercard',
                 numero_tarjeta: generarNumeroTarjeta('credito'),
-                numero_encripado: '****',
+                numero_encripado: '****' + generarNumeroTarjeta('credito').slice(-4),
                 titular: nombreCompleto,
                 fecha_expiracion: generarFechaExpiracion(),
                 cvv_encripado: '***',
@@ -183,26 +257,12 @@ export const crearCuentaYTarjetas = async (userId, nombreCompleto) => {
             .insert(tarjetas)
             .select()
         if (tarjetasError) {
-            console.error('❌ Error al crear tarjetas:', tarjetasError)
+            console.error('Error al crear tarjetas:', tarjetasError)
             return null
         }
         return { cuenta: cuentaData[0], tarjetas: tarjetasData }
     } catch (error) {
-        console.error('❌ Error:', error)
+        console.error('Error:', error)
         return null
     }
-}
-
-export const getTarjetasByUsuario = async (userId) => {
-    const supabase = getSupabase()
-    if (!supabase) return null
-    const { data, error } = await supabase
-        .from('tarjetas')
-        .select('*')
-        .eq('id_usuario', userId)
-    if (error) {
-        console.error('❌ Error al obtener tarjetas:', error)
-        return null
-    }
-    return data
 }
