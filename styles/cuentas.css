@@ -9,6 +9,7 @@
     box-sizing: border-box;
 }
 
+
 /* Encabezado */
 
 .app-header {
@@ -41,6 +42,7 @@
     font-weight: 600;
     cursor: pointer;
 }
+
 
 /* Mensaje de ayuda */
 
@@ -85,6 +87,7 @@
     visibility: visible;
 }
 
+
 /* Enlace de soporte */
 
 .soporte-link {
@@ -96,6 +99,7 @@
 .soporte-link:hover {
     text-decoration: underline;
 }
+
 
 /* Estado de la tarjeta */
 
@@ -128,6 +132,7 @@
     background-color: #d32f2f;
 }
 
+
 /* Imagen de la tarjeta */
 
 .card-image-wrapper {
@@ -148,6 +153,7 @@
     margin: -14px;
     object-fit: cover;
 }
+
 
 /* Indicadores del carrusel */
 
@@ -170,13 +176,14 @@
     border-radius: 10px;
 }
 
+
 /* Acciones */
 
 .actions-grid {
+    width: 100%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    width: 100%;
 }
 
 .action-item {
@@ -223,6 +230,7 @@
     text-align: center;
 }
 
+
 /* Banner de soporte */
 
 .info-banner {
@@ -238,9 +246,9 @@
 }
 
 .info-icon {
-    flex-shrink: 0;
     width: 25px;
     height: 25px;
+    flex-shrink: 0;
     border-radius: 50%;
     background-color: var(--primary);
     color: var(--secondary-background);
@@ -259,6 +267,7 @@
     color: var(--primary);
     font-weight: 600;
 }
+
 
 /* Ventanas modales */
 
@@ -284,9 +293,55 @@
     animation: aparecer 0.25s ease;
 }
 
+.close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    border: none;
+    background: transparent;
+    outline: none;
+    color: #666;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.close:hover {
+    color: #078570;
+    transform: scale(1.1);
+}
+
+.modal-text {
+    margin-bottom: 18px;
+    font-size: 16px;
+}
+
+.modal-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background-color: #078570;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+}
+
+.modal-btn:hover {
+    background-color: #05695a;
+}
+
+
 /* Solicitud de nueva tarjeta */
 
-.solicitud-card {
+.solicitud-card,
+.bloqueo-card {
     max-width: 420px;
 }
 
@@ -366,63 +421,6 @@
     cursor: not-allowed;
 }
 
-@keyframes aparecer {
-    from {
-        opacity: 0;
-        transform: scale(0.85);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-
-    border: none;
-    background: transparent;
-    outline: none;
-
-    color: #666;
-    font-size: 34px;
-    font-weight: 700;
-    line-height: 1;
-
-    cursor: pointer;
-
-    transition: color .2s ease, transform .2s ease;
-}
-
-.close:hover {
-    color: #078570;
-    transform: scale(1.1);
-}
-
-.modal-text {
-    margin-bottom: 18px;
-    font-size: 16px;
-}
-
-.modal-btn {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 12px;
-    background-color: #078570;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.25s ease;
-}
-
-.modal-btn:hover {
-    background-color: #05695a;
-}
 
 /* Gestión del NIP */
 
@@ -458,11 +456,8 @@
     transform: scale(1.1);
 }
 
-/* Confirmación de bloqueo */
 
-.bloqueo-card {
-    max-width: 420px;
-}
+/* Confirmación de bloqueo */
 
 .bloqueo-card h2 {
     margin-bottom: 18px;
@@ -479,20 +474,15 @@
 }
 
 .bloqueo-card .modal-btn {
-    width: 100%;
     padding: 18px;
-    border: none;
     border-radius: 16px;
-    background: #111;
-    color: #fff;
+    background-color: #111;
     font-size: 22px;
     font-weight: 700;
-    cursor: pointer;
-    transition: background-color .25s ease;
 }
 
 .bloqueo-card .modal-btn:hover {
-    background: #000;
+    background-color: #000;
 }
 
 .cancelar-btn {
@@ -505,12 +495,28 @@
     font-size: 20px;
     font-weight: 600;
     cursor: pointer;
-    transition: color .25s ease;
+    transition: color 0.25s ease;
 }
 
 .cancelar-btn:hover {
     color: #078570;
 }
+
+
+/* Animación */
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 
 /* Diseño responsivo */
 

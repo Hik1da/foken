@@ -24,7 +24,7 @@
 
             <button class="qr-button" id="qrButton" type="button" aria-label="Mostrar código QR">
 
-                <img src="assets/QR.png" alt="Código QR" class="qr-icon">
+                <img src="assets/QR.png" alt="" class="qr-icon">
 
             </button>
 
@@ -33,14 +33,14 @@
 
         <!-- Información del usuario -->
 
-        <section class="usuario-section">
+        <section class="usuario-section" aria-labelledby="usuarioNombre">
 
             <div class="usuario-avatar" aria-hidden="true">
-                SE
+                AA
             </div>
 
-            <h1 class="usuario-nombre">
-                Samuel Espino
+            <h1 class="usuario-nombre" id="usuarioNombre">
+                PERFIL
             </h1>
 
         </section>
@@ -56,9 +56,9 @@
 
             <div class="ayuda-texto">
 
-                <span class="ayuda-titulo">
+                <strong class="ayuda-titulo">
                     Ayuda
-                </span>
+                </strong>
 
                 <span class="ayuda-descripcion">
                     Habla con un agente o envíanos tu opinión
@@ -69,15 +69,15 @@
         </a>
 
 
-        <!-- Información de la CLABE -->
+        <!-- Información bancaria -->
 
-        <section class="clabe-card">
+        <section class="clabe-card" aria-labelledby="clabeTitulo">
 
             <div class="clabe-informacion">
 
                 <div class="clabe-grupo">
 
-                    <span class="clabe-etiqueta">
+                    <span class="clabe-etiqueta" id="clabeTitulo">
                         CLABE interbancaria
                     </span>
 
@@ -101,7 +101,7 @@
 
             </div>
 
-            <button class="copiar-button" id="copiarClabeButton" type="button" aria-label="Copiar CLABE">
+            <button class="copiar-button" id="copiarClabeButton" type="button" aria-label="Copiar CLABE interbancaria">
 
                 <img src="assets/copiar.png" alt="" class="copiar-icono">
 
@@ -109,7 +109,8 @@
 
         </section>
 
-        <p class="mensaje-copiado" id="mensajeCopiado" aria-live="polite"></p>
+        <p class="mensaje-copiado" id="mensajeCopiado" role="status" aria-live="polite">
+        </p>
 
 
         <!-- Opciones del perfil -->
@@ -119,9 +120,11 @@
 
             <!-- Datos personales -->
 
-            <a href="datos-personales.html" class="perfil-opcion">
+            <button class="perfil-opcion perfil-opcion-button abrir-modal" type="button"
+                data-modal-title="Datos personales"
+                data-modal-text="En esta sección podrás consultar la información personal registrada en tu cuenta Foken, como tu nombre, correo electrónico, número de teléfono y demás datos de identificación. Mantener esta información actualizada nos permite brindarte una mejor experiencia, fortalecer la seguridad de tu cuenta y facilitar la comunicación relacionada con tus productos y servicios financieros.">
 
-                <div class="opcion-icono">
+                <div class="opcion-icono" aria-hidden="true">
 
                     <img src="assets/persona.png" alt="">
 
@@ -134,19 +137,20 @@
                     </h2>
 
                     <p class="opcion-descripcion">
-                        Edita tu información personal
+                        Consulta y administra la información asociada a tu cuenta.
                     </p>
 
                 </div>
 
-            </a>
+            </button>
 
 
             <!-- Seguridad -->
 
-            <a href="seguridad.html" class="perfil-opcion">
+            <button class="perfil-opcion perfil-opcion-button abrir-modal" type="button" data-modal-title="Seguridad"
+                data-modal-text="La seguridad de tu cuenta es una prioridad para Foken. Desde esta sección podrás conocer las medidas de protección implementadas para resguardar tu información y tus operaciones, así como las recomendaciones para mantener tu cuenta segura. Te sugerimos utilizar una contraseña segura, mantener actualizados tus datos de contacto y no compartir tus credenciales de acceso con terceros.">
 
-                <div class="opcion-icono">
+                <div class="opcion-icono" aria-hidden="true">
 
                     <img src="assets/bloquear.png" alt="">
 
@@ -159,19 +163,20 @@
                     </h2>
 
                     <p class="opcion-descripcion">
-                        Establece tus medidas de seguridad
+                        Consulta las medidas de seguridad y protección de tu cuenta.
                     </p>
 
                 </div>
 
-            </a>
+            </button>
 
 
             <!-- Seguros -->
 
-            <a href="seguros.html" class="perfil-opcion">
+            <button class="perfil-opcion perfil-opcion-button abrir-modal" type="button" data-modal-title="Seguros"
+                data-modal-text="Foken, en alianza con Chubb, pone a tu disposición una selección de seguros diseñados para brindarte mayor tranquilidad y protección. Desde esta sección podrás consultar la información de las coberturas disponibles, conocer sus beneficios y revisar los términos generales aplicables. La contratación y administración de los seguros estarán sujetas a las condiciones establecidas por la aseguradora.">
 
-                <div class="opcion-icono">
+                <div class="opcion-icono" aria-hidden="true">
 
                     <img src="assets/escudo.png" alt="">
 
@@ -184,19 +189,21 @@
                     </h2>
 
                     <p class="opcion-descripcion">
-                        Consulta detalles sobre los seguros en alianza con Chubb
+                        Consulta los seguros y coberturas disponibles en alianza con Chubb.
                     </p>
 
                 </div>
 
-            </a>
+            </button>
 
 
-            <!-- Autentificación de compras -->
+            <!-- Autenticación de compras -->
 
-            <a href="autentificacion.html" class="perfil-opcion">
+            <button class="perfil-opcion perfil-opcion-button abrir-modal" type="button"
+                data-modal-title="Autenticación de compras"
+                data-modal-text="La Autenticación de Compras agrega una capa adicional de seguridad para proteger tus operaciones realizadas con las tarjetas Foken. Cuando esta función se encuentra habilitada, recibirás una notificación para autorizar o rechazar compras realizadas en línea y otras transacciones que requieran validación. Esta medida ayuda a prevenir operaciones no reconocidas y brinda mayor control sobre la seguridad de tu cuenta.">
 
-                <div class="opcion-icono">
+                <div class="opcion-icono" aria-hidden="true">
 
                     <img src="assets/verificado.png" alt="">
 
@@ -205,28 +212,28 @@
                 <div class="opcion-contenido">
 
                     <h2 class="opcion-titulo">
-                        Autentificación de compras
+                        Autenticación de compras
                     </h2>
 
                     <p class="opcion-descripcion">
-                        Desactiva las notificaciones push
+                        Administra la autorización de compras y transacciones.
                     </p>
 
                 </div>
 
-            </a>
-
-            
+            </button>
 
 
             <!-- Información fiscal -->
 
             <button class="perfil-opcion perfil-opcion-button abrir-modal" type="button"
                 data-modal-title="Información fiscal"
-                data-modal-text="Aquí podrás consultar tu historial de retenciones y descargar tu constancia de situación fiscal cuando esté disponible.">
+                data-modal-text="Aquí podrás consultar tu historial de retenciones y descargar tu constancia de situación fiscal cuando se encuentre disponible. También podrás revisar los documentos fiscales relacionados con tu cuenta y los servicios utilizados en Foken.">
 
-                <div class="opcion-icono">
+                <div class="opcion-icono" aria-hidden="true">
+
                     <img src="assets/Hoja.png" alt="">
+
                 </div>
 
                 <div class="opcion-contenido">
@@ -236,7 +243,7 @@
                     </h2>
 
                     <p class="opcion-descripcion">
-                        Historial de retención y constancia de situación fiscal
+                        Historial de retenciones y documentación fiscal
                     </p>
 
                 </div>
@@ -248,10 +255,12 @@
 
             <button class="perfil-opcion perfil-opcion-button abrir-modal" type="button"
                 data-modal-title="Privacidad y términos"
-                data-modal-text="Consulta la información legal, las políticas de privacidad y los términos y condiciones de Foken.">
+                data-modal-text="Los presentes Términos y Condiciones regulan el acceso y uso de la Banca Web Foken. Al crear y utilizar una cuenta, el usuario acepta hacer un uso responsable de los servicios financieros disponibles, así como cumplir con las disposiciones establecidas por la plataforma. Foken implementa medidas de seguridad para proteger la información y las operaciones realizadas por sus usuarios; sin embargo, es responsabilidad del titular resguardar sus credenciales de acceso y notificar cualquier actividad inusual. El uso continuo de la Banca Web implica la aceptación de estos términos, los cuales podrán actualizarse para mejorar la seguridad, funcionalidad y cumplimiento de la normativa aplicable.">
 
-                <div class="opcion-icono">
+                <div class="opcion-icono" aria-hidden="true">
+
                     <img src="assets/terminos.png" alt="">
+
                 </div>
 
                 <div class="opcion-contenido">
@@ -261,7 +270,7 @@
                     </h2>
 
                     <p class="opcion-descripcion">
-                        Información legal acerca de Foken
+                        Políticas de privacidad, condiciones de uso e información legal
                     </p>
 
                 </div>
@@ -272,30 +281,117 @@
 
     </main>
 
-    <div id="modalInformacion" class="modal" aria-hidden="true">
 
-        <div class="modal-contenido">
+    <div class="modal" id="modalInformacion" aria-hidden="true">
 
-            <button id="cerrarModalButton" class="modal-cerrar" type="button">
-                x
-            </button>
+        <section class="modal-contenido" role="dialog" aria-modal="true" aria-labelledby="modalTitulo"
+            aria-describedby="modalTexto">
 
-            <h2 id="modalTitulo">
-                Información
-            </h2>
+            <header class="modal-header">
 
-            <p id="modalTexto" class="modal-texto">
-                Texto
-            </p>
+                <div class="modal-encabezado-texto">
 
-            <button id="aceptarModalButton" class="modal-aceptar" type="button">
-                Aceptar
-            </button>
+                    <h2 id="modalTitulo">
+                        Información
+                    </h2>
 
-        </div>
+                </div>
+
+                <button class="modal-cerrar" id="cerrarModalButton" type="button" aria-label="Cerrar ventana">
+
+                    <span aria-hidden="true">
+                        &times;
+                    </span>
+
+                </button>
+
+            </header>
+
+            <div class="modal-body">
+
+                <p class="modal-texto" id="modalTexto">
+                    Texto informativo
+                </p>
+
+            </div>
+
+            <footer class="modal-footer">
+
+                <button class="modal-aceptar" id="aceptarModalButton" type="button">
+                    Aceptar
+                </button>
+
+            </footer>
+
+        </section>
 
     </div>
 
+    <!-- Modal QR -->
+
+<div class="modal" id="qrModal" aria-hidden="true">
+
+    <section
+        class="modal-contenido qr-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="qrTitulo">
+
+        <header class="modal-header">
+
+            <div class="modal-encabezado-texto">
+
+                <h2 id="qrTitulo">
+                    Código QR
+                </h2>
+
+            </div>
+
+            <button
+                class="modal-cerrar"
+                id="cerrarQrButton"
+                type="button"
+                aria-label="Cerrar">
+
+                &times;
+
+            </button>
+
+        </header>
+
+        <div class="modal-body">
+
+            <p class="modal-texto">
+                Comparte este código QR para recibir transferencias a tu cuenta Foken.
+            </p>
+
+            <div class="qr-container">
+
+                <img
+                    src="assets/qr-ejemplo.png"
+                    alt="Código QR"
+                    class="qr-imagen">
+
+            </div>
+
+        </div>
+
+        <footer class="modal-footer">
+
+            <button
+                class="modal-aceptar"
+                id="cerrarQrAceptar"
+                type="button">
+
+                Cerrar
+
+            </button>
+
+        </footer>
+
+    </section>
+
+</div>
 
     <script src="scripts/perfil.js"></script>
 

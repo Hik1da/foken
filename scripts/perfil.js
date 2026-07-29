@@ -206,6 +206,53 @@ abrirModalButtons.forEach(function (boton) {
 
 });
 
+/* Modal QR */
+
+const qrButton = document.getElementById("qrButton");
+const qrModal = document.getElementById("qrModal");
+const cerrarQrButton = document.getElementById("cerrarQrButton");
+const cerrarQrAceptar = document.getElementById("cerrarQrAceptar");
+
+function abrirQrModal() {
+
+    qrModal.classList.add("modal-visible");
+    document.body.classList.add("sin-scroll");
+
+}
+
+function cerrarQrModal() {
+
+    qrModal.classList.remove("modal-visible");
+    document.body.classList.remove("sin-scroll");
+
+}
+
+qrButton.addEventListener("click", abrirQrModal);
+
+cerrarQrButton.addEventListener("click", cerrarQrModal);
+
+cerrarQrAceptar.addEventListener("click", cerrarQrModal);
+
+qrModal.addEventListener("click", function (e) {
+
+    if (e.target === qrModal) {
+
+        cerrarQrModal();
+
+    }
+
+});
+
+document.addEventListener("keydown", function (e) {
+
+    if (e.key === "Escape") {
+
+        cerrarQrModal();
+
+    }
+
+});
+
 
 /* Botones para cerrar el modal */
 

@@ -19,24 +19,22 @@ body.sin-scroll {
     max-width: 450px;
     min-height: 100vh;
     padding: 18px 0 40px;
-    display: flex;
-    flex-direction: column;
 }
 
 
 /* Encabezado */
 
 .perfil-header {
-    width: 100%;
     display: flex;
     justify-content: flex-end;
     padding: 0 24px;
 }
 
 
-/* Botón QR */
+/* Botones QR y copiar */
 
-.qr-button {
+.qr-button,
+.copiar-button {
     width: 42px;
     height: 42px;
     flex-shrink: 0;
@@ -45,14 +43,16 @@ body.sin-scroll {
     justify-content: center;
     padding: 0;
     border: none;
-    border-radius: 12px;
-    background-color: #ffffff;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition:
         background-color 0.2s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+        transform 0.2s ease;
+}
+
+.qr-button {
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .qr-button:hover {
@@ -60,23 +60,26 @@ body.sin-scroll {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
-.qr-button:active {
+.qr-button:active,
+.copiar-button:active {
     transform: scale(0.95);
 }
 
-.qr-icon {
+.qr-icon,
+.copiar-icono {
     width: 28px;
     height: 28px;
     object-fit: contain;
     filter: contrast(0%) brightness(70%);
 }
 
-.dark-mode .qr-icon {
+.dark-mode .qr-icon,
+.dark-mode .copiar-icono {
     filter: none;
 }
 
 
-/* Usuario */
+/* Información del usuario */
 
 .usuario-section {
     margin: 10px 32px 34px;
@@ -88,9 +91,8 @@ body.sin-scroll {
 .usuario-avatar {
     width: 74px;
     height: 74px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
     border-radius: 50%;
     background-color: var(--primary);
     color: var(--secondary-background);
@@ -107,7 +109,7 @@ body.sin-scroll {
 }
 
 
-/* Ayuda */
+/* Tarjeta de ayuda */
 
 .ayuda-card {
     margin: 0 32px 20px;
@@ -135,16 +137,17 @@ body.sin-scroll {
     width: 27px;
     height: 27px;
     flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
     border: 1.7px solid var(--primary);
     border-radius: 50%;
     color: var(--primary);
     font-size: 17px;
 }
 
-.ayuda-texto {
+.ayuda-texto,
+.opcion-contenido,
+.clabe-grupo {
     display: flex;
     flex-direction: column;
 }
@@ -162,7 +165,7 @@ body.sin-scroll {
 }
 
 
-/* CLABE */
+/* Tarjeta CLABE */
 
 .clabe-card {
     margin: 0 32px 20px;
@@ -175,13 +178,12 @@ body.sin-scroll {
     background-color: #dcecdf;
 }
 
-.clabe-informacion {
+.clabe-informacion,
+.opcion-contenido {
     min-width: 0;
 }
 
 .clabe-grupo {
-    display: flex;
-    flex-direction: column;
     gap: 3px;
 }
 
@@ -205,42 +207,13 @@ body.sin-scroll {
     overflow-wrap: anywhere;
 }
 
-
-/* Botón copiar */
-
 .copiar-button {
-    width: 42px;
-    height: 42px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
     border-radius: 10px;
     background: transparent;
-    cursor: pointer;
-    transition:
-        background-color 0.2s ease,
-        transform 0.2s ease;
 }
 
 .copiar-button:hover {
     background-color: #a9d6b5;
-}
-
-.copiar-button:active {
-    transform: scale(0.95);
-}
-
-.copiar-icono {
-    width: 28px;
-    height: 28px;
-    object-fit: contain;
-    filter: contrast(0%) brightness(70%);
-}
-
-.dark-mode .copiar-icono {
-    filter: none;
 }
 
 .mensaje-copiado {
@@ -252,7 +225,7 @@ body.sin-scroll {
 }
 
 
-/* Opciones */
+/* Opciones del perfil */
 
 .perfil-opciones {
     margin: 0 32px;
@@ -277,7 +250,7 @@ body.sin-scroll {
     border: none;
     background-color: var(--secondary-background);
     color: var(--primary);
-    font-family: inherit;
+    font: inherit;
     text-align: left;
     text-decoration: none;
     cursor: pointer;
@@ -298,9 +271,8 @@ body.sin-scroll {
 .opcion-icono {
     width: 36px;
     height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
     border-radius: 50%;
     background-color: var(--primary-background);
 }
@@ -311,17 +283,10 @@ body.sin-scroll {
     object-fit: contain;
 }
 
-.opcion-contenido {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-}
-
 .opcion-titulo {
     margin: 0 0 4px;
     color: var(--primary);
     font-size: 20px;
-    font-weight: 700;
     line-height: 1.25;
 }
 
@@ -333,17 +298,17 @@ body.sin-scroll {
 }
 
 
-/* Modal reutilizable */
+/* Modal */
 
 .modal {
     position: fixed;
     inset: 0;
     z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.55);
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -352,7 +317,7 @@ body.sin-scroll {
         visibility 0.25s ease;
 }
 
-.modal.modal-visible {
+.modal-visible {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -360,112 +325,124 @@ body.sin-scroll {
 
 .modal-contenido {
     width: 100%;
-    max-width: 430px;
-    max-height: 88vh;
+    max-width: 470px;
+    max-height: 90vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border-radius: 24px;
-    background-color: var(--secondary-background);
-    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.25);
-    transform: translateY(24px) scale(0.97);
+    border-radius: 22px;
+    background-color: #fff;
+    box-shadow:
+        0 20px 55px rgba(0, 0, 0, 0.28),
+        0 6px 18px rgba(0, 0, 0, 0.12);
+    transform: translateY(24px) scale(0.96);
     transition: transform 0.25s ease;
 }
 
 .modal-visible .modal-contenido {
-    transform: translateY(0) scale(1);
+    transform: none;
 }
 
 .modal-header {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 20px 22px;
-    border-bottom: 1px solid var(--primary-background);
+    position: relative;
+    padding: 30px 60px 8px;
+    text-align: center;
 }
 
 .modal-header h2 {
     margin: 0;
-    color: var(--primary);
-    font-size: 21px;
-    font-weight: 700;
+    color: #078570;
+    font-size: 24px;
     line-height: 1.25;
 }
 
+
+/* Botón cerrar */
+
 .modal-cerrar {
-    width: 48px;
+    position: absolute;
+    top: 14px;
+    right: 14px;
+
+    width: 38px;
     height: 38px;
-    flex-shrink: 0;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     padding: 0;
+
     border: none;
-    border-radius: 30%;
-    background-color: var(--primary-background);
-    color: var(--primary);
+    border-radius: 50%;
+
+    background-color: transparent;
+    color: #666666;
+
     font-family: inherit;
-    font-size: 28px;
+    font-size: 30px;
+    font-weight: 700;
     line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.modal-cerrar:hover {
+    background-color: #f1f1f1;
+    color: #078570;
+}
+
+.modal-cerrar:active {
+    transform: scale(0.92);
+}
+
+
+/* Contenido del modal */
+
+.modal-body {
+    flex: 1;
+    min-height: 0;
+    padding: 0 28px 22px;
+    overflow-y: auto;
+}
+
+.modal-texto {
+    margin: 0;
+    color: #555;
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+
+/* Pie del modal */
+
+.modal-footer {
+    padding: 0 26px 30px;
+}
+
+.modal-aceptar {
+    width: 100%;
+    min-height: 48px;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 12px;
+    background-color: #078570;
+    color: #fff;
+    font: 700 16px inherit;
     cursor: pointer;
     transition:
         background-color 0.2s ease,
         transform 0.2s ease;
 }
 
-.modal-cerrar:hover {
-    background-color: color-mix(
-        in srgb,
-        var(--primary-background) 85%,
-        var(--primary) 15%
-    );
-}
-
-.modal-cerrar:active {
-    transform: scale(0.94);
-}
-
-.modal-body {
-    flex: 1;
-    min-height: 0;
-    padding: 22px;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-}
-
-.modal-texto {
-    margin: 0;
-    color: var(--secondary-text);
-    font-size: 15px;
-    line-height: 1.65;
-}
-
-.modal-footer {
-    flex-shrink: 0;
-    padding: 16px 22px 20px;
-    border-top: 1px solid var(--primary-background);
-}
-
-.modal-aceptar {
-    width: 100%;
-    padding: 14px 20px;
-    border: none;
-    border-radius: 14px;
-    background-color: var(--primary);
-    color: var(--secondary-background);
-    font-family: inherit;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    transition:
-        opacity 0.2s ease,
-        transform 0.2s ease;
-}
-
 .modal-aceptar:hover {
-    opacity: 0.9;
+    background-color: #05695a;
 }
 
 .modal-aceptar:active {
@@ -473,82 +450,39 @@ body.sin-scroll {
 }
 
 
-/* Pantallas pequeñas */
+/* Modal QR */
 
-@media (max-width: 480px) {
-
-    .modal {
-        align-items: flex-end;
-        padding: 10px;
-    }
-
-    .modal-contenido {
-        max-height: 92vh;
-        border-radius: 24px 24px 18px 18px;
-    }
-
-    .modal-header,
-    .modal-body,
-    .modal-footer {
-        padding-right: 18px;
-        padding-left: 18px;
-    }
-
+.qr-modal {
+    max-width: 400px;
 }
 
-@media (max-width: 380px) {
-
-    .perfil-header {
-        padding-right: 18px;
-        padding-left: 18px;
-    }
-
-    .usuario-section,
-    .ayuda-card,
-    .clabe-card,
-    .perfil-opciones {
-        margin-right: 18px;
-        margin-left: 18px;
-    }
-
-    .mensaje-copiado {
-        margin-right: 22px;
-        margin-left: 22px;
-    }
-
-    .usuario-avatar {
-        width: 68px;
-        height: 68px;
-        font-size: 26px;
-    }
-
-    .usuario-nombre {
-        font-size: 22px;
-    }
-
-    .perfil-opcion {
-        min-height: 78px;
-        grid-template-columns: 38px 1fr;
-        padding-right: 12px;
-        padding-left: 12px;
-    }
-
-    .opcion-icono {
-        width: 33px;
-        height: 33px;
-    }
-
-    .opcion-icono img {
-        width: 22px;
-        height: 22px;
-    }
-
-    .opcion-titulo {
-        font-size: 15px;
-    }
-
-    .opcion-descripcion {
-        font-size: 12px;
-    }
-
+.qr-container {
+    display: grid;
+    place-items: center;
+    margin: 24px 0;
 }
+
+.qr-imagen {
+    width: 220px;
+    height: 220px;
+    padding: 14px;
+    border-radius: 18px;
+    background-color: #fff;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    object-fit: contain;
+}
+
+/* Animación */
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
