@@ -45,8 +45,9 @@ main, section {
 }
 main, header, footer { width: 100%; max-width: 450px; }
 
-h1 { font-size: 16px; color: var(--primary); font-weight: normal; }
-h2 { font-size: 32px; font-weight: lighter; font-family: monospace }
+h1 { font-size: 16px; color: var(--primary); }
+h1, h2 { font-weight: normal; }
+#saldo-disponible h2 { font-size: 32px; font-weight: lighter; font-family: monospace }
 p { font-size: 12px; color: var(--secondary-text); }
 a { user-select: none; }
 main > * { margin: 0 32px;}

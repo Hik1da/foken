@@ -74,3 +74,45 @@ input:disabled {
 input:disabled:hover {
     border: 2px solid var(--secondary-background);
 }
+
+#datos-cuenta {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    padding: 12px 24px;
+
+    font-size: 14px;
+    border-radius: 24px;
+    background-color: var(--secondary-background);
+    border: 2px solid var(--primary-background);
+    box-shadow: 0 0 0 2px var(--secondary-background);
+    color: var(---background);
+}
+#datos-cuenta h2 {
+    display: inline;
+}
+#datos-cuenta img {
+    display: inline;
+    width: 16px;
+    filter: invert(1);
+}
+.dark-mode #datos-cuenta img { filter: invert(0); }
+#datos-cuenta img:hover { cursor: pointer; }
+
+#popup {
+  position: fixed;
+  pointer-events: none;
+  padding: 12px;
+  border-radius: 24px 24px 24px 0;
+  background: var(--primary);
+  color: var(--secondary-background);
+  opacity: 0;
+  transition: 0.3s opacity ease;
+}
+dialog {
+    border: none;
+    margin: auto;
+    background-color: transparent;
+    overflow: visible;
+}

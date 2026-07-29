@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/general.css">
+        <link rel="stylesheet" href="styles/home.css">
+        <link rel="stylesheet" href="styles/interactions.css">
+        <title>depositar | foken</title>
+    </head>
+    <body>
+        <header>
+            <a href="home.html" class="back">&#8592;</a>
+            <img src="assets/logo.png" onclick="toggleDarkMode()">
+            <div class="header-space"></div>
+        </header>
+        <main>
+            <h1>Deposita por transferencia</h1>
+            <p>Deposita con tu numero CLABE</p>
+            <section id="datos-cuenta">
+                <h1 id="user">Nombre Apellido</h1>
+                <p>CLABE interbancaria</p>
+                <span>
+                    <h2 id="CLABE">661620004200032004</h2>
+                    <img src="assets/flat-icons/copy.png" onclick="copyInputField(); showPopup(event);" onmouseleave="hidePopup(event);">
+                </span>
+                <div id="popup">CLABE copiada al portapapeles!</div>
+                <p>Banco receptor</p>
+                <h2>foken</h2>
+            </section>
+            <h1>Deposita a la cuenta</h1>
+            <p>(Seccion de desarrollo)</p>
+            <a class="button" onclick="">Depositar</a>
+            <section id="deposit-container" style="display: none;">
+                <h1>Realizar el deposito</h1>
+                <form id="transferencia-form">
+                    <h1>Ingresa cantidad a transferir</h1>
+                    <span>$<input id="cantidad" type="number" min="0" placeholder="0">MXN</span>
+                    <p>$<span id="saldo">231.23</span> disponibles en tu cuenta</p>
+                    <input type="submit" class="button" value="Depositar a cuenta" disabled>
+                </form>
+            </section>
+        </main>
+        <footer>
+            <a href="home.html"><img src="assets/flat-icons/home.png"></a>
+            <a href="cards.html"><img src="assets/flat-icons/card.png"></a>
+            <a href=""><img src="assets/flat-icons/user.png"></a>
+        </footer>
+        <script src="scripts/darkmode.js"></script>
+        <script>
+            const popup = document.getElementById("popup");
+            const showPopup = (evt) => {
+                popup.style.left = (evt.pageX + 8) + 'px';
+                popup.style.top = (evt.pageY - 36) + 'px';
+                popup.style.opacity = 1;
+            };
+            const hidePopup = (evt) => {
+                popup.style.opacity = 0;
+            };
+            function copyInputField() {
+                var textToCopy  = document.getElementById("CLABE").innerText;
+                navigator.clipboard.writeText(textToCopy);
+            }
+        </script>
+    </body>
+</html>
