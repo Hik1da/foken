@@ -15,96 +15,13 @@
             <div class="header-space"></div>
         </header>
         <main>
-            <section id="contactos-container">
-                <h1>Contactos</h1>
-                <p>Selecciona un contacto al que transferir</p>
-                <section id="contactos-list">
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                </section>
-                <a class="button" onclick="">Añadir contacto</a>
-            </section>
-            <section id="transferencia-container" style="display: none;">
+            <section id="transferencia-container">
                 <h1>Realizar la transferencia</h1>
-                <a href="#" class="contacto selected">
-                    <img src="assets/flat-icons/user.png">
-                    <div>
-                        <h3>Contacto</h3>
-                        <p>(nota)</p>
-                    </div>
-                </a>
                 <form id="transferencia-form">
+                    <input id="tarjetaDestino" type="text" placeholder="Número de tarjeta destino" required>
                     <h1>Ingresa cantidad a transferir</h1>
                     <span>$<input id="cantidad" type="number" min="0" placeholder="0">MXN</span>
-                    <p>$<span id="saldo">231.23</span> disponibles en tu cuenta</p>
+                    <p>$<span id="saldo">0.00</span> disponibles en tu cuenta</p>
                     <input type="submit" class="button" value="Transferir con cuenta" disabled>
                 </form>
             </section>
@@ -112,8 +29,10 @@
         <footer>
             <a href="home.html"><img src="assets/flat-icons/home.png"></a>
             <a href="cards.html"><img src="assets/flat-icons/card.png"></a>
-            <a href=""><img src="assets/flat-icons/user.png"></a>
+            <a href="#" id="logoutFooter"><img src="assets/flat-icons/user.png"></a>
         </footer>
         <script src="scripts/darkmode.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+        <script type="module" src="scripts/transaction.js"></script>
     </body>
 </html>
