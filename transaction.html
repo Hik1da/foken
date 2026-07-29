@@ -19,11 +19,18 @@
                 <h1>Realizar la transferencia</h1>
                 <form id="transferencia-form">
                     <input id="tarjetaDestino" type="text" placeholder="Número de tarjeta destino" required>
+                    <input id="nombreContacto" type="text" placeholder="Nombre o apodo del contacto (opcional)">
                     <h1>Ingresa cantidad a transferir</h1>
                     <span>$<input id="cantidad" type="number" min="0" placeholder="0">MXN</span>
                     <p>$<span id="saldo">0.00</span> disponibles en tu cuenta</p>
                     <input type="submit" class="button" value="Transferir con cuenta" disabled>
                 </form>
+            </section>
+
+            <section id="contactos-container">
+                <h1>Contactos guardados</h1>
+                <p id="sin-contactos" style="display:none;">Aún no tienes contactos guardados. Al transferir y ponerle un nombre, aparecerá aquí.</p>
+                <div id="contactos-list"></div>
             </section>
         </main>
         <footer>

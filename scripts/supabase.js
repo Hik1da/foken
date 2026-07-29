@@ -282,3 +282,35 @@ export const realizarTransferencia = async (idCuentaOrigen, numeroTarjetaDestino
     }
     return data
 }
+
+export const getContactosByUsuario = async (userId) => {
+    const supabase = getSupabase()
+    if (!supabase) return []
+    const { data, error } = await supabase
+        .from('contactos')
+        .select('*')
+        .eq('id_usuario', userId)
+        .order('nombre_contacto', { ascending: true })
+    if (error) {
+        console.error('Error al obtener contactos:', error)
+        return []
+    }
+    return data
+}
+
+export const guardarContacto = async (userId, nombreContacto, numeroTarjeta) => {
+    const supabase = getSupabase()
+    if (!supabase) return null
+    const { data, error } = await supabase
+        .from('contactos')
+        .upsert(
+            { id_usuario: userId, nombre_contacto: nombreContacto, numero_tarjeta: numeroTarjeta },
+            { onConflict: 'id_usuario,numero_tarjeta' }
+        )
+        .select()
+    if (error) {
+        console.error('Error al guardar contacto:', error)
+        return null
+    }
+    return data[0]
+}

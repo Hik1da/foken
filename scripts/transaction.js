@@ -1,6 +1,40 @@
-import { getSupabase, getCuentaByUsuario, realizarTransferencia, actualizarUltimoAcceso } from './supabase.js'
+import { getSupabase, getCuentaByUsuario, realizarTransferencia, getContactosByUsuario, guardarContacto, actualizarUltimoAcceso } from './supabase.js'
 
 let cuentaUsuario = null
+let idUsuarioActual = null
+
+function renderizarContactos(contactos) {
+    const lista = document.getElementById('contactos-list')
+    const sinContactos = document.getElementById('sin-contactos')
+
+    if (!contactos || contactos.length === 0) {
+        lista.innerHTML = ''
+        sinContactos.style.display = 'block'
+        return
+    }
+
+    sinContactos.style.display = 'none'
+    lista.innerHTML = contactos.map(c => `
+        <a href="#" class="contacto" data-tarjeta="${c.numero_tarjeta}" data-nombre="${c.nombre_contacto}">
+            <img src="assets/flat-icons/user.png">
+            <div>
+                <h3>${c.nombre_contacto}</h3>
+                <p>**** ${c.numero_tarjeta.slice(-4)}</p>
+            </div>
+        </a>
+    `).join('')
+
+    lista.querySelectorAll('.contacto').forEach(el => {
+        el.addEventListener('click', (e) => {
+            e.preventDefault()
+            const inputTarjeta = document.getElementById('tarjetaDestino')
+            document.getElementById('nombreContacto').value = el.dataset.nombre
+            inputTarjeta.value = el.dataset.tarjeta
+            inputTarjeta.dispatchEvent(new Event('input'))
+            document.getElementById('cantidad').focus()
+        })
+    })
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     const supabase = getSupabase()
@@ -14,19 +48,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = 'login.html'
         return
     }
+    idUsuarioActual = user.id
 
     await actualizarUltimoAcceso(user.id)
     cuentaUsuario = await getCuentaByUsuario(user.id)
 
-    if (cuentaUsuario) {
-        document.getElementById('saldo').textContent = cuentaUsuario.saldo.toFixed(2)
-    } else {
+    if (!cuentaUsuario) {
         alert('No se encontró una cuenta asociada a tu usuario')
         return
     }
+    document.getElementById('saldo').textContent = cuentaUsuario.saldo.toFixed(2)
+
+    const contactos = await getContactosByUsuario(user.id)
+    renderizarContactos(contactos)
 
     const form = document.getElementById('transferencia-form')
     const inputTarjetaDestino = document.getElementById('tarjetaDestino')
+    const inputNombreContacto = document.getElementById('nombreContacto')
     const inputCantidad = document.getElementById('cantidad')
     const btnSubmit = form.querySelector('input[type="submit"]')
 
@@ -40,6 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault()
 
         const numeroTarjetaDestino = inputTarjetaDestino.value.trim()
+        const nombreContacto = inputNombreContacto.value.trim()
         const monto = parseFloat(inputCantidad.value)
 
         if (!monto || monto <= 0) {
@@ -63,8 +102,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             return
         }
 
+        if (nombreContacto) {
+            await guardarContacto(idUsuarioActual, nombreContacto, numeroTarjetaDestino)
+            const contactosActualizados = await getContactosByUsuario(idUsuarioActual)
+            renderizarContactos(contactosActualizados)
+        }
+
+        cuentaUsuario.saldo = resultado.saldo_restante
+        document.getElementById('saldo').textContent = cuentaUsuario.saldo.toFixed(2)
+
         alert('Transferencia realizada con éxito')
-        window.location.href = 'home.html'
+
+        form.reset()
+        btnSubmit.disabled = true
+        btnSubmit.value = 'Transferir con cuenta'
     })
 
     const logoutFooter = document.getElementById('logoutFooter')

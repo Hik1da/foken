@@ -116,3 +116,17 @@ dialog {
     background-color: transparent;
     overflow: visible;
 }
+#contactos-container {
+    margin-top: 20px;
+}
+#contactos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+#sin-contactos {
+    font-size: 13px;
+    color: var(--secondary-text);
+    margin-top: 8px;
+}
