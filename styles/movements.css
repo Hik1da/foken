@@ -4,6 +4,7 @@ main{
     max-width: 450px;
     margin: auto;
     margin-top: 64px;
+    margin-bottom: 80px;
 }
 main h1{
     margin: 8px 32px 20px;
@@ -55,7 +56,7 @@ body.dark-mode .search-icon{
     background: var(--secondary-background);
     border: 2px solid #0000; 
     border-radius: 22px;
-    transition: .2s;
+    transition: border .2s;
 }
 .movement:hover{
     border: 2px solid var(--primary); 

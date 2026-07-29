@@ -168,6 +168,7 @@ footer {
     bottom: 0;
     display: flex;
     justify-content: center;
+    background: linear-gradient(#0000 0%, var(--primary-background) 100%);
     gap: 24px;
 }
 footer a {

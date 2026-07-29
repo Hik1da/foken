@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="styles/general.css">
         <link rel="stylesheet" href="styles/home.css">
         <link rel="stylesheet" href="styles/movements.css">
+        <link rel="stylesheet" href="styles/movements-float.css">
         <title>movimientos | foken</title>
     </head>
     <body>
@@ -22,93 +23,120 @@
             <h1>Todos tus movimientos</h1>
             <!-- Buscador -->
             <div class="search">
-                <img src="assets/search.png" class="search-icon" alt="Buscar">
+                <img src="assets/flat-icons/search.png" class="search-icon" alt="Buscar">
                 <input type="text" placeholder="Buscar un movimiento">
             </div>
             <!-- Lista -->
             <section id="movements">
-                <article class="movement">
-                    <img src="assets/flat-icons/exchange.png">
+                <article class="movement" data-id="1" tabindex="0">
+                    <img src="assets/flat-icons/exchange.png" alt="Transferencia">
                     <div class="movement-info">
                         <h2>Transferencia enviada</h2>
                         <span>14 Jul</span>
                     </div>
                     <strong class="expense">-$520.00</strong>
                 </article>
-                <article class="movement">
-                    <img src="assets/flat-icons/deposit.png">
+                <article class="movement" data-id="2" tabindex="0">
+                    <img src="assets/flat-icons/deposit.png" alt="Depósito">
                     <div class="movement-info">
                         <h2>Depósito recibido</h2>
                         <span>13 Jul</span>
                     </div>
                     <strong class="income">$1,250.00</strong>
                 </article>
-                <article class="movement">
-                    <img src="assets/flat-icons/card.png">
+                <article class="movement" data-id="3" tabindex="0">
+                    <img src="assets/flat-icons/card.png" alt="Pago con tarjeta">
                     <div class="movement-info">
                         <h2>Pago Netflix</h2>
                         <span>12 Jul</span>
                     </div>
                     <strong class="expense">-$219.00</strong>
                 </article>
-                <article class="movement">
-                    <img src="assets/flat-icons/document.png">
+                <article class="movement" data-id="4" tabindex="0">
+                    <img src="assets/flat-icons/document.png" alt="Estado de cuenta">
                     <div class="movement-info">
                         <h2>Estado de cuenta</h2>
-                        <span>10 Jul</span>
+                        <span>19 Jul</span>
                     </div>
                     <strong>$0.00</strong>
                 </article>
-                <article class="movement">
-                    <img src="assets/flat-icons/document.png">
+                <article class="movement" data-id="5" tabindex="0">
+                    <img src="assets/flat-icons/document.png" alt="Estado de cuenta">
                     <div class="movement-info">
                         <h2>Estado de cuenta</h2>
-                        <span>10 Jul</span>
+                        <span>20 Jul</span>
                     </div>
                     <strong>$0.00</strong>
                 </article>
-                <article class="movement">
-                    <img src="assets/flat-icons/document.png">
+                <article class="movement" data-id="6" tabindex="0">
+                    <img src="assets/flat-icons/deposit.png" alt="Depósito">
                     <div class="movement-info">
-                        <h2>Estado de cuenta</h2>
-                        <span>10 Jul</span>
+                        <h2>Depósito recibido</h2>
+                        <span>12 Jul</span>
                     </div>
-                    <strong>$0.00</strong>
+                    <strong class="income">$990.00</strong>
                 </article>
-                <article class="movement">
-                    <img src="assets/flat-icons/document.png">
+                <article class="movement" data-id="7" tabindex="0">
+                    <img src="assets/flat-icons/deposit.png" alt="Depósito">
                     <div class="movement-info">
-                        <h2>Estado de cuenta</h2>
-                        <span>10 Jul</span>
+                        <h2>Depósito recibido</h2>
+                        <span>16 Jul</span>
                     </div>
-                    <strong>$0.00</strong>
-                </article>
-                <article class="movement">
-                    <img src="assets/flat-icons/document.png">
-                    <div class="movement-info">
-                        <h2>Estado de cuenta</h2>
-                        <span>10 Jul</span>
-                    </div>
-                    <strong>$0.00</strong>
-                </article>
-                <article class="movement">
-                    <img src="assets/flat-icons/document.png">
-                    <div class="movement-info">
-                        <h2>Estado de cuenta</h2>
-                        <span>10 Jul</span>
-                    </div>
-                    <strong>$0.00</strong>
-                </article>
-                <article class="movement">
-                    <img src="assets/flat-icons/document.png">
-                    <div class="movement-info">
-                        <h2>Estado de cuenta</h2>
-                        <span>10 Jul</span>
-                    </div>
-                    <strong>$0.00</strong>
+                    <strong class="income">$100.00</strong>
                 </article>
             </section>
         </main>
+        <div class="modal-overlay" id="movementModal">
+            <section class="transaction-modal">
+                <!-- Encabezado -->
+                <div class="modal-header">
+                    <h2>Detalles de la transacción</h2>
+                    <button type="button" class="modal-close" id="closeModal">
+                        &times;
+                    </button>
+                </div>
+                <!-- Información principal -->
+                <div class="transaction-main">
+                    <span id="modalType">Transferencia enviada</span>
+                    <h3 id="modalAmount">-$520.00</h3>
+                    <p id="modalName">
+                        Sebastián Emiliano Campos Orozco
+                    </p>
+                    <small id="modalDate">
+                        14 Jul 2026, 8:20 p. m.
+                    </small>
+                </div>
+                <!-- Resumen -->
+                <div class="transaction-summary">
+                    <h3>Resumen</h3>
+                    <div class="detail-row">
+                        <span>Categoría</span>
+                        <strong id="modalCategory"></strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Cuenta</span>
+                        <strong id="modalAccount"></strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Mensaje</span>
+                        <strong id="modalMessage"></strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Folio</span>
+                        <strong id="modalFolio"></strong>
+                    </div>
+                </div>
+                <button type="button" class="modal-button" id="acceptModal">
+                    Cerrar
+                </button>
+            </section>
+        </div>
+        <footer>
+            <a href="home.html"><img src="assets/flat-icons/home.png"></a>
+            <a href="cards.html"><img src="assets/flat-icons/card.png"></a>
+            <a href=""><img src="assets/flat-icons/user.png"></a>
+        </footer>
         <script src="scripts/darkmode.js"></script>
+        <script src="scripts/movements.js"></script>
     </body>
 </html>
