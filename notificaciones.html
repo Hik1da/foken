@@ -8,9 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Hojas de estilo -->
+    <link rel="stylesheet" href="styles/home.css">
     <link rel="stylesheet" href="styles/general.css">
     <link rel="stylesheet" href="styles/notifications.css">
-    <link rel="stylesheet" href="styles/home.css">
+    <link rel="stylesheet" href="styles/notifications-float.css">
 
     <title>Notificaciones | Foken</title>
 
@@ -45,7 +46,7 @@
 
             <!-- Notificación 1 -->
 
-            <article class="notification">
+            <article class="notification" data-id="1" tabindex="0">
 
                 <div class="notification-icon success">
                     <img src="assets/exchange.png" alt="Transferencia">
@@ -69,7 +70,7 @@
 
             <!-- Notificación 2 -->
 
-            <article class="notification">
+            <article class="notification" data-id="2" tabindex="0">
 
                 <div class="notification-icon deposit">
                     <img src="assets/deposit.png" alt="Depósito">
@@ -93,7 +94,7 @@
 
             <!-- Notificación 3 -->
 
-            <article class="notification">
+            <article class="notification" data-id="3" tabindex="0">
 
                 <div class="notification-icon document">
                     <img src="assets/document.png" alt="Documento">
@@ -116,7 +117,7 @@
 
             <!-- Notificación 4 -->
 
-            <article class="notification">
+            <article class="notification" data-id="4" tabindex="0">
 
                 <div class="notification-icon card">
                     <img src="assets/card.png" alt="Pago">
@@ -141,8 +142,81 @@
 
     </main>
 
-    <!-- Script para el modo oscuro -->
+    <!-- Ventana flotante -->
+
+    <div class="notification-overlay" id="notificationModal">
+
+        <section class="notification-panel">
+
+            <!-- Encabezado -->
+
+            <div class="notification-panel-header">
+
+                <h2>Detalle de la notificación</h2>
+
+                <button
+                    type="button"
+                    class="notification-close"
+                    id="closeNotification"
+                >
+                    &times;
+                </button>
+
+            </div>
+
+            <!-- Icono -->
+
+            <div
+                class="notification-panel-icon"
+                id="notificationIcon"
+            >
+
+                <img
+                    id="notificationIconImage"
+                    src="assets/notification.png"
+                    alt="Notificación"
+                >
+
+            </div>
+
+            <!-- Información de la notificación -->
+
+            <div class="notification-content">
+
+                <h3 id="notificationTitle"></h3>
+
+                <p id="notificationMessage"></p>
+
+                <span id="notificationDate"></span>
+
+            </div>
+
+            <!-- Referencia -->
+
+            <div class="notification-detail">
+
+                <span>Referencia</span>
+
+                <strong id="notificationReference"></strong>
+
+            </div>
+
+            <!-- Botón -->
+
+            <button
+                type="button"
+                class="notification-button"
+                id="acceptNotification"
+            >
+                Entendido
+            </button>
+
+        </section>
+
+    </div>
+
     <script src="scripts/darkmode.js"></script>
+    <script src="scripts/notifications.js"></script>
 
 </body>
 

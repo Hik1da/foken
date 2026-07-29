@@ -11,6 +11,7 @@ header{
     transform: translateX(-50%);
 
     width: 100%;
+
     max-width: 450px;
 
     height: 75px;
@@ -21,7 +22,7 @@ header{
 
     align-items: center;
 
-    padding: 18px 0;
+    padding: 0 22px;
 
     background: linear-gradient(
         var(--primary-background) 0%,
@@ -74,8 +75,7 @@ main{
     max-width: 450px;
 
     margin: auto;
-
-    margin-top: 64px;
+    margin-top: 90px;
 
 }
 
@@ -151,13 +151,13 @@ body.dark-mode .search-icon{
 
 #movements{
 
-    display: flex;
+    margin: 0 20px;
+    padding: 10px 0 40px;
 
+    display: flex;
     flex-direction: column;
 
-    gap: 18px;
-
-    margin: 0 32px;
+    gap: 16px;
 
 }
 
@@ -175,7 +175,11 @@ body.dark-mode .search-icon{
 
     background: var(--secondary-background);
 
+    border: 2px solid transparent;
+
     border-radius: 22px;
+
+    box-sizing: border-box;
 
     transition: .2s;
 
@@ -184,7 +188,9 @@ body.dark-mode .search-icon{
 .movement:hover{
 
     transform: translateY(-2px);
-    border: 2px solid var(--primary); 
+
+    border-color: var(--primary);
+
     cursor: pointer;
 
 }

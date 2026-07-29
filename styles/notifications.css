@@ -76,8 +76,9 @@ main{
     max-width: 450px;
 
     margin: auto;
-
     margin-top: 90px;
+
+    padding-bottom: 30px;
 
 }
 
@@ -103,6 +104,8 @@ main h1{
 #notifications{
 
     margin: 0 20px;
+
+    padding: 10px 0 40px;
 
     display: flex;
 
