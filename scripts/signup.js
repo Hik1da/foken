@@ -1,136 +1,122 @@
-// scripts/signup.js
-import { getSupabase } from './supabase.js'
+import { getSupabase, crearUsuario, crearCuentaYTarjetas } from './supabase.js'
 
 console.log('🚀 signup.js cargado correctamente')
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('📄 DOM cargado')
-    
     const form = document.getElementById('myForm');
     const openBoxBtn = document.getElementById('openBox');
     const confirmBox = document.getElementById('confirmBox');
     const cancelBtn = document.getElementById('cancelBtn');
     const confirmBtn = document.getElementById('confirmBtn');
 
-    console.log('🔍 Elementos encontrados:', { 
-        form: !!form, 
-        openBoxBtn: !!openBoxBtn, 
-        confirmBox: !!confirmBox, 
-        cancelBtn: !!cancelBtn, 
-        confirmBtn: !!confirmBtn 
-    })
-
     let formData = {};
 
-    // Mostrar el diálogo al hacer clic en Confirmar
     openBoxBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        console.log('🖱️ Click en Confirmar')
-        
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
 
-        console.log('📝 Datos:', { email, passwordLength: password.length })
-
         if (!email || !password || !confirmPassword) {
-            alert('❌ Por favor, completa todos los campos.');
+            alert('Por favor, completa todos los campos.');
             return;
         }
 
         if (password !== confirmPassword) {
-            alert('❌ Las contraseñas no coinciden.');
+            alert('Las contraseñas no coinciden.');
             return;
         }
 
         if (password.length < 6) {
-            alert('❌ La contraseña debe tener al menos 6 caracteres.');
+            alert('La contraseña debe tener al menos 6 caracteres.');
             return;
         }
 
-        formData = { email, password };
-        console.log('✅ Datos válidos, mostrando diálogo')
+        const nombreCompleto = email.split('@')[0]
+            .replace(/[^a-zA-ZáéíóúñÑ ]/g, ' ')
+            .split(' ')
+            .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+            .join(' ') || 'Usuario Foken';
+        
+        formData = { email, password, nombreCompleto };
         confirmBox.showModal();
     });
 
-    // Cancelar registro
     cancelBtn.addEventListener('click', () => {
-        console.log('❌ Cancelado')
         confirmBox.close();
         formData = {};
         confirmBtn.textContent = 'Estoy de acuerdo';
         confirmBtn.disabled = false;
     });
 
-    // Confirmar registro
     confirmBtn.addEventListener('click', async (e) => {
         e.preventDefault();
-        console.log('✅ Click en "Estoy de acuerdo"')
-        
-        if (confirmBtn.disabled) {
-            console.log('⏳ Botón deshabilitado, ignorando')
-            return
-        }
-        
+        if (confirmBtn.disabled) return;
         confirmBtn.textContent = '⏳ Registrando...';
         confirmBtn.disabled = true;
 
         try {
-            // Obtener cliente de Supabase
             const supabase = getSupabase()
             if (!supabase) {
-                alert('❌ Error: Supabase no está cargado. Recarga la página.')
+                alert('Error: Supabase no está cargado.')
                 confirmBtn.textContent = 'Estoy de acuerdo';
                 confirmBtn.disabled = false;
                 return
             }
             
-            console.log('📝 Enviando a Supabase:', { email: formData.email })
-            
-            const { data, error } = await supabase.auth.signUp({
+            const { data: authData, error: authError } = await supabase.auth.signUp({
                 email: formData.email,
                 password: formData.password
             });
 
-            console.log('📥 Respuesta de Supabase:', { data, error })
-
-            if (error) {
-                console.error('❌ Error de Supabase:', error)
-                
-                let mensaje = '❌ Error al registrar: '
-                if (error.message.includes('User already registered')) {
-                    mensaje += 'Este email ya está registrado. Por favor, inicia sesión.'
+            if (authError) {
+                let mensaje = 'Error '
+                if (authError.message.includes('User already registered')) {
+                    mensaje += 'Este email ya está registrado.'
                 } else {
-                    mensaje += error.message
+                    mensaje += authError.message
                 }
-                
                 alert(mensaje)
                 confirmBtn.textContent = 'Estoy de acuerdo';
                 confirmBtn.disabled = false;
                 return;
             }
 
-            console.log('✅ Éxito:', data)
+            const usuario = await crearUsuario(
+                authData.user.id,
+                formData.nombreCompleto,
+                formData.email,
+                ''
+            )
+
+            if (!usuario) {
+                alert('Error al crear perfil de usuario.')
+                confirmBtn.textContent = 'Estoy de acuerdo';
+                confirmBtn.disabled = false;
+                return
+            }
+
+            const resultado = await crearCuentaYTarjetas(
+                authData.user.id,
+                formData.nombreCompleto
+            )
+
+            if (resultado) {
+                console.log('Cuenta y tarjetas creadas')
+            }
+
             confirmBox.close();
-            alert('✅ ¡Registro exitoso! Revisa tu correo para confirmar tu cuenta.');
+            alert('¡Registro exitoso! Revisa tu correo para confirmar tu cuenta.\n\n' +
+                  'Usuario: ' + formData.nombreCompleto + '\n' +
+                  'Se han creado tus tarjetas de débito y crédito.');
             
             setTimeout(() => {
                 window.location.href = 'login.html';
-            }, 2000);
+            }, 3000);
 
         } catch (error) {
-            console.error('❌ Excepción:', error)
-            alert('❌ Error al registrar. Intenta de nuevo.')
-            confirmBtn.textContent = 'Estoy de acuerdo';
-            confirmBtn.disabled = false;
-        }
-    });
-
-    // Cerrar diálogo con ESC
-    confirmBox.addEventListener('close', () => {
-        console.log('🔚 Diálogo cerrado')
-        if (!confirmBox.returnValue) {
-            formData = {};
+            console.error('Error:', error)
+            alert('Error al registrar. Intenta de nuevo.')
             confirmBtn.textContent = 'Estoy de acuerdo';
             confirmBtn.disabled = false;
         }
@@ -138,6 +124,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        console.log('📝 Formulario prevenido de enviar')
     });
 });

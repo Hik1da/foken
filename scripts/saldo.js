@@ -8,10 +8,10 @@ function toggleSaldo() {
 
     if (saldoVisible) {
         saldo.textContent = "••••••";
-        ojo.src = "assets/ojo-abierto.png";
+        ojo.src = "assets/flat-icons/ojo-abierto.png";
     } else {
         saldo.textContent = saldoReal;
-        ojo.src = "assets/ojo-cerrado.png";
+        ojo.src = "assets/flat-icons/ojo-cerrado.png";
     }
 
     saldoVisible = !saldoVisible;

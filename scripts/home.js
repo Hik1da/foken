@@ -1,15 +1,13 @@
 // scripts/home.js
-import { getSupabase, logout } from './supabase.js'
+import { getSupabase, logout, getUsuarioById, getTarjetasByUsuario, getSaldo, actualizarUltimoAcceso } from './supabase.js'
 
-console.log('🚀 home.js cargado')
+console.log('home.js cargado')
 
-// Verificar sesión al cargar
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('📄 DOM cargado')
+    console.log('DOM cargado')
     
     const supabase = getSupabase()
     if (!supabase) {
-        alert('❌ Error: Supabase no está cargado')
         window.location.href = 'login.html'
         return
     }
@@ -19,35 +17,89 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { data: { user }, error } = await supabase.auth.getUser()
         
         if (error || !user) {
-            console.log('🔒 No hay sesión, redirigiendo a login')
             window.location.href = 'login.html'
             return
         }
         
-        console.log('✅ Sesión activa:', user.email)
+        console.log('Sesión activa:', user.email)
         
-        // Mostrar información del usuario
-        document.getElementById('userInfo').innerHTML = `
-            <div style="padding: 15px; background: #f5f5f5; border-radius: 8px;">
-                <p><strong>👤 Usuario:</strong> ${user.email}</p>
-                <p><strong>📧 Email confirmado:</strong> ${user.email_confirmed_at ? '✅ Sí' : '❌ No'}</p>
-                <p><strong>📅 ID:</strong> ${user.id.substring(0, 8)}...</p>
-            </div>
-        `
+        // Actualizar último acceso
+        await actualizarUltimoAcceso(user.id)
         
-        // Configurar botón de cerrar sesión
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            console.log('🔴 Cerrando sesión...')
-            const success = await logout()
-            if (success) {
-                window.location.href = 'login.html'
-            } else {
-                alert('❌ Error al cerrar sesión')
+        // Obtener datos del usuario
+        const usuario = await getUsuarioById(user.id)
+        console.log('Usuario:', usuario)
+        
+        // Obtener tarjetas
+        const tarjetas = await getTarjetasByUsuario(user.id)
+        console.log('Tarjetas:', tarjetas)
+        
+        // Obtener saldo
+        const saldo = await getSaldo(user.id)
+        console.log('Saldo:', saldo)
+        
+        // Actualizar saldo en la interfaz
+        const saldoElement = document.getElementById('saldo')
+        if (saldoElement) {
+            saldoElement.textContent = saldo.toFixed(2)
+        }
+        
+        // Actualizar el nombre del usuario en el header (icono)
+        const userIcon = document.querySelector('header a#user img')
+        if (userIcon && usuario) {
+            // Crear avatar con iniciales
+            const canvas = document.createElement('canvas')
+            canvas.width = 32
+            canvas.height = 32
+            const ctx = canvas.getContext('2d')
+            
+            ctx.beginPath()
+            ctx.arc(16, 16, 16, 0, Math.PI * 2)
+            ctx.fillStyle = '#4A90D9'
+            ctx.fill()
+            
+            ctx.fillStyle = '#FFFFFF'
+            ctx.font = 'bold 14px Arial'
+            ctx.textAlign = 'center'
+            ctx.textBaseline = 'middle'
+            const iniciales = (usuario.nombre_completo || 'U')
+                .split(' ')
+                .map(n => n[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2)
+            ctx.fillText(iniciales || 'U', 16, 17)
+            
+            userIcon.src = canvas.toDataURL()
+        }
+        
+        // Si hay tarjetas, mostrar información en la interfaz
+        if (tarjetas && tarjetas.length > 0) {
+            const tarjetaDebito = tarjetas.find(t => t.tipo_tarjeta === 'debito')
+            const tarjetaCredito = tarjetas.find(t => t.tipo_tarjeta === 'credito')
+            
+            // Actualizar estado de tarjeta si existe el elemento
+            const estadoTarjeta = document.getElementById('estadoTarjeta')
+            if (estadoTarjeta && tarjetaDebito) {
+                estadoTarjeta.textContent = tarjetaDebito.estado === 'activa' ? 'Activa' : 'Bloqueada'
+                estadoTarjeta.className = `status-badge ${tarjetaDebito.estado === 'activa' ? 'activa' : 'bloqueada'}`
             }
-        })
+        }
+        
+        // Cerrar sesión (al hacer clic en el icono de usuario del footer)
+        const footerUserLink = document.querySelector('footer a:last-child')
+        if (footerUserLink) {
+            footerUserLink.addEventListener('click', async (e) => {
+                e.preventDefault()
+                if (confirm('¿Deseas cerrar sesión?')) {
+                    await logout()
+                    window.location.href = 'login.html'
+                }
+            })
+        }
         
     } catch (error) {
-        console.error('❌ Error:', error)
+        console.error('Error:', error)
         window.location.href = 'login.html'
     }
 })
