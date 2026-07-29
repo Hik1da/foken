@@ -175,7 +175,7 @@ async function cargarDatosUsuario() {
 function reiniciarNip() {
     nipVisible = false;
     nipTexto.textContent = "••••";
-    ojoNip.src = "assets/flat-icons/ojo-cerrado.png";
+    ojoNip.src = "assets/interactive-icons/eye-close.png";
     ojoNip.alt = "Mostrar NIP";
 }
 
@@ -192,7 +192,7 @@ window.cerrarModal = function() {
 window.toggleNip = function() {
     nipVisible = !nipVisible;
     nipTexto.textContent = nipVisible ? nipActual : "••••";
-    ojoNip.src = nipVisible ? "assets/flat-icons/ojo-abierto.png" : "assets/flat-icons/ojo-cerrado.png";
+    ojoNip.src = nipVisible ? "assets/interactive-icons/eye-open.png" : "assets/interactive-icons/eye-close.png";
     ojoNip.alt = nipVisible ? "Ocultar NIP" : "Mostrar NIP";
 }
 
