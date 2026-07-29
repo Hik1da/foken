@@ -1,0 +1,398 @@
+/* Página */
+body {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+body.sin-scroll {
+    overflow: hidden;
+}
+/* Contenedor principal */
+.perfil-container {
+    width: 100%;
+    max-width: 450px;
+    min-height: 100vh;
+    padding: 18px 0 40px;
+}
+/* Encabezado */
+.perfil-header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 24px;
+}
+/* Botones QR y copiar */
+.qr-button,
+.copiar-button {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+.qr-button {
+    border-radius: 12px;
+    background-color: var(--secondary-background);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.qr-button:hover {
+    background-color: var(--primary-background);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+.qr-button:active,
+.copiar-button:active {
+    transform: scale(0.95);
+}
+.qr-icon,
+.copiar-icono {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    filter: contrast(0%) brightness(70%);
+}
+.dark-mode .qr-icon,
+.dark-mode .copiar-icono {
+    filter: none;
+}
+/* Información del usuario */
+.usuario-section {
+    margin: 10px 32px 34px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.usuario-avatar {
+    width: 74px;
+    height: 74px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: var(--secondary-background);
+    font-size: 29px;
+    font-weight: 700;
+}
+.usuario-nombre {
+    margin: 14px 0 0;
+    color: var(--primary);
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+}
+/* Tarjeta de ayuda */
+.ayuda-card {
+    margin: 0 32px 20px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    border: 2px solid var(--primary-background);
+    border-radius: 24px;
+    background-color: var(--secondary-background);
+    box-shadow: 0 0 0 2px var(--secondary-background);
+    color: var(--primary);
+    text-decoration: none;
+    transition:
+        border-color 0.25s ease,
+        transform 0.2s ease;
+}
+.ayuda-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+.ayuda-icon {
+    width: 27px;
+    height: 27px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border: 1.7px solid var(--primary);
+    border-radius: 50%;
+    color: var(--primary);
+    font-size: 17px;
+}
+.ayuda-texto,
+.opcion-contenido,
+.clabe-grupo {
+    display: flex;
+    flex-direction: column;
+}
+.ayuda-titulo {
+    margin-bottom: 3px;
+    color: var(--primary);
+    font-size: 16px;
+}
+.ayuda-descripcion {
+    color: var(--secondary-text);
+    font-size: 14px;
+    line-height: 1.4;
+}
+/* Tarjeta CLABE */
+.clabe-card {
+    margin: 0 32px 20px;
+    padding: 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    border-radius: 24px;
+    background-color: var(--primary);
+}
+.clabe-informacion,
+.opcion-contenido {
+    min-width: 0;
+}
+.clabe-grupo {
+    gap: 3px;
+}
+.banco-grupo {
+    margin-top: 20px;
+}
+.clabe-etiqueta {
+    color: var(--primary-background);
+    font-size: 14px;
+}
+.clabe-numero,
+.banco-nombre {
+    color: var(--secondary-background);
+    font-size: 24px;
+    font-weight: lighter;
+}
+.clabe-numero {
+    overflow-wrap: anywhere;
+}
+.copiar-button {
+    border-radius: 10px;
+    background: transparent;
+}
+.copiar-button:hover {
+    background-color: #a9d6b5;
+}
+.mensaje-copiado {
+    min-height: 18px;
+    margin: -12px 36px 10px;
+    color: #2f7543;
+    font-size: 12px;
+    text-align: right;
+}
+/* Opciones del perfil */
+.perfil-opciones {
+    margin: 0 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+    border: 2px solid var(--primary-background);
+    border-radius: 24px;
+    background-color: var(--primary-background);
+    box-shadow: 0 0 0 2px var(--secondary-background);
+}
+.perfil-opcion {
+    width: 100%;
+    min-height: 82px;
+    padding: 15px 14px;
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    background-color: var(--secondary-background);
+    color: var(--primary);
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        padding-left 0.2s ease;
+}
+.perfil-opcion:hover {
+    padding-left: 18px;
+    background-color: color-mix(
+        in srgb,
+        var(--secondary-background) 90%,
+        var(--primary) 10%
+    );
+}
+.opcion-icono {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background-color: var(--primary-background);
+}
+.opcion-icono img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+.opcion-titulo {
+    margin: 0 0 4px;
+    color: var(--primary);
+    font-size: 20px;
+    line-height: 1.25;
+}
+.opcion-descripcion {
+    margin: 0;
+    color: var(--secondary-text);
+    font-size: 15px;
+    line-height: 1.4;
+}
+/* Modal */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+.modal-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+.modal-contenido {
+    width: 100%;
+    max-width: 470px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 22px;
+    background-color: var(--secondary-background);
+    box-shadow:
+        0 20px 55px rgba(0, 0, 0, 0.28),
+        0 6px 18px rgba(0, 0, 0, 0.12);
+    transform: translateY(24px) scale(0.96);
+    transition: transform 0.25s ease;
+}
+.modal-visible .modal-contenido {
+    transform: none;
+}
+.modal-header {
+    position: relative;
+    padding: 30px 60px 8px;
+    text-align: center;
+}
+.modal-header h2 {
+    margin: 0;
+    color: var(--primary);
+    font-size: 24px;
+    line-height: 1.25;
+}
+/* Botón cerrar */
+.modal-cerrar {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: transparent;
+    color: var(--primary-text);
+    font-family: inherit;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+.modal-cerrar:hover {
+    background-color: var(--primary-background);
+    color: var(--primary);
+}
+.modal-cerrar:active {
+    transform: scale(0.92);
+}
+/* Contenido del modal */
+.modal-body {
+    flex: 1;
+    min-height: 0;
+    padding: 0 28px 22px;
+    overflow-y: auto;
+}
+.modal-texto {
+    margin: 0;
+    color: var(--secondary-text);
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: center;
+}
+/* Pie del modal */
+.modal-footer {
+    padding: 0 26px 30px;
+}
+.modal-aceptar {
+    width: 100%;
+    min-height: 48px;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 12px;
+    background-color: var(--primary);
+    color: var(--secondary-background);
+    font: 700 16px inherit;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+.modal-aceptar:hover {
+    background-color: #05695a;
+}
+.modal-aceptar:active {
+    transform: scale(0.98);
+}
+/* Modal QR */
+.qr-modal {
+    max-width: 400px;
+}
+.qr-container {
+    display: grid;
+    place-items: center;
+    margin: 24px 0;
+}
+.qr-imagen {
+    width: 220px;
+    height: 220px;
+    padding: 14px;
+    border-radius: 18px;
+    background-color: var(--secondary-background);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    object-fit: contain;
+}
+/* Animación */
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
