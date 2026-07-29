@@ -515,6 +515,190 @@
     color: var(--primary);
 }
 
+
+.carousel-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.carousel-container {
+    overflow: hidden;
+    width: 100%;
+    max-width: 390px;
+    border-radius: 24px;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.4s ease-in-out;
+}
+
+.card-slide {
+    min-width: 100%;
+    position: relative;
+}
+
+.card-slide .card-image-wrapper {
+    margin: 0;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.card-slide .card-image {
+    display: block;
+    width: 108%;
+    height: auto;
+    margin: -14px;
+    object-fit: cover;
+}
+
+.card-slide .card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 24px 30px 55px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
+}
+
+.card-slide .card-overlay .card-tipo {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+.card-slide .card-overlay .card-marca {
+    font-size: 16px;
+    font-weight: 700;
+    text-align: right;
+}
+
+.card-slide .card-overlay .card-number {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.card-slide .card-overlay .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.card-slide .card-overlay .card-titular {
+    font-size: 10px;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.card-slide .card-overlay .card-titular strong {
+    display: block;
+    font-size: 13px;
+    opacity: 1;
+    color: white;
+}
+
+.card-slide .card-overlay .card-expira {
+    font-size: 10px;
+    opacity: 0.7;
+    text-align: right;
+}
+
+.card-slide .card-overlay .card-expira strong {
+    display: block;
+    font-size: 12px;
+    opacity: 1;
+    color: white;
+}
+
+.card-slide .card-overlay .card-status {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 10px;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+}
+
+.card-slide .card-overlay .card-status.activa {
+    color: #4CAF50;
+    border: 1px solid #4CAF50;
+}
+
+.card-slide .card-overlay .card-status.bloqueada {
+    color: #f44336;
+    border: 1px solid #f44336;
+}
+
+.carousel-btn {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: absolute;
+    z-index: 10;
+}
+
+.carousel-btn:hover {
+    background: rgba(74, 144, 217, 0.8);
+}
+
+.carousel-btn.prev {
+    left: 0;
+}
+
+.carousel-btn.next {
+    right: 0;
+}
+
+.carousel-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin: 12px 0 20px 0;
+}
+
+.carousel-dots .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ccc;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    transition: all 0.3s ease;
+}
+
+.carousel-dots .dot.active {
+    width: 20px;
+    border-radius: 10px;
+    background: #4A90D9;
+}
+
 /* Diseño responsivo */
 
 @media (max-width: 360px) {
@@ -546,5 +730,27 @@
 
     .card-image {
         margin: -12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel-container {
+        max-width: 320px;
+    }
+    .card-slide .card-overlay {
+        padding: 18px 20px 45px 20px;
+    }
+    .card-slide .card-overlay .card-number {
+        font-size: 15px;
+        letter-spacing: 2px;
+    }
+    .card-slide .card-overlay .card-titular strong,
+    .card-slide .card-overlay .card-expira strong {
+        font-size: 11px;
+    }
+    .carousel-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
     }
 }

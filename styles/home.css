@@ -202,3 +202,4 @@ footer a img {
 footer a.selected img { filter: invert(1); }
 .dark-mode footer a img { filter: invert(1); }
 .dark-mode footer a.selected img { filter: invert(0); }
+
