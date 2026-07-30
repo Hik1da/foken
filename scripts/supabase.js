@@ -243,11 +243,12 @@ export const crearCuentaYTarjetas = async (userId, nombreCompleto) => {
     }
 }
 
-export const realizarTransferencia = async (idCuentaOrigen, numeroTarjetaDestino, monto, concepto) => {
+export const realizarTransferencia = async (idCuentaOrigen, idTarjetaOrigen, numeroTarjetaDestino, monto, concepto) => {
     const supabase = getSupabase()
     if (!supabase) return { exito: false, error: 'Error de conexión' }
     const { data, error } = await supabase.rpc('realizar_transferencia', {
         p_id_cuenta_origen: idCuentaOrigen,
+        p_id_tarjeta_origen: idTarjetaOrigen,
         p_numero_tarjeta_destino: numeroTarjetaDestino,
         p_monto: monto,
         p_concepto: concepto || 'Transferencia'

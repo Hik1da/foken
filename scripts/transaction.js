@@ -27,7 +27,9 @@ function actualizarDisponibleSegunTarjeta(selectTarjetaOrigen) {
     }
 
     if (tarjeta.tipo_tarjeta === 'credito') {
-        spanSaldo.textContent = (tarjeta.limite_credito || 100000).toFixed(2)
+        const limite = tarjeta.limite_credito || 100000
+        const usado = tarjeta.credito_usado || 0
+        spanSaldo.textContent = (limite - usado).toFixed(2)
     } else {
         spanSaldo.textContent = cuentaUsuario.saldo.toFixed(2)
     }
@@ -141,7 +143,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const limiteDisponible = tarjetaSeleccionada.tipo_tarjeta === 'credito'
-            ? (tarjetaSeleccionada.limite_credito || 100000)
+            ? (tarjetaSeleccionada.limite_credito || 100000) - (tarjetaSeleccionada.credito_usado || 0)
             : cuentaUsuario.saldo
 
         if (monto > limiteDisponible) {
@@ -173,7 +175,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderizarContactos(contactosActualizados)
         }
 
-        cuentaUsuario.saldo = resultado.saldo_restante
+        if (tarjetaSeleccionada.tipo_tarjeta === 'credito') {
+            tarjetaSeleccionada.credito_usado = (tarjetaSeleccionada.credito_usado || 0) + monto
+        } else {
+            cuentaUsuario.saldo = resultado.saldo_restante
+        }
         actualizarDisponibleSegunTarjeta(selectTarjetaOrigen)
 
         alert('Transferencia realizada con éxito')
