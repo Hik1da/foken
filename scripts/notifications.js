@@ -1,126 +1,145 @@
-// Obtiene los datos de la notificación
-function getNotification(id){
-    switch(id){
-        case 1:
-            return {
-                titulo: "Transferencia realizada",
-                mensaje: "Tu transferencia de $520.00 fue enviada correctamente.",
-                fecha: "Hace 5 minutos",
-                referencia: "FKN-TRF-520001",
-                icono: "assets/flat-icons/exchange.png",
-                clase: "success"
-            };
-        case 2:
-            return {
-                titulo: "Depósito recibido",
-                mensaje: "Se abonaron $1,250.00 a tu cuenta.",
-                fecha: "Hace 1 hora",
-                referencia: "FKN-DEP-125001",
-                icono: "assets/flat-icons/deposit.png",
-                clase: "deposit"
-            };
-        case 3:
-            return {
-                titulo: "Estado de cuenta",
-                mensaje: "Ya puedes consultar tu estado de cuenta.",
-                fecha: "Ayer",
-                referencia: "FKN-DOC-290726",
-                icono: "assets/flat-icons/document.png",
-                clase: "document"
-            };
-        case 4:
-            return {
-                titulo: "Pago realizado",
-                mensaje: "Se realizó correctamente el pago de Netflix.",
-                fecha: "20 Jul",
-                referencia: "FKN-NET-219001",
-                icono: "assets/flat-icons/card.png",
-                clase: "card"
-            };
-        default:
-            return null;
+import { getSupabase, getMovimientosByUsuario, actualizarUltimoAcceso } from './supabase.js'
+
+let notificacionesPorId = {}
+
+const notificationModal = document.getElementById("notificationModal")
+const closeNotificationButton = document.getElementById("closeNotification")
+const acceptNotificationButton = document.getElementById("acceptNotification")
+const notificationIcon = document.getElementById("notificationIcon")
+const notificationIconImage = document.getElementById("notificationIconImage")
+const notificationTitle = document.getElementById("notificationTitle")
+const notificationMessage = document.getElementById("notificationMessage")
+const notificationDate = document.getElementById("notificationDate")
+const notificationReference = document.getElementById("notificationReference")
+
+function formatAmount(amount) {
+    return new Intl.NumberFormat("es-MX", {
+        style: "currency",
+        currency: "MXN"
+    }).format(amount)
+}
+
+function formatRelativeTime(fecha) {
+    const ahora = new Date()
+    const diffMin = Math.floor((ahora - fecha) / 60000)
+
+    if (diffMin < 1) return "Justo ahora"
+    if (diffMin < 60) return `Hace ${diffMin} minuto${diffMin === 1 ? "" : "s"}`
+
+    const diffHoras = Math.floor(diffMin / 60)
+    if (diffHoras < 24) return `Hace ${diffHoras} hora${diffHoras === 1 ? "" : "s"}`
+
+    const diffDias = Math.floor(diffHoras / 24)
+    if (diffDias === 1) return "Ayer"
+    if (diffDias < 7) return `Hace ${diffDias} días`
+
+    return fecha.toLocaleDateString("es-MX", { day: "2-digit", month: "short" })
+}
+
+function crearNotificacion(movimiento) {
+    const esEnviada = movimiento.monto < 0
+    const monto = formatAmount(Math.abs(movimiento.monto))
+    const fecha = movimiento.fechaISO ? new Date(movimiento.fechaISO) : null
+
+    return {
+        id: movimiento.id,
+        titulo: esEnviada ? "Transferencia realizada" : "Depósito recibido",
+        mensaje: esEnviada
+            ? `Tu transferencia de ${monto} fue enviada correctamente a ${movimiento.nombre}.`
+            : `Se abonaron ${monto} a tu cuenta desde ${movimiento.nombre}.`,
+        fecha: fecha ? formatRelativeTime(fecha) : movimiento.fecha,
+        referencia: movimiento.folio,
+        icono: esEnviada ? "assets/flat-icons/exchange.png" : "assets/flat-icons/deposit.png",
+        clase: esEnviada ? "success" : "deposit"
     }
 }
-// Elementos de la ventana
-const notificationModal =
-    document.getElementById("notificationModal");
-const closeNotificationButton =
-    document.getElementById("closeNotification");
-const acceptNotificationButton =
-    document.getElementById("acceptNotification");
-const notificationIcon =
-    document.getElementById("notificationIcon");
-const notificationIconImage =
-    document.getElementById("notificationIconImage");
-const notificationTitle =
-    document.getElementById("notificationTitle");
-const notificationMessage =
-    document.getElementById("notificationMessage");
-const notificationDate =
-    document.getElementById("notificationDate");
-const notificationReference =
-    document.getElementById("notificationReference");
-// Abre la ventana
-function openNotificationModal(notification){
-    notificationTitle.textContent = notification.titulo;
-    notificationMessage.textContent = notification.mensaje;
-    notificationDate.textContent = notification.fecha;
-    notificationReference.textContent = notification.referencia;
-    notificationIconImage.src = notification.icono;
-    notificationIconImage.alt = notification.titulo;
-    notificationIcon.classList.remove(
-        "success",
-        "deposit",
-        "document",
-        "card"
-    );
-    notificationIcon.classList.add(notification.clase);
-    notificationModal.classList.add("active");
-    document.body.classList.add("notification-open");
-}
-// Cierra la ventana
-function closeNotificationModal(){
-    notificationModal.classList.remove("active");
-    document.body.classList.remove("notification-open");
-}
-// Busca la notificación
-function showNotificationDetails(element){
-    const notificationId = Number(element.dataset.id);
-    const notification = getNotification(notificationId);
-    if(!notification){
-        console.error(
-            "No se encontró la notificación:",
-            notificationId
-        );
-        return;
+
+function renderNotifications(notificaciones) {
+    const contenedor = document.getElementById("notifications")
+    contenedor.innerHTML = ""
+
+    if (!notificaciones || notificaciones.length === 0) {
+        contenedor.innerHTML = `<p class="sin-notificaciones">Aún no tienes notificaciones.</p>`
+        return
     }
-    openNotificationModal(notification);
+
+    notificaciones.forEach(notificacion => {
+        const article = document.createElement("article")
+        article.className = "notification"
+        article.dataset.id = notificacion.id
+        article.tabIndex = 0
+
+        article.innerHTML = `
+            <div class="notification-icon ${notificacion.clase}">
+                <img src="${notificacion.icono}" alt="${notificacion.titulo}">
+            </div>
+            <div class="notification-info">
+                <h2>${notificacion.titulo}</h2>
+                <p>${notificacion.mensaje}</p>
+                <span>${notificacion.fecha}</span>
+            </div>
+        `
+
+        article.addEventListener("click", () => showNotificationDetails(article))
+        contenedor.appendChild(article)
+    })
 }
-// Agrega el clic a cada notificación
-document.querySelectorAll(".notification").forEach((element) => {
-    element.addEventListener("click", () => {
-        showNotificationDetails(element);
-    });
-});
-// Cierra con la X
-closeNotificationButton.addEventListener(
-    "click",
-    closeNotificationModal
-);
-// Cierra con el botón
-acceptNotificationButton.addEventListener(
-    "click",
-    closeNotificationModal
-);
-// Cierra al tocar el fondo
+
+function openNotificationModal(notificacion) {
+    notificationTitle.textContent = notificacion.titulo
+    notificationMessage.textContent = notificacion.mensaje
+    notificationDate.textContent = notificacion.fecha
+    notificationReference.textContent = notificacion.referencia
+    notificationIconImage.src = notificacion.icono
+    notificationIconImage.alt = notificacion.titulo
+
+    notificationIcon.classList.remove("success", "deposit", "document", "card")
+    notificationIcon.classList.add(notificacion.clase)
+
+    notificationModal.classList.add("active")
+    document.body.classList.add("notification-open")
+}
+
+function closeNotificationModal() {
+    notificationModal.classList.remove("active")
+    document.body.classList.remove("notification-open")
+}
+
+function showNotificationDetails(element) {
+    const notificacion = notificacionesPorId[element.dataset.id]
+    if (!notificacion) return
+    openNotificationModal(notificacion)
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const supabase = getSupabase()
+    if (!supabase) {
+        window.location.href = "login.html"
+        return
+    }
+
+    const { data: { user }, error } = await supabase.auth.getUser()
+    if (error || !user) {
+        window.location.href = "login.html"
+        return
+    }
+
+    await actualizarUltimoAcceso(user.id)
+
+    const movimientos = await getMovimientosByUsuario(user.id)
+    const notificaciones = movimientos.map(crearNotificacion)
+
+    notificacionesPorId = {}
+    notificaciones.forEach(n => { notificacionesPorId[n.id] = n })
+
+    renderNotifications(notificaciones)
+})
+
+closeNotificationButton.addEventListener("click", closeNotificationModal)
+acceptNotificationButton.addEventListener("click", closeNotificationModal)
 notificationModal.addEventListener("click", (event) => {
-    if(event.target === notificationModal){
-        closeNotificationModal();
-    }
-});
-// Cierra con Escape
+    if (event.target === notificationModal) closeNotificationModal()
+})
 document.addEventListener("keydown", (event) => {
-    if(event.key === "Escape"){
-        closeNotificationModal();
-    }
-});
+    if (event.key === "Escape") closeNotificationModal()
+})

@@ -292,10 +292,6 @@ export const guardarContacto = async (userId, nombreContacto, numeroTarjeta) => 
     return data[0]
 }
 
-// ============================================
-// MOVIMIENTOS
-// ============================================
-
 // Trae todos los movimientos (enviados y recibidos) de la cuenta del usuario,
 // resolviendo el nombre de la contraparte y formateando los datos que
 // necesita la pantalla movements.html
@@ -376,6 +372,7 @@ export const getMovimientosByUsuario = async (userId) => {
             nombre: nombreContraparte,
             monto,
             fecha: fechaLarga,
+            fechaISO: m.fecha_movimiento,
             fechaCorta,
             categoria: esOrigen ? 'Transferencia enviada' : 'Transferencia recibida',
             cuenta: nombreContraparte,
