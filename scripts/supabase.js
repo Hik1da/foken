@@ -260,10 +260,6 @@ export const realizarTransferencia = async (idCuentaOrigen, idTarjetaOrigen, num
     return data
 }
 
-// Suma un monto al saldo actual de la cuenta y registra el movimiento correspondiente.
-// Nota: hace lectura + escritura desde el cliente, no es una operación atómica.
-// Si más adelante quieres blindarlo contra condiciones de carrera, lo ideal
-// sería moverlo a una función RPC en Supabase, similar a "realizar_transferencia".
 export const realizarDeposito = async (idCuenta, monto, concepto = 'Depósito por transferencia CLABE', datosExtra = {}) => {
     const supabase = getSupabase()
     if (!supabase) return { exito: false, error: 'Error de conexión' }
@@ -292,10 +288,6 @@ export const realizarDeposito = async (idCuenta, monto, concepto = 'Depósito po
             return { exito: false, error: error.message }
         }
 
-        // Registra el movimiento para que aparezca en las pantallas
-        // de movimientos y notificaciones. Un depósito por transferencia
-        // CLABE (o una conversión de crédito) no tiene una cuenta origen
-        // dentro de foken, por eso id_cuenta_origen queda en null.
         const { error: errorMovimiento } = await supabase
             .from('movimientos')
             .insert([{
@@ -312,9 +304,6 @@ export const realizarDeposito = async (idCuenta, monto, concepto = 'Depósito po
             }])
 
         if (errorMovimiento) {
-            // El saldo ya se actualizó correctamente; solo avisamos
-            // en consola si falló el registro del movimiento, sin
-            // hacer fallar todo el depósito por esto.
             console.error('El depósito se aplicó pero no se pudo registrar el movimiento:', errorMovimiento)
         }
 
@@ -325,9 +314,6 @@ export const realizarDeposito = async (idCuenta, monto, concepto = 'Depósito po
     }
 }
 
-// Convierte crédito disponible en saldo de la cuenta de débito:
-// aumenta credito_usado en la tarjeta y suma el monto al saldo de la cuenta.
-// El movimiento se registra una sola vez, dentro de realizarDeposito.
 export const realizarConversionCreditoADebito = async (idCuenta, idTarjetaCredito, monto) => {
     const supabase = getSupabase()
     if (!supabase) return { exito: false, error: 'Error de conexión' }
@@ -417,9 +403,6 @@ export const guardarContacto = async (userId, nombreContacto, numeroTarjeta) => 
     return data[0]
 }
 
-// Trae todos los movimientos (enviados y recibidos) de la cuenta del usuario,
-// resolviendo el nombre de la contraparte y formateando los datos que
-// necesita la pantalla movements.html
 export const getMovimientosByUsuario = async (userId) => {
     const supabase = getSupabase()
     if (!supabase) return []
@@ -506,4 +489,50 @@ export const getMovimientosByUsuario = async (userId) => {
             estado: m.estado
         }
     })
+}
+
+export const getTarjetaDebitoByUsuario = async (userId) => {
+    const supabase = getSupabase()
+    if (!supabase) return null
+    const { data, error } = await supabase
+        .from('tarjetas')
+        .select('*')
+        .eq('id_usuario', userId)
+        .eq('tipo_tarjeta', 'debito')
+        .maybeSingle()
+    if (error) {
+        console.error('Error al obtener tarjeta de débito:', error)
+        return null
+    }
+    return data
+}
+
+export const getCuentaCompleta = async (userId) => {
+    const supabase = getSupabase()
+    if (!supabase) return null
+    const { data, error } = await supabase
+        .from('cuentas')
+        .select('*')
+        .eq('id_usuario', userId)
+        .maybeSingle()
+    if (error) {
+        console.error('Error al obtener cuenta:', error)
+        return null
+    }
+    return data
+}
+
+export const getUsuarioCompleto = async (userId) => {
+    const supabase = getSupabase()
+    if (!supabase) return null
+    const { data, error } = await supabase
+        .from('usuarios')
+        .select('*')
+        .eq('id_usuario', userId)
+        .maybeSingle()
+    if (error) {
+        console.error('Error al obtener usuario:', error)
+        return null
+    }
+    return data
 }
