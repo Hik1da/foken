@@ -1,6 +1,15 @@
-import { getSupabase, getSaldosByUsuario, getUsuarioById, getMovimientosByUsuario, actualizarUltimoAcceso, logout } from './supabase.js'
+import { getSupabase, getSaldosByUsuario, getUsuarioById, getMovimientosByUsuario, getTarjetasByUsuario, actualizarUltimoAcceso, logout } from './supabase.js'
 
 console.log('home.js cargado')
+
+function calcularCreditoDisponible(tarjetasUsuario) {
+    const tarjetaCredito = tarjetasUsuario.find(t => t.tipo_tarjeta === 'credito')
+    if (!tarjetaCredito) return 0
+
+    const limite = tarjetaCredito.limite_credito || 100000
+    const usado = tarjetaCredito.credito_usado || 0
+    return limite - usado
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     const supabase = getSupabase()
@@ -20,6 +29,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('Usuario:', usuario)
         const saldos = await getSaldosByUsuario(user.id)
         console.log('Saldos obtenidos:', saldos)
+
+        const tarjetasUsuario = await getTarjetasByUsuario(user.id) || []
+        const creditoDisponible = calcularCreditoDisponible(tarjetasUsuario)
+        console.log('Crédito disponible calculado:', creditoDisponible)
+
         const saldoDebito = document.getElementById('saldoDebito')
         if (saldoDebito) {
             saldoDebito.textContent = saldos.debito.toFixed(2)
@@ -29,8 +43,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const saldoCredito = document.getElementById('saldoCredito')
         if (saldoCredito) {
-            saldoCredito.textContent = saldos.creditoDisponible.toFixed(2)
-            console.log('Crédito actualizado:', saldos.creditoDisponible)
+            saldoCredito.textContent = creditoDisponible.toFixed(2)
+            console.log('Crédito actualizado:', creditoDisponible)
         } else {
             console.warn('No se encontró el elemento saldoCredito')
         }
@@ -124,14 +138,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     window.location.href = 'login.html'
                 }
             })
-        }
-        if (saldos.creditoDisponible === 0) {
-            console.warn('El crédito es 0, forzando actualización manual...')
-            const el = document.getElementById('saldoCredito')
-            if (el) {
-                el.textContent = '100000.00'
-                console.log('Crédito forzado a 100000.00')
-            }
         }
     } catch (error) {
         console.error('Error:', error)

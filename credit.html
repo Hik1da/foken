@@ -15,19 +15,20 @@
             <div class="header-space"></div>
         </header>
         <main>
-            <h1>Transferir fondos a credito</h1>
-            <p>Deposita utilizando tu cuenta actual</p>
+            <h1>Convertir crédito a saldo</h1>
+            <p>Usa tu crédito disponible para abonar a tu cuenta de débito</p>
             <section id="saldo-disponible">
                 <h1>Saldo disponible</h1>
-                <h2>$<span id="saldo">231.23</span></h2>
-                <h1>Credito disponible: $<span id="saldo">231.23</span></h1>
+                <h2>$<span id="saldoDebito">0.00</span></h2>
+                <h1>Credito disponible: $<span id="saldoCredito">0.00</span></h1>
             </section>
+            <h1>Realizar la conversión</h1>
             <section id="deposit-container">
-                <h1>Realizar el deposito</h1>
+                <br>
                 <form id="transferencia-form">
                     <h1>Ingresa cantidad a transferir</h1>
                     <span>$<input id="cantidad" type="number" min="0" placeholder="0">MXN</span>
-                    <p>$<span id="saldo">231.23</span> disponibles en tu cuenta de credito</p>
+                    <p>$<span id="saldoCreditoForm">0.00</span> disponibles en tu cuenta de credito</p>
                     <input type="submit" class="button" value="Depositar a cuenta" disabled>
                 </form>
             </section>
@@ -38,5 +39,7 @@
             <a href="profile.html"><img src="assets/flat-icons/user.png"></a>
         </footer>
         <script src="scripts/darkmode.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+        <script type="module" src="scripts/credit.js"></script>
     </body>
 </html>

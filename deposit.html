@@ -22,7 +22,7 @@
                 <p>CLABE interbancaria</p>
                 <span>
                     <h2 id="CLABE">661620004200032004</h2>
-                    <img src="assets/flat-icons/copy.png" onclick="copyInputField(); showPopup(event);" onmouseleave="hidePopup(event);">
+                    <img id="clabe-copy" src="assets/flat-icons/copy.png">
                 </span>
                 <div id="popup">CLABE copiada al portapapeles!</div>
                 <p>Banco receptor</p>
@@ -30,9 +30,11 @@
             </section>
             <h1>Deposita a la cuenta</h1>
             <p>(Seccion de desarrollo)</p>
-            <a class="button" onclick="">Depositar</a>
-            <section id="deposit-container" >
+            <a class="button" id="btn-depositar">Depositar</a>
+            <section id="deposit-container" style="display:none;">
+                <br>
                 <h1>Realizar el deposito</h1>
+                <br>
                 <form id="transferencia-form">
                     <h1>Ingresa cantidad a transferir</h1>
                     <span>$<input id="cantidad" type="number" min="0" placeholder="0">MXN</span>
@@ -44,23 +46,10 @@
         <footer>
             <a href="home.html"><img src="assets/flat-icons/home.png"></a>
             <a href="cards.html"><img src="assets/flat-icons/card.png"></a>
-            <a href="profile.html"><img src="assets/flat-icons/user.png"></a>
+            <a href="profile.html"><img src="assets/flat-icons/user.png"></a> 
         </footer>
         <script src="scripts/darkmode.js"></script>
-        <script>
-            const popup = document.getElementById("popup");
-            const showPopup = (evt) => {
-                popup.style.left = (evt.pageX + 8) + 'px';
-                popup.style.top = (evt.pageY - 36) + 'px';
-                popup.style.opacity = 1;
-            };
-            const hidePopup = (evt) => {
-                popup.style.opacity = 0;
-            };
-            function copyInputField() {
-                var textToCopy  = document.getElementById("CLABE").innerText;
-                navigator.clipboard.writeText(textToCopy);
-            }
-        </script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+        <script type="module" src="scripts/deposit.js"></script>
     </body>
 </html>

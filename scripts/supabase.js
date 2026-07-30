@@ -260,6 +260,131 @@ export const realizarTransferencia = async (idCuentaOrigen, idTarjetaOrigen, num
     return data
 }
 
+// Suma un monto al saldo actual de la cuenta y registra el movimiento correspondiente.
+// Nota: hace lectura + escritura desde el cliente, no es una operación atómica.
+// Si más adelante quieres blindarlo contra condiciones de carrera, lo ideal
+// sería moverlo a una función RPC en Supabase, similar a "realizar_transferencia".
+export const realizarDeposito = async (idCuenta, monto, concepto = 'Depósito por transferencia CLABE', datosExtra = {}) => {
+    const supabase = getSupabase()
+    if (!supabase) return { exito: false, error: 'Error de conexión' }
+    try {
+        const { data: cuentaActual, error: errorLectura } = await supabase
+            .from('cuentas')
+            .select('saldo')
+            .eq('id_cuenta', idCuenta)
+            .single()
+
+        if (errorLectura || !cuentaActual) {
+            console.error('Error al leer la cuenta:', errorLectura)
+            return { exito: false, error: errorLectura?.message || 'No se encontró la cuenta' }
+        }
+
+        const nuevoSaldo = Number(cuentaActual.saldo) + Number(monto)
+
+        const { data, error } = await supabase
+            .from('cuentas')
+            .update({ saldo: nuevoSaldo })
+            .eq('id_cuenta', idCuenta)
+            .select()
+
+        if (error) {
+            console.error('Error al depositar:', error)
+            return { exito: false, error: error.message }
+        }
+
+        // Registra el movimiento para que aparezca en las pantallas
+        // de movimientos y notificaciones. Un depósito por transferencia
+        // CLABE (o una conversión de crédito) no tiene una cuenta origen
+        // dentro de foken, por eso id_cuenta_origen queda en null.
+        const { error: errorMovimiento } = await supabase
+            .from('movimientos')
+            .insert([{
+                id_cuenta_origen: null,
+                id_cuenta_destino: idCuenta,
+                tipo_movimiento: 'deposito',
+                monto: monto,
+                moneda: 'MXN',
+                concepto: concepto,
+                estado: 'completado',
+                saldo_posterior: nuevoSaldo,
+                fecha_movimiento: new Date().toISOString(),
+                ...datosExtra
+            }])
+
+        if (errorMovimiento) {
+            // El saldo ya se actualizó correctamente; solo avisamos
+            // en consola si falló el registro del movimiento, sin
+            // hacer fallar todo el depósito por esto.
+            console.error('El depósito se aplicó pero no se pudo registrar el movimiento:', errorMovimiento)
+        }
+
+        return { exito: true, saldo_nuevo: data[0].saldo, movimiento_registrado: !errorMovimiento, movimiento_error: errorMovimiento?.message || null }
+    } catch (error) {
+        console.error('Excepción al depositar:', error)
+        return { exito: false, error: error.message }
+    }
+}
+
+// Convierte crédito disponible en saldo de la cuenta de débito:
+// aumenta credito_usado en la tarjeta y suma el monto al saldo de la cuenta.
+// El movimiento se registra una sola vez, dentro de realizarDeposito.
+export const realizarConversionCreditoADebito = async (idCuenta, idTarjetaCredito, monto) => {
+    const supabase = getSupabase()
+    if (!supabase) return { exito: false, error: 'Error de conexión' }
+    try {
+        const { data: tarjeta, error: errorTarjeta } = await supabase
+            .from('tarjetas')
+            .select('credito_usado, limite_credito, estado')
+            .eq('id_tarjeta', idTarjetaCredito)
+            .single()
+
+        if (errorTarjeta || !tarjeta) {
+            return { exito: false, error: errorTarjeta?.message || 'No se encontró la tarjeta de crédito' }
+        }
+        if (tarjeta.estado === 'bloqueada') {
+            return { exito: false, error: 'Tu tarjeta de crédito está bloqueada' }
+        }
+
+        const limite = Number(tarjeta.limite_credito) || 100000
+        const usado = Number(tarjeta.credito_usado) || 0
+        const disponible = limite - usado
+
+        if (monto > disponible) {
+            return { exito: false, error: 'No tienes crédito disponible suficiente' }
+        }
+
+        const { error: errorTarjetaUpdate } = await supabase
+            .from('tarjetas')
+            .update({ credito_usado: usado + monto })
+            .eq('id_tarjeta', idTarjetaCredito)
+
+        if (errorTarjetaUpdate) {
+            return { exito: false, error: errorTarjetaUpdate.message }
+        }
+
+        const deposito = await realizarDeposito(
+            idCuenta,
+            monto,
+            'Conversión de crédito a saldo',
+            { id_tarjeta: idTarjetaCredito }
+        )
+        if (!deposito.exito) {
+            return deposito
+        }
+
+        return {
+            exito: true,
+            saldo_nuevo: deposito.saldo_nuevo,
+            credito_disponible_nuevo: disponible - monto,
+            movimiento_registrado: deposito.movimiento_registrado,
+            movimiento_error: deposito.movimiento_error
+        }
+    } catch (error) {
+        console.error('Excepción al convertir crédito a saldo:', error)
+        return { exito: false, error: error.message }
+    }
+}
+
 export const getContactosByUsuario = async (userId) => {
     const supabase = getSupabase()
     if (!supabase) return []
@@ -292,6 +417,9 @@ export const guardarContacto = async (userId, nombreContacto, numeroTarjeta) => 
     return data[0]
 }
 
+// Trae todos los movimientos (enviados y recibidos) de la cuenta del usuario,
+// resolviendo el nombre de la contraparte y formateando los datos que
+// necesita la pantalla movements.html
 export const getMovimientosByUsuario = async (userId) => {
     const supabase = getSupabase()
     if (!supabase) return []
@@ -350,7 +478,9 @@ export const getMovimientosByUsuario = async (userId) => {
     return movimientos.map(m => {
         const esOrigen = m.id_cuenta_origen === idCuenta
         const idContraparte = esOrigen ? m.id_cuenta_destino : m.id_cuenta_origen
-        const nombreContraparte = nombrePorCuenta[idContraparte] || 'Foken'
+        const nombreContraparte = !idContraparte
+            ? 'Depósito por transferencia'
+            : (nombrePorCuenta[idContraparte] || 'Foken')
         const monto = esOrigen ? -Math.abs(Number(m.monto)) : Math.abs(Number(m.monto))
         const tipoDisplay = esOrigen ? 'Transferencia enviada' : 'Depósito recibido'
 
@@ -367,6 +497,7 @@ export const getMovimientosByUsuario = async (userId) => {
             nombre: nombreContraparte,
             monto,
             fecha: fechaLarga,
+            fechaISO: m.fecha_movimiento,
             fechaCorta,
             categoria: esOrigen ? 'Transferencia enviada' : 'Transferencia recibida',
             cuenta: nombreContraparte,
