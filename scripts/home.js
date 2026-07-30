@@ -119,25 +119,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 ${segundoBloque}
             `
         }
-        const logoutFooter = document.getElementById('logoutFooter')
-        if (logoutFooter) {
-            logoutFooter.addEventListener('click', async (e) => {
-                e.preventDefault()
-                if (confirm('¿Deseas cerrar sesión?')) {
-                    await logout()
-                    window.location.href = 'login.html'
-                }
-            })
-        }
-        const userLink = document.querySelector('header a#user')
+        const userLink = document.querySelector('header a#user');
         if (userLink) {
             userLink.addEventListener('click', async (e) => {
-                e.preventDefault()
+                e.preventDefault();
                 if (confirm('¿Deseas cerrar sesión?')) {
-                    await logout()
-                    window.location.href = 'login.html'
+                    await logout();
+                    window.location.href = 'login.html';
                 }
-            })
+            });
         }
     } catch (error) {
         console.error('Error:', error)

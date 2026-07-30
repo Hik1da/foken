@@ -1,4 +1,4 @@
-import { getSupabase, getTarjetasByUsuario, getUsuarioById, actualizarUltimoAcceso } from './supabase.js'
+import { getSupabase, getTarjetasByUsuario, getUsuarioById, actualizarUltimoAcceso, logout } from './supabase.js'
 
 const nipModal = document.getElementById("nipModal");
 const nipTexto = document.getElementById("nipTexto");
@@ -189,18 +189,16 @@ async function cargarDatosUsuario() {
             renderizarCarrusel();
         }
         
-        const logoutFooter = document.getElementById('logoutFooter');
-        if (logoutFooter) {
-            logoutFooter.addEventListener('click', async (e) => {
+        const userLink = document.querySelector('header a#user');
+        if (userLink) {
+            userLink.addEventListener('click', async (e) => {
                 e.preventDefault();
                 if (confirm('¿Deseas cerrar sesión?')) {
-                    const { logout } = await import('./supabase.js');
                     await logout();
                     window.location.href = 'login.html';
                 }
             });
         }
-        
     } catch (error) {
         console.error('Error:', error);
     }
