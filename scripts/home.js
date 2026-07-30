@@ -1,6 +1,15 @@
-import { getSupabase, getSaldosByUsuario, getUsuarioById, actualizarUltimoAcceso, logout } from './supabase.js'
+import { getSupabase, getSaldosByUsuario, getUsuarioById, getMovimientosByUsuario, getTarjetasByUsuario, actualizarUltimoAcceso, logout } from './supabase.js'
 
 console.log('home.js cargado')
+
+function calcularCreditoDisponible(tarjetasUsuario) {
+    const tarjetaCredito = tarjetasUsuario.find(t => t.tipo_tarjeta === 'credito')
+    if (!tarjetaCredito) return 0
+
+    const limite = tarjetaCredito.limite_credito || 100000
+    const usado = tarjetaCredito.credito_usado || 0
+    return limite - usado
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     const supabase = getSupabase()
@@ -20,6 +29,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('Usuario:', usuario)
         const saldos = await getSaldosByUsuario(user.id)
         console.log('Saldos obtenidos:', saldos)
+
+        const tarjetasUsuario = await getTarjetasByUsuario(user.id) || []
+        const creditoDisponible = calcularCreditoDisponible(tarjetasUsuario)
+        console.log('Crédito disponible calculado:', creditoDisponible)
+
         const saldoDebito = document.getElementById('saldoDebito')
         if (saldoDebito) {
             saldoDebito.textContent = saldos.debito.toFixed(2)
@@ -29,8 +43,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const saldoCredito = document.getElementById('saldoCredito')
         if (saldoCredito) {
-            saldoCredito.textContent = saldos.creditoDisponible.toFixed(2)
-            console.log('Crédito actualizado:', saldos.creditoDisponible)
+            saldoCredito.textContent = creditoDisponible.toFixed(2)
+            console.log('Crédito actualizado:', creditoDisponible)
         } else {
             console.warn('No se encontró el elemento saldoCredito')
         }
@@ -59,6 +73,40 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const movimientosList = document.getElementById('movimientosList')
         if (movimientosList) {
+            const movimientos = await getMovimientosByUsuario(user.id)
+            const ultimo = movimientos && movimientos.length > 0 ? movimientos[0] : null
+
+            let segundoBloque
+            if (ultimo) {
+                const esGasto = ultimo.monto < 0
+                const icono = esGasto ? 'exchange.png' : 'deposit.png'
+                const signo = esGasto ? '-' : '+'
+                const montoTexto = `${signo}$${Math.abs(ultimo.monto).toFixed(2)}`
+                const colorTexto = esGasto ? '#c0392b' : 'green'
+                const colorFondo = esGasto ? '#fdecea' : '#e6f7e6'
+                segundoBloque = `
+                <a href="movements.html" class="movimiento">
+                    <img src="assets/flat-icons/${icono}">
+                    <div>
+                        <h2>${ultimo.tipo}</h2>
+                        <span>${ultimo.fechaCorta}</span>
+                        <span style="color: ${colorTexto}; background: ${colorFondo}; padding: 3px 9px; border-radius: 12px;">${montoTexto}</span>
+                    </div>
+                </a>
+                `
+            } else {
+                segundoBloque = `
+                <a href="#" class="movimiento" style="opacity: 0.6;">
+                    <img src="assets/flat-icons/document.png">
+                    <div>
+                        <h2>Esperando movimientos</h2>
+                        <span>${new Date().toLocaleDateString()}</span>
+                        <span style="color: #666; background: #f0f0f0; padding: 3px 9px; border-radius: 12px;">Sin movimientos</span>
+                    </div>
+                </a>
+                `
+            }
+
             movimientosList.innerHTML = `
                 <a href="#" class="movimiento">
                     <img src="assets/flat-icons/exchange.png">
@@ -68,14 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <span style="color: green; background: #e6f7e6; padding: 3px 9px; border-radius: 12px;">Activo</span>
                     </div>
                 </a>
-                <a href="#" class="movimiento" style="opacity: 0.6;">
-                    <img src="assets/flat-icons/document.png">
-                    <div>
-                        <h2>Esperando movimientos</h2>
-                        <span>${new Date().toLocaleDateString()}</span>
-                        <span style="color: #666; background: #f0f0f0; padding: 3px 9px; border-radius: 12px;">Sin movimientos</span>
-                    </div>
-                </a>
+                ${segundoBloque}
             `
         }
         const logoutFooter = document.getElementById('logoutFooter')
@@ -97,14 +138,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     window.location.href = 'login.html'
                 }
             })
-        }
-        if (saldos.creditoDisponible === 0) {
-            console.warn('El crédito es 0, forzando actualización manual...')
-            const el = document.getElementById('saldoCredito')
-            if (el) {
-                el.textContent = '100000.00'
-                console.log('Crédito forzado a 100000.00')
-            }
         }
     } catch (error) {
         console.error('Error:', error)
