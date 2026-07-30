@@ -1,4 +1,4 @@
-import { getSupabase, getSaldosByUsuario, getUsuarioById, getMovimientosByUsuario, actualizarUltimoAcceso, logout } from './supabase.js'
+import { getSupabase, getSaldosByUsuario, getUsuarioById, actualizarUltimoAcceso, logout } from './supabase.js'
 
 console.log('home.js cargado')
 
@@ -59,40 +59,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const movimientosList = document.getElementById('movimientosList')
         if (movimientosList) {
-            const movimientos = await getMovimientosByUsuario(user.id)
-            const ultimo = movimientos && movimientos.length > 0 ? movimientos[0] : null
-
-            let segundoBloque
-            if (ultimo) {
-                const esGasto = ultimo.monto < 0
-                const icono = esGasto ? 'exchange.png' : 'deposit.png'
-                const signo = esGasto ? '-' : '+'
-                const montoTexto = `${signo}$${Math.abs(ultimo.monto).toFixed(2)}`
-                const colorTexto = esGasto ? '#c0392b' : 'green'
-                const colorFondo = esGasto ? '#fdecea' : '#e6f7e6'
-                segundoBloque = `
-                <a href="movements.html" class="movimiento">
-                    <img src="assets/flat-icons/${icono}">
-                    <div>
-                        <h2>${ultimo.tipo}</h2>
-                        <span>${ultimo.fechaCorta}</span>
-                        <span style="color: ${colorTexto}; background: ${colorFondo}; padding: 3px 9px; border-radius: 12px;">${montoTexto}</span>
-                    </div>
-                </a>
-                `
-            } else {
-                segundoBloque = `
-                <a href="#" class="movimiento" style="opacity: 0.6;">
-                    <img src="assets/flat-icons/document.png">
-                    <div>
-                        <h2>Esperando movimientos</h2>
-                        <span>${new Date().toLocaleDateString()}</span>
-                        <span style="color: #666; background: #f0f0f0; padding: 3px 9px; border-radius: 12px;">Sin movimientos</span>
-                    </div>
-                </a>
-                `
-            }
-
             movimientosList.innerHTML = `
                 <a href="#" class="movimiento">
                     <img src="assets/flat-icons/exchange.png">
@@ -102,7 +68,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <span style="color: green; background: #e6f7e6; padding: 3px 9px; border-radius: 12px;">Activo</span>
                     </div>
                 </a>
-                ${segundoBloque}
+                <a href="#" class="movimiento" style="opacity: 0.6;">
+                    <img src="assets/flat-icons/document.png">
+                    <div>
+                        <h2>Esperando movimientos</h2>
+                        <span>${new Date().toLocaleDateString()}</span>
+                        <span style="color: #666; background: #f0f0f0; padding: 3px 9px; border-radius: 12px;">Sin movimientos</span>
+                    </div>
+                </a>
             `
         }
         const logoutFooter = document.getElementById('logoutFooter')
