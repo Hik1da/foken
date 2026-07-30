@@ -130,53 +130,26 @@ export const getSaldosByUsuario = async (userId) => {
     try {
         const { data: tarjetas, error } = await supabase
             .from('tarjetas')
-            .select('tipo_tarjeta, limites')
+            .select('tipo_tarjeta, limite_credito')
             .eq('id_usuario', userId)
         if (error) {
             console.error('Error al obtener saldos:', error)
             return { debito: 0, credito: 0, creditoDisponible: 0 }
         }
-        console.log('Tarjetas encontradas:', tarjetas)
-        const { data: cuenta, error: errorCuenta } = await supabase
+        const { data: cuenta } = await supabase
             .from('cuentas')
             .select('saldo')
             .eq('id_usuario', userId)
             .maybeSingle()
+
         const saldoCuenta = cuenta?.saldo || 0
-        let creditoTotal = 0
-        if (tarjetas && tarjetas.length > 0) {
-            tarjetas.forEach(t => {
-                console.log('Procesando tarjeta:', t.tipo_tarjeta, t.limites)
-                if (t.tipo_tarjeta === 'credito') {
-                    if (t.limites && typeof t.limites === 'object') {
-                        if (t.limites.credito) {
-                            creditoTotal = t.limites.credito
-                            console.log('Límite encontrado:', creditoTotal)
-                        } else {
-                            creditoTotal = 100000
-                            console.log('Sin límite, usando default: 100000')
-                        }
-                    } else {
-                        creditoTotal = 100000
-                        console.log('Limites es null, usando default: 100000')
-                    }
-                }
-            })
-        } else {
-            console.log('No se encontraron tarjetas para el usuario')
-            creditoTotal = 100000
-        }
-        if (creditoTotal === 0) {
-            creditoTotal = 100000
-            console.log('Forzando crédito a 100000 por seguridad')
-        }
-        const creditoUsado = 0
-        const creditoDisponible = Math.max(0, creditoTotal - creditoUsado)
-        console.log('Resultado final:', { debito: saldoCuenta, credito: creditoTotal, creditoDisponible })
+        const tarjetaCredito = tarjetas?.find(t => t.tipo_tarjeta === 'credito')
+        const creditoTotal = tarjetaCredito?.limite_credito || 100000
+
         return {
             debito: saldoCuenta,
             credito: creditoTotal,
-            creditoDisponible: creditoDisponible
+            creditoDisponible: creditoTotal
         }
     } catch (error) {
         console.error('Error:', error)
@@ -235,7 +208,8 @@ export const crearCuentaYTarjetas = async (userId, nombreCompleto) => {
                 cvv_encripado: '***',
                 estado: 'activa',
                 nip: nip,
-                limites: { diario: 10000, mensual: 50000 }
+                limite_diario: 10000,
+                limite_mensual: 50000
             },
             {
                 id_usuario: userId,
@@ -249,7 +223,9 @@ export const crearCuentaYTarjetas = async (userId, nombreCompleto) => {
                 cvv_encripado: '***',
                 estado: 'activa',
                 nip: nip,
-                limites: { diario: 20000, mensual: 100000, credito: 100000 }
+                limite_diario: 20000,
+                limite_mensual: 100000,
+                limite_credito: 100000
             }
         ]
         const { data: tarjetasData, error: tarjetasError } = await supabase

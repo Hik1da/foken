@@ -1,7 +1,37 @@
-import { getSupabase, getCuentaByUsuario, realizarTransferencia, getContactosByUsuario, guardarContacto, actualizarUltimoAcceso } from './supabase.js'
+import { getSupabase, getCuentaByUsuario, getTarjetasByUsuario, realizarTransferencia, getContactosByUsuario, guardarContacto, actualizarUltimoAcceso } from './supabase.js'
 
 let cuentaUsuario = null
 let idUsuarioActual = null
+let tarjetasUsuario = []
+
+function renderizarSelectorTarjetas() {
+    const select = document.getElementById('tarjetaOrigen')
+    select.innerHTML = '<option value="">Selecciona la tarjeta a usar</option>' +
+        tarjetasUsuario.map(t => {
+            const tipoDisplay = t.tipo_tarjeta === 'debito' ? 'Débito' : 'Crédito'
+            const bloqueada = t.estado === 'bloqueada'
+            return `<option value="${t.id_tarjeta}" ${bloqueada ? 'disabled' : ''}>
+                ${tipoDisplay} **** ${t.numero_tarjeta.slice(-4)} ${bloqueada ? '(bloqueada)' : ''}
+            </option>`
+        }).join('')
+}
+
+function actualizarDisponibleSegunTarjeta(selectTarjetaOrigen) {
+    const idTarjeta = selectTarjetaOrigen.value
+    const tarjeta = tarjetasUsuario.find(t => t.id_tarjeta === idTarjeta)
+    const spanSaldo = document.getElementById('saldo')
+
+    if (!tarjeta) {
+        spanSaldo.textContent = cuentaUsuario.saldo.toFixed(2)
+        return
+    }
+
+    if (tarjeta.tipo_tarjeta === 'credito') {
+        spanSaldo.textContent = (tarjeta.limite_credito || 100000).toFixed(2)
+    } else {
+        spanSaldo.textContent = cuentaUsuario.saldo.toFixed(2)
+    }
+}
 
 function renderizarContactos(contactos) {
     const lista = document.getElementById('contactos-list')
@@ -59,23 +89,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     document.getElementById('saldo').textContent = cuentaUsuario.saldo.toFixed(2)
 
+    tarjetasUsuario = await getTarjetasByUsuario(user.id) || []
+    renderizarSelectorTarjetas()
+
     const contactos = await getContactosByUsuario(user.id)
     renderizarContactos(contactos)
 
     const form = document.getElementById('transferencia-form')
+    const selectTarjetaOrigen = document.getElementById('tarjetaOrigen')
     const inputTarjetaDestino = document.getElementById('tarjetaDestino')
     const inputNombreContacto = document.getElementById('nombreContacto')
     const inputCantidad = document.getElementById('cantidad')
     const btnSubmit = form.querySelector('input[type="submit"]')
 
     function validarFormulario() {
-        btnSubmit.disabled = !(inputTarjetaDestino.value.trim().length > 0 && parseFloat(inputCantidad.value) > 0)
+        btnSubmit.disabled = !(
+            selectTarjetaOrigen.value.length > 0 &&
+            inputTarjetaDestino.value.trim().length > 0 &&
+            parseFloat(inputCantidad.value) > 0
+        )
     }
+    selectTarjetaOrigen.addEventListener('change', () => {
+        validarFormulario()
+        actualizarDisponibleSegunTarjeta(selectTarjetaOrigen)
+    })
     inputTarjetaDestino.addEventListener('input', validarFormulario)
     inputCantidad.addEventListener('input', validarFormulario)
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault()
+
+        const idTarjetaOrigen = selectTarjetaOrigen.value
+        const tarjetaSeleccionada = tarjetasUsuario.find(t => t.id_tarjeta === idTarjetaOrigen)
+
+        if (!tarjetaSeleccionada) {
+            alert('Selecciona una tarjeta válida')
+            return
+        }
+        if (tarjetaSeleccionada.estado === 'bloqueada') {
+            alert('Esa tarjeta está bloqueada, elige otra')
+            return
+        }
 
         const numeroTarjetaDestino = inputTarjetaDestino.value.trim()
         const nombreContacto = inputNombreContacto.value.trim()
@@ -85,7 +139,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert('Ingresa un monto válido')
             return
         }
-        if (monto > cuentaUsuario.saldo) {
+
+        const limiteDisponible = tarjetaSeleccionada.tipo_tarjeta === 'credito'
+            ? (tarjetaSeleccionada.limite_credito || 100000)
+            : cuentaUsuario.saldo
+
+        if (monto > limiteDisponible) {
             alert('No tienes fondos suficientes')
             return
         }
@@ -93,7 +152,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnSubmit.disabled = true
         btnSubmit.value = 'Procesando...'
 
-        const resultado = await realizarTransferencia(cuentaUsuario.id_cuenta, numeroTarjetaDestino, monto, 'Transferencia')
+        const resultado = await realizarTransferencia(
+            cuentaUsuario.id_cuenta,
+            idTarjetaOrigen,
+            numeroTarjetaDestino,
+            monto,
+            'Transferencia'
+        )
 
         if (!resultado.exito) {
             alert('No se pudo completar la transferencia: ' + resultado.error)
@@ -109,11 +174,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         cuentaUsuario.saldo = resultado.saldo_restante
-        document.getElementById('saldo').textContent = cuentaUsuario.saldo.toFixed(2)
+        actualizarDisponibleSegunTarjeta(selectTarjetaOrigen)
 
         alert('Transferencia realizada con éxito')
 
         form.reset()
+        renderizarSelectorTarjetas()
         btnSubmit.disabled = true
         btnSubmit.value = 'Transferir con cuenta'
     })
