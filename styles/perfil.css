@@ -237,7 +237,8 @@ body.sin-scroll {
 .opcion-titulo {
     margin: 0 0 4px;
     color: var(--primary);
-    font-size: 20px;
+    font-size: 16px;
+    font-weight: normal;
     line-height: 1.25;
 }
 .opcion-descripcion {
@@ -294,7 +295,7 @@ body.sin-scroll {
 .modal-header h2 {
     margin: 0;
     color: var(--primary);
-    font-size: 24px;
+    font-size: 18px;
     line-height: 1.25;
 }
 /* Botón cerrar */
@@ -411,6 +412,7 @@ form#formEliminarCuenta .campo-grupo {
     text-align: center;
     gap: 6px;
     align-items: center;
+    margin-top: 20px;
 }
 .campo-grupo {
     display: grid;
