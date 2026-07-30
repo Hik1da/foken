@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles/general.css">
+        <link rel="stylesheet" href="styles/home.css">
+        <link rel="stylesheet" href="styles/cuentas.css">
+        <title>foken</title>
+    </head>
+    <body>
+        <header>
+            <a href="login.html" id="user"><img src="assets/flat-icons/user.png"></a>
+            <img src="assets/logo.png" onclick="toggleDarkMode()">
+            <a href="#"><img src="assets/flat-icons/notification.png"></a>
+        </header>
+        <main>
+            <div class="app-container">
+                <section class="app-header">
+                    <h1 class="main-title">Mis tarjetas</h1>
+                    <div class="help-container">
+                        <button class="help-btn" type="button" aria-label="Ayuda">?</button>
+                        <div class="tooltip">
+                            En este apartado tienes la
+                            <strong>gestión de tu tarjeta física</strong>, donde podrás
+                            <strong>bloquear la tarjeta</strong>,
+                            <strong>consultar el NIP</strong> y
+                            <strong>solicitar una nueva</strong>.
+                        </div>
+                    </div>
+                </section>
+
+                <div class="tabs-container">
+                    <span class="tab-label">Física:</span>
+                    <span class="status-badge activa" id="estadoTarjeta">Activa</span>
+                </div>
+
+                <div class="carousel-wrapper">
+                    <button class="carousel-btn prev" onclick="moverCarrusel(-1)">&#10094;</button>
+                    <div class="carousel-container">
+                        <div class="carousel-track" id="carouselTrack"></div>
+                    </div>
+                    <button class="carousel-btn next" onclick="moverCarrusel(1)">&#10095;</button>
+                </div>
+
+                <div class="carousel-dots" id="carouselDots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                </div>
+
+                <nav class="actions-grid">
+                    <button class="action-item" id="btnBloquear" type="button" onclick="abrirBloqueo()">
+                        <div class="icon-circle">
+                            <img src="assets/flat-icons/lock.png" alt="" class="action-icon">
+                        </div>
+                        <span class="action-label" id="textoBloquear">Bloquear</span>
+                    </button>
+                    <button class="action-item" type="button" onclick="abrirModal()">
+                        <div class="icon-circle">
+                            <img src="assets/flat-icons/pin.png" alt="" class="action-icon">
+                        </div>
+                        <span class="action-label">Gestionar NIP</span>
+                    </button>
+                    <button class="action-item" type="button" onclick="abrirSolicitud()">
+                        <div class="icon-circle">
+                            <img src="assets/flat-icons/card-add.png" alt="" class="action-icon">
+                        </div>
+                        <span class="action-label">Solicitar nueva</span>
+                    </button>
+                </nav>
+
+                <section class="info-banner">
+                    <div class="info-icon">i</div>
+                    <p class="info-text">
+                        Dudas o aclaraciones llamar a
+                        <a href="soporte.html" class="soporte-link">
+                            Soporte técnico
+                        </a>
+                    </p>
+                </section>
+            </div>
+
+            <div id="nipModal" class="modal">
+                <div class="modal-content">
+                    <button class="close" type="button" aria-label="Cerrar" onclick="cerrarModal()">&times;</button>
+                    <h2>Gestionar NIP</h2>
+                    <p class="modal-text">Tu NIP actual es</p>
+                    <div class="nip-container">
+                        <div id="nipTexto" class="nip-box">••••</div>
+                        <img id="ojoNip" src="assets/interactive-icons/eye-close.png" alt="Mostrar NIP" class="eye-icon" onclick="toggleNip()">
+                    </div>
+                    <button class="modal-btn" type="button" onclick="cerrarModal()">Cerrar</button>
+                </div>
+            </div>
+
+            <div id="bloqueoModal" class="modal">
+                <div class="modal-content">
+                    <button class="close" type="button" aria-label="Cerrar" onclick="cerrarBloqueo()">&times;</button>
+                    <h2>Confirmación de seguridad</h2>
+                    <p class="modal-text">
+                        Bloquear tu tarjeta impedirá todas las compras.<br><br>
+                        Pero no te preocupes, las transferencias
+                        entrantes y salientes seguirán funcionando
+                        sin problema.
+                    </p>
+                    <button class="modal-btn" type="button" onclick="bloquearTarjeta()">Bloquear tarjeta</button>
+                    <button class="cancelar-btn" type="button" onclick="cerrarBloqueo()">Cancelar</button>
+                </div>
+            </div>
+
+            <div id="solicitudModal" class="modal">
+                <div class="modal-content solicitud-card">
+                    <button class="close" type="button" aria-label="Cerrar" onclick="cerrarSolicitud()">&times;</button>
+                    <h2>¿Qué le pasó a tu tarjeta?</h2>
+                    <p class="modal-text">Selecciona una de las siguientes opciones para continuar.</p>
+                    <div class="solicitud-opciones">
+                        <button class="solicitud-opcion" type="button" onclick="seleccionarMotivo(this, 'Perdí mi tarjeta')">
+                            <span class="radio-opcion"></span>
+                            <span class="texto-opcion">Perdí mi tarjeta</span>
+                        </button>
+                        <button class="solicitud-opcion" type="button" onclick="seleccionarMotivo(this, 'Mi tarjeta fue robada')">
+                            <span class="radio-opcion"></span>
+                            <span class="texto-opcion">Mi tarjeta fue robada</span>
+                        </button>
+                        <button class="solicitud-opcion" type="button" onclick="seleccionarMotivo(this, 'Mi tarjeta se rompió')">
+                            <span class="radio-opcion"></span>
+                            <span class="texto-opcion">Mi tarjeta se rompió</span>
+                        </button>
+                    </div>
+                    <button id="btnContinuarSolicitud" class="modal-btn solicitud-continuar" type="button" onclick="confirmarSolicitud()" disabled>
+                        Continuar
+                    </button>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <a href="home.html"><img src="assets/flat-icons/home.png"></a>
+            <a href="cards.html" class="selected"><img src="assets/flat-icons/card.png"></a>
+            <a href="profile.html"><img src="assets/flat-icons/user.png"></a>
+        </footer>
+        <script src="scripts/darkmode.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+        <script type="module" src="scripts/cuentas-flotante.js"></script>
+    </body>
+</html>

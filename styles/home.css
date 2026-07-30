@@ -18,8 +18,26 @@ header {
 }
 header img { height: 24px; margin: 0 32px; }
 .dark-mode header img { filter: invert(100%); }
+/* Botón para regresar */
+.back{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: var(--primary-text);
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0 32px;
+}
+/* Espacio para centrar el logo */
+.header-space{
+    width: 24px;
+    height: 24px;
+    margin: 0 32px;
+}
 
-main { margin-top: 64px; }
+main { margin-top: 64px; margin-bottom: 80px; }
 main, section {
     display: flex;
     flex-direction: column;
@@ -27,8 +45,9 @@ main, section {
 }
 main, header, footer { width: 100%; max-width: 450px; }
 
-h1 { font-size: 16px; color: var(--primary); font-weight: normal; }
-h2 { font-size: 32px; font-weight: lighter; font-family: monospace }
+h1 { font-size: 16px; color: var(--primary); }
+h1, h2 { font-weight: normal; }
+#saldo-disponible h2 { font-size: 32px; font-weight: normal; font-family: monospace }
 p { font-size: 12px; color: var(--secondary-text); }
 a { user-select: none; }
 main > * { margin: 0 32px;}
@@ -64,10 +83,10 @@ section#movimientos {
 
 nav {
     display: flex;
-    justify-content: space-between;
-    gap: 6px;
+    justify-content: center;
+    gap: 24px;
 }
-nav a {
+nav > a {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -86,8 +105,8 @@ nav a {
 
     transition: border 0.25s ease;
 }
-nav a:hover { border: 2px solid var(--primary); }
-nav a img {
+nav > a:hover { border: 2px solid var(--primary); }
+nav > a img {
     margin: 0 12px;
     padding: 12px;
     width: 20px;
@@ -112,7 +131,7 @@ a.movimiento img {
 a.movimiento h2 {
     font-size: 20px;
     margin-bottom: 6px;
-    font-weight: lighter;
+    font-weight: normal;
 }
 a.movimiento span {
     font-size: 14px;
@@ -149,6 +168,7 @@ footer {
     bottom: 0;
     display: flex;
     justify-content: center;
+    background: linear-gradient(#0000 0%, var(--primary-background) 100%);
     gap: 24px;
 }
 footer a {
@@ -182,3 +202,4 @@ footer a img {
 footer a.selected img { filter: invert(1); }
 .dark-mode footer a img { filter: invert(1); }
 .dark-mode footer a.selected img { filter: invert(0); }
+

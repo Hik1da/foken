@@ -1,0 +1,148 @@
+/* Movimiento seleccionable */
+.movement{
+    cursor: pointer;
+}
+/* Fondo de la ventana */
+.modal-overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, .55);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: .25s;
+    z-index: 1000;
+}
+/* Muestra la ventana */
+.modal-overlay.active{
+    opacity: 1;
+    visibility: visible;
+}
+/* Ventana principal */
+.transaction-modal{
+    width: 100%;
+    max-width: 390px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 20px;
+    background: var(--primary-background);
+    border-radius: 28px;
+    box-sizing: border-box;
+    transform: translateY(30px) scale(.96);
+    transition: .25s;
+}
+/* Animación */
+.modal-overlay.active .transaction-modal{
+    transform: translateY(0) scale(1);
+}
+/* Encabezado */
+.modal-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.modal-header h2{
+    font-family: monospace;
+    font-size: 20px;
+    font-weight: normal;
+}
+/* Botón para cerrar */
+.modal-close{
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 50%;
+    background: var(--secondary-background);
+    color: var(--primary-text);
+    font-size: 27px;
+    cursor: pointer;
+}
+/* Información principal */
+.transaction-main{
+    padding: 22px;
+    margin-bottom: 18px;
+    background: var(--secondary-background);
+    border-radius: 24px;
+}
+.transaction-main span{
+    color: var(--secondary-text);
+    font-size: 14px;
+}
+.transaction-main h3{
+    margin: 10px 0 22px;
+    font-family: monospace;
+    font-size: 38px;
+    font-weight: normal;
+}
+.transaction-main p{
+    margin-bottom: 6px;
+    color: var(--primary-text);
+    font-family: monospace;
+    font-size: 19px;
+}
+.transaction-main small{
+    color: var(--secondary-text);
+    font-size: 13px;
+}
+/* Resumen */
+.transaction-summary{
+    padding: 22px;
+    background: var(--secondary-background);
+    border-radius: 24px;
+}
+.transaction-summary h3{
+    margin-bottom: 15px;
+    font-family: monospace;
+    font-size: 20px;
+    font-weight: normal;
+}
+/* Filas */
+.detail-row{
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 15px;
+    padding: 13px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .12);
+}
+.detail-row:last-child{
+    border-bottom: none;
+}
+.detail-row span{
+    color: var(--secondary-text);
+    font-size: 14px;
+}
+.detail-row strong{
+    color: var(--primary-text);
+    font-size: 14px;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+/* Botón inferior */
+.modal-button{
+    width: 100%;
+    margin-top: 18px;
+    padding: 13px;
+    border: none;
+    border-radius: 22px;
+    background: var(--primary);
+    color: var(--secondary-background);
+    font-size: 15px;
+    cursor: pointer;
+}
+.modal-button:hover{
+    opacity: .9;
+}
+/* Evita mover el fondo */
+body.modal-open{
+    overflow: hidden;
+}
