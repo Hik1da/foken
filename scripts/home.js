@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <a href="#" class="movimiento">
                     <img src="assets/flat-icons/exchange.png">
                     <div>
-                        <h2>Bienvenido ${user.email.split('@')[0]}</h2>
+                        <h2>Bienvenido ${usuario.nombre_completo}</h2>
                         <span>${new Date().toLocaleDateString()}</span>
                         <span style="color: green; background: #e6f7e6; padding: 3px 9px; border-radius: 12px;">Activo</span>
                     </div>
