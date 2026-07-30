@@ -292,6 +292,29 @@ export const realizarDeposito = async (idCuenta, monto) => {
             return { exito: false, error: error.message }
         }
 
+        // Registra el movimiento para que aparezca en las pantallas
+        // de movimientos y notificaciones. Un depósito por transferencia
+        // CLABE no tiene una cuenta origen dentro de foken, por eso
+        // id_cuenta_origen queda en null.
+        const { error: errorMovimiento } = await supabase
+            .from('movimientos')
+            .insert([{
+                id_cuenta_origen: null,
+                id_cuenta_destino: idCuenta,
+                tipo_movimiento: 'deposito',
+                monto: monto,
+                concepto: 'Depósito por transferencia CLABE',
+                estado: 'completado',
+                fecha_movimiento: new Date().toISOString()
+            }])
+
+        if (errorMovimiento) {
+            // El saldo ya se actualizó correctamente; solo avisamos
+            // en consola si falló el registro del movimiento, sin
+            // hacer fallar todo el depósito por esto.
+            console.error('El depósito se aplicó pero no se pudo registrar el movimiento:', errorMovimiento)
+        }
+
         return { exito: true, saldo_nuevo: data[0].saldo }
     } catch (error) {
         console.error('Excepción al depositar:', error)
@@ -394,7 +417,9 @@ export const getMovimientosByUsuario = async (userId) => {
     return movimientos.map(m => {
         const esOrigen = m.id_cuenta_origen === idCuenta
         const idContraparte = esOrigen ? m.id_cuenta_destino : m.id_cuenta_origen
-        const nombreContraparte = nombrePorCuenta[idContraparte] || 'Foken'
+        const nombreContraparte = !idContraparte
+            ? 'Depósito por transferencia'
+            : (nombrePorCuenta[idContraparte] || 'Foken')
         const monto = esOrigen ? -Math.abs(Number(m.monto)) : Math.abs(Number(m.monto))
         const tipoDisplay = esOrigen ? 'Transferencia enviada' : 'Depósito recibido'
 
