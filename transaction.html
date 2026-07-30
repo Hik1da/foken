@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="styles/general.css">
         <link rel="stylesheet" href="styles/home.css">
-        <link rel="stylesheet" href="styles/interactions.css"> 
+        <link rel="stylesheet" href="styles/interactions.css">
         <title>transferir | foken</title>
     </head>
     <body>
@@ -18,6 +18,9 @@
             <section id="transferencia-container">
                 <h1>Realizar la transferencia</h1>
                 <form id="transferencia-form">
+                    <select id="tarjetaOrigen" required>
+                        <option value="">Selecciona la tarjeta a usar</option>
+                    </select>
                     <input id="tarjetaDestino" type="text" placeholder="Número de tarjeta destino" required>
                     <input id="nombreContacto" type="text" placeholder="Nombre o apodo del contacto (opcional)">
                     <h1>Ingresa cantidad a transferir</h1>

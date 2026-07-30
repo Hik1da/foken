@@ -130,53 +130,26 @@ export const getSaldosByUsuario = async (userId) => {
     try {
         const { data: tarjetas, error } = await supabase
             .from('tarjetas')
-            .select('tipo_tarjeta, limites')
+            .select('tipo_tarjeta, limite_credito')
             .eq('id_usuario', userId)
         if (error) {
             console.error('Error al obtener saldos:', error)
             return { debito: 0, credito: 0, creditoDisponible: 0 }
         }
-        console.log('Tarjetas encontradas:', tarjetas)
-        const { data: cuenta, error: errorCuenta } = await supabase
+        const { data: cuenta } = await supabase
             .from('cuentas')
             .select('saldo')
             .eq('id_usuario', userId)
             .maybeSingle()
+
         const saldoCuenta = cuenta?.saldo || 0
-        let creditoTotal = 0
-        if (tarjetas && tarjetas.length > 0) {
-            tarjetas.forEach(t => {
-                console.log('Procesando tarjeta:', t.tipo_tarjeta, t.limites)
-                if (t.tipo_tarjeta === 'credito') {
-                    if (t.limites && typeof t.limites === 'object') {
-                        if (t.limites.credito) {
-                            creditoTotal = t.limites.credito
-                            console.log('Límite encontrado:', creditoTotal)
-                        } else {
-                            creditoTotal = 100000
-                            console.log('Sin límite, usando default: 100000')
-                        }
-                    } else {
-                        creditoTotal = 100000
-                        console.log('Limites es null, usando default: 100000')
-                    }
-                }
-            })
-        } else {
-            console.log('No se encontraron tarjetas para el usuario')
-            creditoTotal = 100000
-        }
-        if (creditoTotal === 0) {
-            creditoTotal = 100000
-            console.log('Forzando crédito a 100000 por seguridad')
-        }
-        const creditoUsado = 0
-        const creditoDisponible = Math.max(0, creditoTotal - creditoUsado)
-        console.log('Resultado final:', { debito: saldoCuenta, credito: creditoTotal, creditoDisponible })
+        const tarjetaCredito = tarjetas?.find(t => t.tipo_tarjeta === 'credito')
+        const creditoTotal = tarjetaCredito?.limite_credito || 100000
+
         return {
             debito: saldoCuenta,
             credito: creditoTotal,
-            creditoDisponible: creditoDisponible
+            creditoDisponible: creditoTotal
         }
     } catch (error) {
         console.error('Error:', error)
@@ -235,7 +208,8 @@ export const crearCuentaYTarjetas = async (userId, nombreCompleto) => {
                 cvv_encripado: '***',
                 estado: 'activa',
                 nip: nip,
-                limites: { diario: 10000, mensual: 50000 }
+                limite_diario: 10000,
+                limite_mensual: 50000
             },
             {
                 id_usuario: userId,
@@ -249,7 +223,9 @@ export const crearCuentaYTarjetas = async (userId, nombreCompleto) => {
                 cvv_encripado: '***',
                 estado: 'activa',
                 nip: nip,
-                limites: { diario: 20000, mensual: 100000, credito: 100000 }
+                limite_diario: 20000,
+                limite_mensual: 100000,
+                limite_credito: 100000
             }
         ]
         const { data: tarjetasData, error: tarjetasError } = await supabase
@@ -267,11 +243,12 @@ export const crearCuentaYTarjetas = async (userId, nombreCompleto) => {
     }
 }
 
-export const realizarTransferencia = async (idCuentaOrigen, numeroTarjetaDestino, monto, concepto) => {
+export const realizarTransferencia = async (idCuentaOrigen, idTarjetaOrigen, numeroTarjetaDestino, monto, concepto) => {
     const supabase = getSupabase()
     if (!supabase) return { exito: false, error: 'Error de conexión' }
     const { data, error } = await supabase.rpc('realizar_transferencia', {
         p_id_cuenta_origen: idCuentaOrigen,
+        p_id_tarjeta_origen: idTarjetaOrigen,
         p_numero_tarjeta_destino: numeroTarjetaDestino,
         p_monto: monto,
         p_concepto: concepto || 'Transferencia'
@@ -313,4 +290,98 @@ export const guardarContacto = async (userId, nombreContacto, numeroTarjeta) => 
         return null
     }
     return data[0]
+}
+
+// ============================================
+// MOVIMIENTOS
+// ============================================
+
+// Trae todos los movimientos (enviados y recibidos) de la cuenta del usuario,
+// resolviendo el nombre de la contraparte y formateando los datos que
+// necesita la pantalla movements.html
+export const getMovimientosByUsuario = async (userId) => {
+    const supabase = getSupabase()
+    if (!supabase) return []
+
+    const cuenta = await getCuentaByUsuario(userId)
+    if (!cuenta) return []
+
+    const idCuenta = cuenta.id_cuenta
+
+    const { data: movimientos, error } = await supabase
+        .from('movimientos')
+        .select('*')
+        .or(`id_cuenta_origen.eq.${idCuenta},id_cuenta_destino.eq.${idCuenta}`)
+        .order('fecha_movimiento', { ascending: false })
+
+    if (error) {
+        console.error('Error al obtener movimientos:', error)
+        return []
+    }
+    if (!movimientos || movimientos.length === 0) return []
+
+    // Junta los ids de las cuentas "contraparte" para buscar el nombre de su dueño
+    const idsCuentasContraparte = new Set()
+    movimientos.forEach(m => {
+        const esOrigen = m.id_cuenta_origen === idCuenta
+        const contraparte = esOrigen ? m.id_cuenta_destino : m.id_cuenta_origen
+        if (contraparte) idsCuentasContraparte.add(contraparte)
+    })
+
+    let nombrePorCuenta = {}
+    if (idsCuentasContraparte.size > 0) {
+        const { data: cuentasContraparte, error: errorCuentas } = await supabase
+            .from('cuentas')
+            .select('id_cuenta, id_usuario')
+            .in('id_cuenta', Array.from(idsCuentasContraparte))
+
+        if (!errorCuentas && cuentasContraparte && cuentasContraparte.length > 0) {
+            const idsUsuarios = [...new Set(cuentasContraparte.map(c => c.id_usuario))]
+            const { data: usuarios, error: errorUsuarios } = await supabase
+                .from('usuarios')
+                .select('id_usuario, nombre_completo')
+                .in('id_usuario', idsUsuarios)
+
+            const nombrePorUsuario = {}
+            if (!errorUsuarios) {
+                (usuarios || []).forEach(u => {
+                    nombrePorUsuario[u.id_usuario] = u.nombre_completo
+                })
+            }
+
+            cuentasContraparte.forEach(c => {
+                nombrePorCuenta[c.id_cuenta] = nombrePorUsuario[c.id_usuario] || 'Cuenta Foken'
+            })
+        }
+    }
+
+    // Formatea cada movimiento con lo que necesita la UI
+    return movimientos.map(m => {
+        const esOrigen = m.id_cuenta_origen === idCuenta
+        const idContraparte = esOrigen ? m.id_cuenta_destino : m.id_cuenta_origen
+        const nombreContraparte = nombrePorCuenta[idContraparte] || 'Foken'
+        const monto = esOrigen ? -Math.abs(Number(m.monto)) : Math.abs(Number(m.monto))
+        const tipoDisplay = esOrigen ? 'Transferencia enviada' : 'Depósito recibido'
+
+        const fecha = new Date(m.fecha_movimiento)
+        const fechaCorta = fecha.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' })
+        const fechaLarga = fecha.toLocaleString('es-MX', {
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: 'numeric', minute: '2-digit', hour12: true
+        })
+
+        return {
+            id: m.id_movimiento,
+            tipo: tipoDisplay,
+            nombre: nombreContraparte,
+            monto,
+            fecha: fechaLarga,
+            fechaCorta,
+            categoria: esOrigen ? 'Transferencia enviada' : 'Transferencia recibida',
+            cuenta: nombreContraparte,
+            mensaje: m.concepto || 'Transferencia',
+            folio: m.referencia || m.id_movimiento,
+            estado: m.estado
+        }
+    })
 }

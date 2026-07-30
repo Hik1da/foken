@@ -26,64 +26,9 @@
                 <img src="assets/flat-icons/search.png" class="search-icon" alt="Buscar">
                 <input type="text" placeholder="Buscar un movimiento">
             </div>
-            <!-- Lista -->
+            <!-- Lista: se llena dinámicamente desde scripts/movements.js -->
             <section id="movements">
-                <article class="movement" data-id="1" tabindex="0">
-                    <img src="assets/flat-icons/exchange.png" alt="Transferencia">
-                    <div class="movement-info">
-                        <h2>Transferencia enviada</h2>
-                        <span>14 Jul</span>
-                    </div>
-                    <strong class="expense">-$520.00</strong>
-                </article>
-                <article class="movement" data-id="2" tabindex="0">
-                    <img src="assets/flat-icons/deposit.png" alt="Depósito">
-                    <div class="movement-info">
-                        <h2>Depósito recibido</h2>
-                        <span>13 Jul</span>
-                    </div>
-                    <strong class="income">$1,250.00</strong>
-                </article>
-                <article class="movement" data-id="3" tabindex="0">
-                    <img src="assets/flat-icons/card.png" alt="Pago con tarjeta">
-                    <div class="movement-info">
-                        <h2>Pago Netflix</h2>
-                        <span>12 Jul</span>
-                    </div>
-                    <strong class="expense">-$219.00</strong>
-                </article>
-                <article class="movement" data-id="4" tabindex="0">
-                    <img src="assets/flat-icons/document.png" alt="Estado de cuenta">
-                    <div class="movement-info">
-                        <h2>Estado de cuenta</h2>
-                        <span>19 Jul</span>
-                    </div>
-                    <strong>$0.00</strong>
-                </article>
-                <article class="movement" data-id="5" tabindex="0">
-                    <img src="assets/flat-icons/document.png" alt="Estado de cuenta">
-                    <div class="movement-info">
-                        <h2>Estado de cuenta</h2>
-                        <span>20 Jul</span>
-                    </div>
-                    <strong>$0.00</strong>
-                </article>
-                <article class="movement" data-id="6" tabindex="0">
-                    <img src="assets/flat-icons/deposit.png" alt="Depósito">
-                    <div class="movement-info">
-                        <h2>Depósito recibido</h2>
-                        <span>12 Jul</span>
-                    </div>
-                    <strong class="income">$990.00</strong>
-                </article>
-                <article class="movement" data-id="7" tabindex="0">
-                    <img src="assets/flat-icons/deposit.png" alt="Depósito">
-                    <div class="movement-info">
-                        <h2>Depósito recibido</h2>
-                        <span>16 Jul</span>
-                    </div>
-                    <strong class="income">$100.00</strong>
-                </article>
+                <p class="sin-movimientos">Cargando movimientos...</p>
             </section>
         </main>
         <div class="modal-overlay" id="movementModal">
@@ -137,6 +82,7 @@
             <a href="profile.html"><img src="assets/flat-icons/user.png"></a>
         </footer>
         <script src="scripts/darkmode.js"></script>
-        <script src="scripts/movements.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+        <script type="module" src="scripts/movements.js"></script>
     </body>
 </html>
