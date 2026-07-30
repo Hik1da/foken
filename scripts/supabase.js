@@ -441,7 +441,6 @@ export const getMovimientosByUsuario = async (userId) => {
     }
     if (!movimientos || movimientos.length === 0) return []
 
-    // Junta los ids de las cuentas "contraparte" para buscar el nombre de su dueño
     const idsCuentasContraparte = new Set()
     movimientos.forEach(m => {
         const esOrigen = m.id_cuenta_origen === idCuenta
@@ -476,7 +475,6 @@ export const getMovimientosByUsuario = async (userId) => {
         }
     }
 
-    // Formatea cada movimiento con lo que necesita la UI
     return movimientos.map(m => {
         const esOrigen = m.id_cuenta_origen === idCuenta
         const idContraparte = esOrigen ? m.id_cuenta_destino : m.id_cuenta_origen
