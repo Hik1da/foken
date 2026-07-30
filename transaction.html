@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="styles/general.css">
         <link rel="stylesheet" href="styles/home.css">
-        <link rel="stylesheet" href="styles/interactions.css">
+        <link rel="stylesheet" href="styles/interactions.css"> 
         <title>transferir | foken</title>
     </head>
     <body>
@@ -15,105 +15,31 @@
             <div class="header-space"></div>
         </header>
         <main>
-            <section id="contactos-container">
-                <h1>Contactos</h1>
-                <p>Selecciona un contacto al que transferir</p>
-                <section id="contactos-list">
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                    <a href="#" class="contacto">
-                        <img src="assets/flat-icons/user.png">
-                        <div>
-                            <h3>Contacto</h3>
-                            <p>(nota)</p>
-                        </div>
-                    </a>
-                </section>
-                <a class="button" onclick="">Añadir contacto</a>
-            </section>
-            <section id="transferencia-container" style="display: none;">
+            <section id="transferencia-container">
                 <h1>Realizar la transferencia</h1>
-                <a href="#" class="contacto selected">
-                    <img src="assets/flat-icons/user.png">
-                    <div>
-                        <h3>Contacto</h3>
-                        <p>(nota)</p>
-                    </div>
-                </a>
                 <form id="transferencia-form">
+                    <input id="tarjetaDestino" type="text" placeholder="Número de tarjeta destino" required>
+                    <input id="nombreContacto" type="text" placeholder="Nombre o apodo del contacto (opcional)">
                     <h1>Ingresa cantidad a transferir</h1>
                     <span>$<input id="cantidad" type="number" min="0" placeholder="0">MXN</span>
-                    <p>$<span id="saldo">231.23</span> disponibles en tu cuenta</p>
+                    <p>$<span id="saldo">0.00</span> disponibles en tu cuenta</p>
                     <input type="submit" class="button" value="Transferir con cuenta" disabled>
                 </form>
+            </section>
+
+            <section id="contactos-container">
+                <h1>Contactos guardados</h1>
+                <p id="sin-contactos" style="display:none;">Aún no tienes contactos guardados. Al transferir y ponerle un nombre, aparecerá aquí.</p>
+                <div id="contactos-list"></div>
             </section>
         </main>
         <footer>
             <a href="home.html"><img src="assets/flat-icons/home.png"></a>
             <a href="cards.html"><img src="assets/flat-icons/card.png"></a>
-            <a href="profile.html"><img src="assets/flat-icons/user.png"></a>
+            <a href="#" id="logoutFooter"><img src="assets/flat-icons/user.png"></a>
         </footer>
         <script src="scripts/darkmode.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+        <script type="module" src="scripts/transaction.js"></script>
     </body>
 </html>
