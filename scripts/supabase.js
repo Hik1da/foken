@@ -299,6 +299,82 @@ export const realizarDeposito = async (idCuenta, monto) => {
     }
 }
 
+// Convierte crédito disponible en saldo de la cuenta de débito:
+// aumenta credito_usado en la tarjeta y suma el monto al saldo de la cuenta.
+// También registra un movimiento para que aparezca en movements.html y notifications.html.
+export const realizarConversionCreditoADebito = async (idCuenta, idTarjetaCredito, monto) => {
+    const supabase = getSupabase()
+    if (!supabase) return { exito: false, error: 'Error de conexión' }
+    try {
+        const { data: tarjeta, error: errorTarjeta } = await supabase
+            .from('tarjetas')
+            .select('credito_usado, limite_credito, estado')
+            .eq('id_tarjeta', idTarjetaCredito)
+            .single()
+
+        if (errorTarjeta || !tarjeta) {
+            return { exito: false, error: errorTarjeta?.message || 'No se encontró la tarjeta de crédito' }
+        }
+        if (tarjeta.estado === 'bloqueada') {
+            return { exito: false, error: 'Tu tarjeta de crédito está bloqueada' }
+        }
+
+        const limite = Number(tarjeta.limite_credito) || 100000
+        const usado = Number(tarjeta.credito_usado) || 0
+        const disponible = limite - usado
+
+        if (monto > disponible) {
+            return { exito: false, error: 'No tienes crédito disponible suficiente' }
+        }
+
+        const { error: errorTarjetaUpdate } = await supabase
+            .from('tarjetas')
+            .update({ credito_usado: usado + monto })
+            .eq('id_tarjeta', idTarjetaCredito)
+
+        if (errorTarjetaUpdate) {
+            return { exito: false, error: errorTarjetaUpdate.message }
+        }
+
+        const deposito = await realizarDeposito(idCuenta, monto)
+        if (!deposito.exito) {
+            return deposito
+        }
+
+        const { error: errorMovimiento } = await supabase
+            .from('movimientos')
+            .insert([{
+                id_cuenta_origen: null,
+                id_cuenta_destino: idCuenta,
+                id_tarjeta: idTarjetaCredito,
+                tipo_movimiento: 'deposito',
+                estado: 'completado',
+                monto: monto,
+                moneda: 'MXN',
+                concepto: 'Conversión de crédito a saldo',
+                saldo_posterior: deposito.saldo_nuevo,
+                fecha_movimiento: new Date().toISOString(),
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            }])
+
+        if (errorMovimiento) {
+            console.error('Error al registrar el movimiento de conversión:', errorMovimiento)
+        }
+
+        return {
+            exito: true,
+            saldo_nuevo: deposito.saldo_nuevo,
+            credito_disponible_nuevo: disponible - monto,
+            movimiento_registrado: !errorMovimiento,
+            movimiento_error: errorMovimiento?.message || null
+        }
+    } catch (error) {
+        console.error('Excepción al convertir crédito a saldo:', error)
+        return { exito: false, error: error.message }
+    }
+}
+
 export const getContactosByUsuario = async (userId) => {
     const supabase = getSupabase()
     if (!supabase) return []
