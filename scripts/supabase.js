@@ -260,6 +260,45 @@ export const realizarTransferencia = async (idCuentaOrigen, idTarjetaOrigen, num
     return data
 }
 
+// Suma un monto al saldo actual de la cuenta (depósito por transferencia CLABE).
+// Nota: hace lectura + escritura desde el cliente, no es una operación atómica.
+// Si más adelante quieres blindarlo contra condiciones de carrera, lo ideal
+// sería moverlo a una función RPC en Supabase, similar a "realizar_transferencia".
+export const realizarDeposito = async (idCuenta, monto) => {
+    const supabase = getSupabase()
+    if (!supabase) return { exito: false, error: 'Error de conexión' }
+    try {
+        const { data: cuentaActual, error: errorLectura } = await supabase
+            .from('cuentas')
+            .select('saldo')
+            .eq('id_cuenta', idCuenta)
+            .single()
+
+        if (errorLectura || !cuentaActual) {
+            console.error('Error al leer la cuenta:', errorLectura)
+            return { exito: false, error: errorLectura?.message || 'No se encontró la cuenta' }
+        }
+
+        const nuevoSaldo = Number(cuentaActual.saldo) + Number(monto)
+
+        const { data, error } = await supabase
+            .from('cuentas')
+            .update({ saldo: nuevoSaldo })
+            .eq('id_cuenta', idCuenta)
+            .select()
+
+        if (error) {
+            console.error('Error al depositar:', error)
+            return { exito: false, error: error.message }
+        }
+
+        return { exito: true, saldo_nuevo: data[0].saldo }
+    } catch (error) {
+        console.error('Excepción al depositar:', error)
+        return { exito: false, error: error.message }
+    }
+}
+
 export const getContactosByUsuario = async (userId) => {
     const supabase = getSupabase()
     if (!supabase) return []
