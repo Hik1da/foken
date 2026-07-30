@@ -260,11 +260,11 @@ export const realizarTransferencia = async (idCuentaOrigen, idTarjetaOrigen, num
     return data
 }
 
-// Suma un monto al saldo actual de la cuenta (depósito por transferencia CLABE).
+// Suma un monto al saldo actual de la cuenta y registra el movimiento correspondiente.
 // Nota: hace lectura + escritura desde el cliente, no es una operación atómica.
 // Si más adelante quieres blindarlo contra condiciones de carrera, lo ideal
 // sería moverlo a una función RPC en Supabase, similar a "realizar_transferencia".
-export const realizarDeposito = async (idCuenta, monto) => {
+export const realizarDeposito = async (idCuenta, monto, concepto = 'Depósito por transferencia CLABE', datosExtra = {}) => {
     const supabase = getSupabase()
     if (!supabase) return { exito: false, error: 'Error de conexión' }
     try {
@@ -294,8 +294,8 @@ export const realizarDeposito = async (idCuenta, monto) => {
 
         // Registra el movimiento para que aparezca en las pantallas
         // de movimientos y notificaciones. Un depósito por transferencia
-        // CLABE no tiene una cuenta origen dentro de foken, por eso
-        // id_cuenta_origen queda en null.
+        // CLABE (o una conversión de crédito) no tiene una cuenta origen
+        // dentro de foken, por eso id_cuenta_origen queda en null.
         const { error: errorMovimiento } = await supabase
             .from('movimientos')
             .insert([{
@@ -303,9 +303,12 @@ export const realizarDeposito = async (idCuenta, monto) => {
                 id_cuenta_destino: idCuenta,
                 tipo_movimiento: 'deposito',
                 monto: monto,
-                concepto: 'Depósito por transferencia CLABE',
+                moneda: 'MXN',
+                concepto: concepto,
                 estado: 'completado',
-                fecha_movimiento: new Date().toISOString()
+                saldo_posterior: nuevoSaldo,
+                fecha_movimiento: new Date().toISOString(),
+                ...datosExtra
             }])
 
         if (errorMovimiento) {
@@ -315,7 +318,7 @@ export const realizarDeposito = async (idCuenta, monto) => {
             console.error('El depósito se aplicó pero no se pudo registrar el movimiento:', errorMovimiento)
         }
 
-        return { exito: true, saldo_nuevo: data[0].saldo }
+        return { exito: true, saldo_nuevo: data[0].saldo, movimiento_registrado: !errorMovimiento, movimiento_error: errorMovimiento?.message || null }
     } catch (error) {
         console.error('Excepción al depositar:', error)
         return { exito: false, error: error.message }
@@ -324,7 +327,7 @@ export const realizarDeposito = async (idCuenta, monto) => {
 
 // Convierte crédito disponible en saldo de la cuenta de débito:
 // aumenta credito_usado en la tarjeta y suma el monto al saldo de la cuenta.
-// También registra un movimiento para que aparezca en movements.html y notifications.html.
+// El movimiento se registra una sola vez, dentro de realizarDeposito.
 export const realizarConversionCreditoADebito = async (idCuenta, idTarjetaCredito, monto) => {
     const supabase = getSupabase()
     if (!supabase) return { exito: false, error: 'Error de conexión' }
@@ -359,38 +362,22 @@ export const realizarConversionCreditoADebito = async (idCuenta, idTarjetaCredit
             return { exito: false, error: errorTarjetaUpdate.message }
         }
 
-        const deposito = await realizarDeposito(idCuenta, monto)
+        const deposito = await realizarDeposito(
+            idCuenta,
+            monto,
+            'Conversión de crédito a saldo',
+            { id_tarjeta: idTarjetaCredito }
+        )
         if (!deposito.exito) {
             return deposito
-        }
-
-        const { error: errorMovimiento } = await supabase
-            .from('movimientos')
-            .insert([{
-                id_cuenta_origen: null,
-                id_cuenta_destino: idCuenta,
-                id_tarjeta: idTarjetaCredito,
-                tipo_movimiento: 'deposito',
-                estado: 'completado',
-                monto: monto,
-                moneda: 'MXN',
-                concepto: 'Conversión de crédito a saldo',
-                saldo_posterior: deposito.saldo_nuevo,
-                fecha_movimiento: new Date().toISOString(),
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-            }])
-
-        if (errorMovimiento) {
-            console.error('Error al registrar el movimiento de conversión:', errorMovimiento)
         }
 
         return {
             exito: true,
             saldo_nuevo: deposito.saldo_nuevo,
             credito_disponible_nuevo: disponible - monto,
-            movimiento_registrado: !errorMovimiento,
-            movimiento_error: errorMovimiento?.message || null
+            movimiento_registrado: deposito.movimiento_registrado,
+            movimiento_error: deposito.movimiento_error
         }
     } catch (error) {
         console.error('Excepción al convertir crédito a saldo:', error)
