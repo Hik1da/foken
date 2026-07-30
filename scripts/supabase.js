@@ -292,13 +292,6 @@ export const guardarContacto = async (userId, nombreContacto, numeroTarjeta) => 
     return data[0]
 }
 
-// ============================================
-// MOVIMIENTOS
-// ============================================
-
-// Trae todos los movimientos (enviados y recibidos) de la cuenta del usuario,
-// resolviendo el nombre de la contraparte y formateando los datos que
-// necesita la pantalla movements.html
 export const getMovimientosByUsuario = async (userId) => {
     const supabase = getSupabase()
     if (!supabase) return []
@@ -320,7 +313,6 @@ export const getMovimientosByUsuario = async (userId) => {
     }
     if (!movimientos || movimientos.length === 0) return []
 
-    // Junta los ids de las cuentas "contraparte" para buscar el nombre de su dueño
     const idsCuentasContraparte = new Set()
     movimientos.forEach(m => {
         const esOrigen = m.id_cuenta_origen === idCuenta
@@ -355,7 +347,6 @@ export const getMovimientosByUsuario = async (userId) => {
         }
     }
 
-    // Formatea cada movimiento con lo que necesita la UI
     return movimientos.map(m => {
         const esOrigen = m.id_cuenta_origen === idCuenta
         const idContraparte = esOrigen ? m.id_cuenta_destino : m.id_cuenta_origen

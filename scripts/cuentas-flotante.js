@@ -146,6 +146,40 @@ async function cargarDatosUsuario() {
         
         await actualizarUltimoAcceso(user.id);
         
+        const usuario = await getUsuarioById(user.id);
+        console.log('Usuario:', usuario);
+      
+        const userIcon = document.querySelector('header a#user img')
+        if (userIcon && usuario) {
+            console.log('Generando avatar para:', usuario.nombre_completo);
+            const canvas = document.createElement('canvas')
+            canvas.width = 32
+            canvas.height = 32
+            const ctx = canvas.getContext('2d')
+            ctx.beginPath()
+            ctx.arc(16, 16, 16, 0, Math.PI * 2)
+            ctx.fillStyle = '#4A90D9'
+            ctx.fill()
+            ctx.fillStyle = '#FFFFFF'
+            ctx.font = 'bold 14px Arial'
+            ctx.textAlign = 'center'
+            ctx.textBaseline = 'middle'
+            const iniciales = (usuario.nombre_completo || 'U')
+                .split(' ')
+                .map(n => n[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2)
+            ctx.fillText(iniciales || 'U', 16, 17)
+            userIcon.src = canvas.toDataURL()
+            userIcon.style.borderRadius = '50%'
+            console.log('Avatar generado:', iniciales);
+        } else {
+            console.log('No se encontró el icono de usuario');
+            console.log('userIcon:', userIcon);
+            console.log('usuario:', usuario);
+        }
+   
         const tarjetasData = await getTarjetasByUsuario(user.id);
         if (tarjetasData && tarjetasData.length > 0) {
             tarjetas = tarjetasData;
