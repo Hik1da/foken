@@ -291,3 +291,97 @@ export const guardarContacto = async (userId, nombreContacto, numeroTarjeta) => 
     }
     return data[0]
 }
+
+// ============================================
+// MOVIMIENTOS
+// ============================================
+
+// Trae todos los movimientos (enviados y recibidos) de la cuenta del usuario,
+// resolviendo el nombre de la contraparte y formateando los datos que
+// necesita la pantalla movements.html
+export const getMovimientosByUsuario = async (userId) => {
+    const supabase = getSupabase()
+    if (!supabase) return []
+
+    const cuenta = await getCuentaByUsuario(userId)
+    if (!cuenta) return []
+
+    const idCuenta = cuenta.id_cuenta
+
+    const { data: movimientos, error } = await supabase
+        .from('movimientos')
+        .select('*')
+        .or(`id_cuenta_origen.eq.${idCuenta},id_cuenta_destino.eq.${idCuenta}`)
+        .order('fecha_movimiento', { ascending: false })
+
+    if (error) {
+        console.error('Error al obtener movimientos:', error)
+        return []
+    }
+    if (!movimientos || movimientos.length === 0) return []
+
+    // Junta los ids de las cuentas "contraparte" para buscar el nombre de su dueño
+    const idsCuentasContraparte = new Set()
+    movimientos.forEach(m => {
+        const esOrigen = m.id_cuenta_origen === idCuenta
+        const contraparte = esOrigen ? m.id_cuenta_destino : m.id_cuenta_origen
+        if (contraparte) idsCuentasContraparte.add(contraparte)
+    })
+
+    let nombrePorCuenta = {}
+    if (idsCuentasContraparte.size > 0) {
+        const { data: cuentasContraparte, error: errorCuentas } = await supabase
+            .from('cuentas')
+            .select('id_cuenta, id_usuario')
+            .in('id_cuenta', Array.from(idsCuentasContraparte))
+
+        if (!errorCuentas && cuentasContraparte && cuentasContraparte.length > 0) {
+            const idsUsuarios = [...new Set(cuentasContraparte.map(c => c.id_usuario))]
+            const { data: usuarios, error: errorUsuarios } = await supabase
+                .from('usuarios')
+                .select('id_usuario, nombre_completo')
+                .in('id_usuario', idsUsuarios)
+
+            const nombrePorUsuario = {}
+            if (!errorUsuarios) {
+                (usuarios || []).forEach(u => {
+                    nombrePorUsuario[u.id_usuario] = u.nombre_completo
+                })
+            }
+
+            cuentasContraparte.forEach(c => {
+                nombrePorCuenta[c.id_cuenta] = nombrePorUsuario[c.id_usuario] || 'Cuenta Foken'
+            })
+        }
+    }
+
+    // Formatea cada movimiento con lo que necesita la UI
+    return movimientos.map(m => {
+        const esOrigen = m.id_cuenta_origen === idCuenta
+        const idContraparte = esOrigen ? m.id_cuenta_destino : m.id_cuenta_origen
+        const nombreContraparte = nombrePorCuenta[idContraparte] || 'Foken'
+        const monto = esOrigen ? -Math.abs(Number(m.monto)) : Math.abs(Number(m.monto))
+        const tipoDisplay = esOrigen ? 'Transferencia enviada' : 'Depósito recibido'
+
+        const fecha = new Date(m.fecha_movimiento)
+        const fechaCorta = fecha.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' })
+        const fechaLarga = fecha.toLocaleString('es-MX', {
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: 'numeric', minute: '2-digit', hour12: true
+        })
+
+        return {
+            id: m.id_movimiento,
+            tipo: tipoDisplay,
+            nombre: nombreContraparte,
+            monto,
+            fecha: fechaLarga,
+            fechaCorta,
+            categoria: esOrigen ? 'Transferencia enviada' : 'Transferencia recibida',
+            cuenta: nombreContraparte,
+            mensaje: m.concepto || 'Transferencia',
+            folio: m.referencia || m.id_movimiento,
+            estado: m.estado
+        }
+    })
+}
