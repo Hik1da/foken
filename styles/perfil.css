@@ -163,7 +163,7 @@ body.sin-scroll {
 .banco-nombre {
     color: var(--secondary-background);
     font-size: 24px;
-    font-weight: lighter;
+    font-weight: normal;
 }
 .clabe-numero {
     overflow-wrap: anywhere;

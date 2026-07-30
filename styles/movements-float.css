@@ -54,7 +54,7 @@
 .modal-header h2{
     font-family: monospace;
     font-size: 20px;
-    font-weight: lighter;
+    font-weight: normal;
 }
 /* Botón para cerrar */
 .modal-close{
@@ -82,7 +82,7 @@
     margin: 10px 0 22px;
     font-family: monospace;
     font-size: 38px;
-    font-weight: lighter;
+    font-weight: normal;
 }
 .transaction-main p{
     margin-bottom: 6px;
@@ -104,7 +104,7 @@
     margin-bottom: 15px;
     font-family: monospace;
     font-size: 20px;
-    font-weight: lighter;
+    font-weight: normal;
 }
 /* Filas */
 .detail-row{

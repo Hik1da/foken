@@ -1,6 +1,6 @@
 input#cantidad {
     font-size: 32px;
-    font-weight: lighter;
+    font-weight: normal;
     font-family: monospace;
     min-width: 20px;
     overflow: hidden;
@@ -60,7 +60,7 @@ input[type=number] { -moz-appearance:textfield; }
     padding: 6px;
     border-radius: 24px;
 }
-.contacto h3 { font-size: 16px; font-weight: lighter; }
+.contacto h3 { font-size: 16px; font-weight: normal; }
 .selected {
     color: var(--primary);
     box-shadow: 0 0 0 2px var(--primary);
